@@ -1,0 +1,65 @@
+{
+    "commands": [
+        {
+            "name": "mod",
+            "description": "伺服器管理 - Server manage",
+            "default_permission": false,
+            "options": [
+                {
+                    "name": "notify",
+                    "description": "YouTube Notification",
+                    "type": 2,
+                    "options": [
+                        {
+                            "name": "set",
+                            "description": "Setup YouTube stream notification",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "id",
+                                    "description": "YouTube Channel ID",
+                                    "type": 3,
+                                    "required": true
+                                },
+                                {
+                                    "name": "channel",
+                                    "description": "Set new stream message to channel",
+                                    "type": 7,
+                                    "required": true
+                                },
+                                {
+                                    "name": "role",
+                                    "description": "Set role to receive pings",
+                                    "type": 8,
+                                    "required": false
+                                },
+                                {
+                                    "name": "message",
+                                    "description": "Set message content",
+                                    "type": 3,
+                                    "required": false
+                                }
+                            ]
+                        },
+                        {
+                            "name": "ui",
+                            "description": "Show subscribe panel",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "id",
+                                    "description": "YouTube Channel ID",
+                                    "type": 3,
+                                    "required": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+
+    "global_commands": [
+    ]
+}
