@@ -57,6 +57,18 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "use",
+            "description": "判断行为的成功率",
+            "options": [
+                {
+                    "name": "action",
+                    "description": "描述你的行为",
+                    "type": 3,
+                    "required": true
+                }
+            ]
         }
     ],
 
