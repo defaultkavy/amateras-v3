@@ -1,4 +1,4 @@
-import { MessageOptions, TextChannel } from "discord.js";
+import { MessageOptions, TextChannel, ThreadChannel } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _BaseManagerDB } from "./_BaseManagerDB";
 import { _Message, _MessageDB, _MessageInfo, _MessageOptions, _MessageType } from "./_Message";
@@ -29,7 +29,7 @@ export class _MessageManager extends _BaseManagerDB<_Message, _MessageDB> {
         return _message
     }
 
-    async send(channel: TextChannel, options: MessageOptions, type: _MessageType, data?: any) {
+    async send(channel: TextChannel | ThreadChannel, options: MessageOptions, type: _MessageType, data?: any) {
         const message = await channel.send(options)
         const loc = this.location(message.guildId!, message.channelId)
         if (!loc) return

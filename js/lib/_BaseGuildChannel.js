@@ -10,6 +10,11 @@ class _GuildChannel extends _Base_1._Base {
         this.origin = origin;
         this.type = origin.type;
     }
+    isTextBased() {
+        if (this.type !== 'GUILD_TEXT' && this.type !== 'GUILD_PUBLIC_THREAD')
+            return false;
+        return true;
+    }
 }
 exports._GuildChannel = _GuildChannel;
 //# sourceMappingURL=_BaseGuildChannel.js.map

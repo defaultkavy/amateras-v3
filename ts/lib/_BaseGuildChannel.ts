@@ -1,6 +1,8 @@
 import { GuildBasedChannel, ThreadChannelTypes } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _Base } from "./_Base";
+import { _TextChannel } from "./_TextChannel";
+import { _ThreadChannel } from "./_ThreadChannel";
 
 export class _GuildChannel extends _Base {
     name: string;
@@ -14,5 +16,10 @@ export class _GuildChannel extends _Base {
         this.origin = origin
         this.type = origin.type
         
+    }
+
+    isTextBased(): this is _TextChannel | _ThreadChannel {
+        if (this.type !== 'GUILD_TEXT' && this.type !== 'GUILD_PUBLIC_THREAD') return false
+        return true
     }
 }

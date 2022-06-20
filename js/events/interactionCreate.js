@@ -27,7 +27,7 @@ module.exports = {
             if (interact.isCommand()) {
                 const _validInteract = new _CommandInteraction_1._CommandInteraction(amateras, interact, _user);
                 if (!_validInteract.isValid())
-                    return;
+                    return console.debug(2);
                 executeCommand(`commands/${interact.commandName}`, _validInteract);
             }
             // Button interaction

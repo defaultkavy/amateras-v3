@@ -9,14 +9,13 @@ module.exports = {
     name: 'interactionCreate',
     once: false,
     async execute(interact: Interaction, amateras: Amateras) {
-        
         const _user = await amateras.users.fetch(interact.user.id)
         if (!_user) return
         
         // Command interaction
         if (interact.isCommand()) {
             const _validInteract = new _CommandInteraction(amateras, interact, _user)
-            if (!_validInteract.isValid()) return
+            if (!_validInteract.isValid()) return console.debug(2)
             executeCommand(`commands/${interact.commandName}`, _validInteract)
         }
 

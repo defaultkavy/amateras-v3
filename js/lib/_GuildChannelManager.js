@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports._GuildChannelManager = void 0;
 const _BaseGuildManager_1 = require("./_BaseGuildManager");
 const _TextChannel_1 = require("./_TextChannel");
+const _ThreadChannel_1 = require("./_ThreadChannel");
 class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
     constructor(amateras, _guild) {
         super(amateras, _guild);
@@ -26,6 +27,10 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
         for (const channel of this._guild.origin.channels.cache.values()) {
             if (channel.type === 'GUILD_TEXT') {
                 const _channel = new _TextChannel_1._TextChannel(this.amateras, channel);
+                this.cache.set(_channel.id, _channel);
+            }
+            else if (channel.type === 'GUILD_PUBLIC_THREAD') {
+                const _channel = new _ThreadChannel_1._ThreadChannel(this.amateras, channel);
                 this.cache.set(_channel.id, _channel);
             }
         }

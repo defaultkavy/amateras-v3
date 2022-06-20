@@ -3,6 +3,7 @@ import { Amateras } from "./Amateras"
 import { _Guild } from "./_Guild"
 import { _Interaction } from "./_Interaction"
 import { _TextChannel } from "./_TextChannel"
+import { _ThreadChannel } from "./_ThreadChannel"
 import { _User } from "./_User"
 
 export class _CommandInteraction extends _Interaction {
@@ -15,6 +16,6 @@ export class _CommandInteraction extends _Interaction {
 
 export interface _ValidCommandInteraction extends _CommandInteraction {
     _guild: _Guild;
-    _channel: _TextChannel;
+    _channel: _TextChannel | _ThreadChannel;
     valid: true
 }
