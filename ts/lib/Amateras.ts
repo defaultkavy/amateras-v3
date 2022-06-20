@@ -70,8 +70,10 @@ export class Amateras {
     }
 
     private serverHandler() {
+        this.express.use(express.json())
+        this.express.use(express.urlencoded({ extended: true }))
+
         this.express.post('/ko-fi', (req, res) => {
-            console.debug(req)
             console.debug(req.body)
         })
 

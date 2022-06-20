@@ -71,8 +71,9 @@ class Amateras {
         }
     }
     serverHandler() {
+        this.express.use(express_1.default.json());
+        this.express.use(express_1.default.urlencoded({ extended: true }));
         this.express.post('/ko-fi', (req, res) => {
-            console.debug(req);
             console.debug(req.body);
         });
         this.express.listen(30, () => console.log('Port 30 listening.'));
