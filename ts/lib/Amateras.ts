@@ -70,7 +70,7 @@ export class Amateras {
     }
 
     private serverHandler() {
-        this.express.get('/ko-fi', (res) => {
+        this.express.post('/ko-fi', (res) => {
             console.debug(res)
         })
 
