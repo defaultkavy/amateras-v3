@@ -71,7 +71,7 @@ export class Amateras {
 
     private serverHandler() {
         this.express.post('/ko-fi', (req, res) => {
-            console.debug(req)
+            console.debug(req.body)
         })
 
         this.express.listen(30, () => console.log('Port 30 listening.'))
