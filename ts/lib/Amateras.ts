@@ -7,6 +7,7 @@ import fs from 'fs'
 import { System } from "./System";
 import { _NotifierManager } from "./_NotifierManager";
 import { _MessageManager } from "./_MessageManager";
+import express, { Express } from 'express'
 
 export class Amateras {
     client: Client<true>;
@@ -19,6 +20,7 @@ export class Amateras {
     notifiers: _NotifierManager;
     messages: _MessageManager;
     ready: boolean;
+    express: Express;
     constructor(conf: AmaterasConfig) {
         this.ready = false
         this.client = conf.client
@@ -30,6 +32,7 @@ export class Amateras {
         this.guilds = new _GuildManager(this)
         this.notifiers = new _NotifierManager(this)
         this.messages = new _MessageManager(this)
+        this.express = express()
         this.init()
     }
 
@@ -44,6 +47,7 @@ export class Amateras {
         this.ready = true
         await this.onready()
         console.log(cmd.Yellow, 'Amateras Ready.')
+        this.serverHandler()
     }
 
     private async onready() {
@@ -63,6 +67,14 @@ export class Amateras {
                 this.client.on(event.name, (...args) => event.execute(...args, this));
             }
         }
+    }
+
+    private serverHandler() {
+        this.express.get('/ko-fi', (res) => {
+            console.debug(res)
+        })
+
+        this.express.listen(30, () => console.log('Port 30 listening.'))
     }
 }
 

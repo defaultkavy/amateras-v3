@@ -20,6 +20,7 @@ const fs_1 = __importDefault(require("fs"));
 const System_1 = require("./System");
 const _NotifierManager_1 = require("./_NotifierManager");
 const _MessageManager_1 = require("./_MessageManager");
+const express_1 = __importDefault(require("express"));
 class Amateras {
     constructor(conf) {
         this.ready = false;
@@ -32,6 +33,7 @@ class Amateras {
         this.guilds = new _GuildManager_1._GuildManager(this);
         this.notifiers = new _NotifierManager_1._NotifierManager(this);
         this.messages = new _MessageManager_1._MessageManager(this);
+        this.express = (0, express_1.default)();
         this.init();
     }
     init() {
@@ -46,6 +48,7 @@ class Amateras {
             this.ready = true;
             yield this.onready();
             console.log(cmd_1.default.Yellow, 'Amateras Ready.');
+            this.serverHandler();
         });
     }
     onready() {
@@ -66,6 +69,12 @@ class Amateras {
                 this.client.on(event.name, (...args) => event.execute(...args, this));
             }
         }
+    }
+    serverHandler() {
+        this.express.get('/ko-fi', (res) => {
+            console.debug(res);
+        });
+        this.express.listen(30, () => console.log('Port 30 listening.'));
     }
 }
 exports.Amateras = Amateras;
