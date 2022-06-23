@@ -11,6 +11,7 @@ class System extends _Base_1._Base {
             // @ts-ignore
             auth: this.amateras.config.youtube.api_key
         });
+        this.cert = require('../../certificate.json');
     }
 }
 exports.System = System;

@@ -11,7 +11,6 @@ module.exports = {
     async execute(interact: Interaction, amateras: Amateras) {
         const _user = await amateras.users.fetch(interact.user.id)
         if (!_user) return
-        
         // Command interaction
         if (interact.isCommand()) {
             const _validInteract = new _CommandInteraction(amateras, interact, _user)
@@ -32,7 +31,7 @@ module.exports = {
                 const commandFn = require(`../${path}.js`);
                 commandFn.default(_interact, amateras);
             } else {
-                throw new Error('Command not exist. Function file not found.')
+                //throw new Error('Command not exist. Function file not found.')
             }
         }
     }

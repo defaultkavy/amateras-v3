@@ -32,7 +32,7 @@ class _Guild extends _BaseObj_1._BaseObj {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(cmd_1.default.Green, 'Guild Commands Deploy...');
             console.time('| Commands Deployed');
-            yield this.deployCommand();
+            //await this.deployCommand()
             console.timeEnd('| Commands Deployed');
             console.time('| Channels Initialized');
             yield this.channels.init();

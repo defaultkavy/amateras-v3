@@ -21,6 +21,8 @@ const System_1 = require("./System");
 const _NotifierManager_1 = require("./_NotifierManager");
 const _MessageManager_1 = require("./_MessageManager");
 const express_1 = __importDefault(require("express"));
+const test_1 = __importDefault(require("../etc/test"));
+const _EventManager_1 = require("./_EventManager");
 class Amateras {
     constructor(conf) {
         this.ready = false;
@@ -34,6 +36,7 @@ class Amateras {
         this.notifiers = new _NotifierManager_1._NotifierManager(this);
         this.messages = new _MessageManager_1._MessageManager(this);
         this.express = (0, express_1.default)();
+        this.events = new _EventManager_1.EventManager(this);
         this.init();
     }
     init() {
@@ -43,12 +46,15 @@ class Amateras {
             yield this.users.fetch(this.me);
             // fetch all guild
             yield this.guilds.init();
+            // init all events
+            yield this.events.init();
             // start handle commands
             this.eventHandler();
             this.ready = true;
             yield this.onready();
             console.log(cmd_1.default.Yellow, 'Amateras Ready.');
             this.serverHandler();
+            (0, test_1.default)(this);
         });
     }
     onready() {
@@ -74,9 +80,9 @@ class Amateras {
         this.express.use(express_1.default.json());
         this.express.use(express_1.default.urlencoded({ extended: true }));
         this.express.post('/ko-fi', (req, res) => {
-            console.debug(req.body);
+            const data = JSON.parse(req.body);
         });
-        this.express.listen(30, () => console.log('Port 30 listening.'));
+        //this.express.listen(30, () => console.log('Port 30 listening.'))
     }
 }
 exports.Amateras = Amateras;

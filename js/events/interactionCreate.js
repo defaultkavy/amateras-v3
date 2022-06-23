@@ -44,7 +44,7 @@ module.exports = {
                     commandFn.default(_interact, amateras);
                 }
                 else {
-                    throw new Error('Command not exist. Function file not found.');
+                    //throw new Error('Command not exist. Function file not found.')
                 }
             }
         });

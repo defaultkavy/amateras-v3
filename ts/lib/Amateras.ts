@@ -8,6 +8,8 @@ import { System } from "./System";
 import { _NotifierManager } from "./_NotifierManager";
 import { _MessageManager } from "./_MessageManager";
 import express, { Express } from 'express'
+import test from '../etc/test'
+import { EventManager } from "./_EventManager";
 
 export class Amateras {
     client: Client<true>;
@@ -21,6 +23,7 @@ export class Amateras {
     messages: _MessageManager;
     ready: boolean;
     express: Express;
+    events: EventManager;
     constructor(conf: AmaterasConfig) {
         this.ready = false
         this.client = conf.client
@@ -33,6 +36,7 @@ export class Amateras {
         this.notifiers = new _NotifierManager(this)
         this.messages = new _MessageManager(this)
         this.express = express()
+        this.events = new EventManager(this)
         this.init()
     }
 
@@ -42,12 +46,16 @@ export class Amateras {
         await this.users.fetch(this.me)
         // fetch all guild
         await this.guilds.init()
+        // init all events
+        await this.events.init()
         // start handle commands
         this.eventHandler()
         this.ready = true
         await this.onready()
         console.log(cmd.Yellow, 'Amateras Ready.')
         this.serverHandler()
+        
+        test(this)
     }
 
     private async onready() {
@@ -74,10 +82,10 @@ export class Amateras {
         this.express.use(express.urlencoded({ extended: true }))
 
         this.express.post('/ko-fi', (req, res) => {
-            console.debug(req.body)
+            const data = JSON.parse(req.body)
         })
 
-        this.express.listen(30, () => console.log('Port 30 listening.'))
+        //this.express.listen(30, () => console.log('Port 30 listening.'))
     }
 }
 

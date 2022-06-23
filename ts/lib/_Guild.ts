@@ -25,7 +25,7 @@ export class _Guild extends _BaseObj {
     async init() {
         console.log(cmd.Green, 'Guild Commands Deploy...')
         console.time('| Commands Deployed')
-        await this.deployCommand()
+        //await this.deployCommand()
         console.timeEnd('| Commands Deployed')
         console.time('| Channels Initialized')
         await this.channels.init()

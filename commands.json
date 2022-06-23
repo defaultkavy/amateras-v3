@@ -69,6 +69,30 @@
                     "required": true
                 }
             ]
+        },
+        {
+            "name": "ise",
+            "description": "ISE 学园相关指令",
+            "options": [
+                {
+                    "name": "register",
+                    "description": "等级你的角色",
+                    "type": 1,
+                    "options": [
+                        {
+                            "name": "image",
+                            "description": "角色卡图片",
+                            "type": 11,
+                            "required": true
+                        }
+                    ]
+                },
+                {
+                    "name": "card",
+                    "description": "显示你的角色卡",
+                    "type": 1
+                }
+            ]
         }
     ],
 
