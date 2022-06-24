@@ -33,10 +33,10 @@ class _MessageManager extends _BaseManagerDB_1._BaseManagerDB {
             let _message;
             const data = Object.assign(Object.assign({}, loc), { message: message });
             if (find.type === 'NOTIFIER_PANEL') {
-                _message = new _Notifier_Message_1._Notifier_Message(this.amateras, this.buildData(data, find.index), find.data);
+                _message = new _Notifier_Message_1._Notifier_Message(this.amateras, this.buildData(data), find.data);
             }
             else {
-                _message = new _Message_1._Message(this.amateras, this.buildData(data, find.index));
+                _message = new _Message_1._Message(this.amateras, this.buildData(data));
             }
             this.cache.set(_message.id, _message);
             return _message;
@@ -51,35 +51,52 @@ class _MessageManager extends _BaseManagerDB_1._BaseManagerDB {
             const obj = Object.assign(Object.assign({}, loc), { message: message });
             let _message;
             if (type === 'NOTIFIER_PANEL') {
-                _message = new _Notifier_Message_1._Notifier_Message(this.amateras, this.buildData(obj, yield this.index()), data);
+                _message = new _Notifier_Message_1._Notifier_Message(this.amateras, this.buildData(obj), data);
             }
             else {
-                _message = new _Message_1._Message(this.amateras, this.buildData(obj, yield this.index()));
+                _message = new _Message_1._Message(this.amateras, this.buildData(obj));
             }
             this.cache.set(_message.id, _message);
             yield _message.save();
             return _message;
         });
     }
+    build(message) {
+        if (!message.channel.isText())
+            return;
+        if (!message.guild)
+            return;
+        const _guild = this.amateras.guilds.cache.get(message.guild.id);
+        if (!_guild)
+            return;
+        const _channel = _guild.channels.get(message.channel.id);
+        if (!_channel || !_channel.isTextBased())
+            return;
+        return new _Message_1._Message(this.amateras, {
+            id: message.id,
+            _guild: _guild,
+            _channel: _channel,
+            message: message
+        });
+    }
     location(guildId, channelId) {
         const _guild = this.amateras.guilds.cache.get(guildId);
         if (!_guild)
-            return console.debug(1);
+            return;
         const _channel = _guild.channels.cache.get(channelId);
         if (!_channel || !(_channel instanceof _TextChannel_1._TextChannel))
-            return console.debug(2);
+            return;
         return {
             _guild: _guild,
             _channel: _channel
         };
     }
-    buildData(data, index) {
+    buildData(data) {
         return {
             id: data.message.id,
             _guild: data._guild,
             _channel: data._channel,
             message: data.message,
-            index: index
         };
     }
 }

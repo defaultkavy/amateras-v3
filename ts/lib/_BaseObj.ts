@@ -5,13 +5,11 @@ import { _Base } from "./_Base";
 
 export class _BaseObj extends _Base {
     id: string;
-    index: number;
     #unsave: string[];
     #collection: Collection;
     constructor(amateras: Amateras, info: _BaseDbObjInfo, collection: Collection<any>, unsave: string[] = []) {
         super(amateras)
         this.id = info.id
-        this.index = info.index
         this.#unsave = ['origin', 'amateras'].concat(unsave)
         this.#collection = collection
     }
@@ -33,6 +31,5 @@ export class _BaseObj extends _Base {
 
 export interface _BaseDbObjInfo {
     id: string;
-    index: number
 }
 

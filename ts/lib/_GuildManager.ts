@@ -24,8 +24,8 @@ export class _GuildManager extends _BaseManagerDB<_Guild, _GuildDB> {
         return {
             id: guild.id,
             name: guild.name,
-            index: dbObj ? typeof dbObj.index === 'number' ? dbObj.index : await this.index() : await this.index(),
-            notifiers: dbObj ? dbObj.notifiers ? dbObj.notifiers : [] : []
+            notifiers: dbObj ? dbObj.notifiers ? dbObj.notifiers : [] : [],
+            hints: dbObj ? dbObj.hints ? dbObj.hints : [] : []
         }
     }
 }

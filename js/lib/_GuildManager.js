@@ -33,8 +33,8 @@ class _GuildManager extends _BaseManagerDB_1._BaseManagerDB {
             return {
                 id: guild.id,
                 name: guild.name,
-                index: dbObj ? typeof dbObj.index === 'number' ? dbObj.index : yield this.index() : yield this.index(),
-                notifiers: dbObj ? dbObj.notifiers ? dbObj.notifiers : [] : []
+                notifiers: dbObj ? dbObj.notifiers ? dbObj.notifiers : [] : [],
+                hints: dbObj ? dbObj.hints ? dbObj.hints : [] : []
             };
         });
     }

@@ -24,8 +24,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports._GuildNotifier = void 0;
 const discord_js_1 = require("discord.js");
 const tools_1 = require("../plugins/tools");
-const _BaseGuildObj_1 = require("./_BaseGuildObj");
-class _GuildNotifier extends _BaseGuildObj_1._BaseGuildObj {
+const _BaseGuildObjDB_1 = require("./_BaseGuildObjDB");
+class _GuildNotifier extends _BaseGuildObjDB_1._BaseGuildObjDB {
     constructor(amateras, _guild, info) {
         super(amateras, _guild, info, _guild.notifiers.collection, ['_channel', 'role', 'videosSent']);
         __GuildNotifier_videosSent.set(this, void 0);
@@ -88,10 +88,10 @@ class _GuildNotifier extends _BaseGuildObj_1._BaseGuildObj {
         return __awaiter(this, void 0, void 0, function* () {
             const _notifier = this.amateras.notifiers.cache.get(this.id);
             if (!_notifier)
-                return console.debug(1);
+                return;
             const channelInfo = yield _notifier.fetchChannel();
             if (!channelInfo)
-                return console.debug(2);
+                return;
             return {
                 title: channelInfo[0].snippet.title,
                 thumbnail: {

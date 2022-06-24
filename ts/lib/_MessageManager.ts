@@ -1,4 +1,4 @@
-import { MessageOptions, TextChannel, ThreadChannel } from "discord.js";
+import { Message, MessageOptions, TextChannel, ThreadChannel } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _BaseManagerDB } from "./_BaseManagerDB";
 import { _Message, _MessageDB, _MessageInfo, _MessageOptions, _MessageType } from "./_Message";
@@ -21,9 +21,9 @@ export class _MessageManager extends _BaseManagerDB<_Message, _MessageDB> {
         let _message
         const data = {...loc, message: message}
         if (find.type === 'NOTIFIER_PANEL') {
-            _message = new _Notifier_Message(this.amateras, this.buildData(data, find.index), find.data)
+            _message = new _Notifier_Message(this.amateras, this.buildData(data), find.data)
         } else {
-            _message = new _Message(this.amateras, this.buildData(data, find.index))
+            _message = new _Message(this.amateras, this.buildData(data))
         }
         this.cache.set(_message.id, _message)
         return _message
@@ -36,9 +36,9 @@ export class _MessageManager extends _BaseManagerDB<_Message, _MessageDB> {
         const obj = {...loc, message: message}
         let _message
         if (type === 'NOTIFIER_PANEL') {
-            _message = new _Notifier_Message(this.amateras, this.buildData(obj, await this.index()), data)
+            _message = new _Notifier_Message(this.amateras, this.buildData(obj), data)
         } else {
-            _message = new _Message(this.amateras, this.buildData(obj, await this.index()))
+            _message = new _Message(this.amateras, this.buildData(obj))
 
         }
         this.cache.set(_message.id, _message)
@@ -46,12 +46,27 @@ export class _MessageManager extends _BaseManagerDB<_Message, _MessageDB> {
         return _message
     }
 
+    build(message: Message) {
+        if (!message.channel.isText()) return
+        if (!message.guild) return
+        const _guild = this.amateras.guilds.cache.get(message.guild.id)
+        if (!_guild) return
+        const _channel = _guild.channels.get(message.channel.id)
+        if (!_channel || !_channel.isTextBased()) return
+        return new _Message(this.amateras, {
+            id: message.id,
+            _guild: _guild,
+            _channel: _channel,
+            message: message
+        })
+    }
+
     location(guildId: string, channelId: string) {
         
         const _guild = this.amateras.guilds.cache.get(guildId)
-        if (!_guild) return console.debug(1)
+        if (!_guild) return
         const _channel = _guild.channels.cache.get(channelId)
-        if (!_channel || !(_channel instanceof _TextChannel)) return console.debug(2)
+        if (!_channel || !(_channel instanceof _TextChannel)) return
         return {
             _guild: _guild,
             _channel: _channel
@@ -59,13 +74,12 @@ export class _MessageManager extends _BaseManagerDB<_Message, _MessageDB> {
 
     }
 
-    buildData(data: _MessageOptions, index: number): _MessageInfo {
+    buildData(data: _MessageOptions): _MessageInfo {
         return {
             id: data.message.id,
             _guild: data._guild,
             _channel: data._channel,
             message: data.message,
-            index: index
         }
     }
 }

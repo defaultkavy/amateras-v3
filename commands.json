@@ -1,4 +1,5 @@
 {
+    "deploy": true,
     "commands": [
         {
             "name": "mod",
@@ -53,6 +54,23 @@
                                     "required": true
                                 }
                             ]
+                        }
+                    ]
+                },
+                {
+                    "name": "hint",
+                    "description": "Channel Hint",
+                    "type": 2,
+                    "options": [
+                        {
+                            "name": "on",
+                            "description": "Turn on hint for this channel",
+                            "type": 1
+                        },
+                        {
+                            "name": "off",
+                            "description": "Turn off hint for this channel",
+                            "type": 1
                         }
                     ]
                 }

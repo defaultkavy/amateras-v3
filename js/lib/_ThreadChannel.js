@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._ThreadChannel = void 0;
-const _BaseGuildChannel_1 = require("./_BaseGuildChannel");
-class _ThreadChannel extends _BaseGuildChannel_1._GuildChannel {
-    constructor(amateras, channel) {
-        super(amateras, channel);
+const _TextBaseChannel_1 = require("./_TextBaseChannel");
+class _ThreadChannel extends _TextBaseChannel_1._TextBaseChannel {
+    constructor(amateras, _guild, channel) {
+        super(amateras, _guild, channel);
         this.origin = channel;
-        this.type = 'GUILD_PUBLIC_THREAD';
+        this.type = channel.type;
     }
 }
 exports._ThreadChannel = _ThreadChannel;

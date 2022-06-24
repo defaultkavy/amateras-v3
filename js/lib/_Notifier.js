@@ -49,7 +49,6 @@ class _Notifier extends _Base_1._Base {
                 _guildNotifier.send(youtubeInfo);
             }
             this.videosCache.set(videoInfo.id, youtubeInfo);
-            console.debug(videoInfo.id);
         });
     }
     fetchChannel() {

@@ -7,7 +7,7 @@ import { _GuildNotifierManager } from "./_GuildNotifierManager";
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import cmd from "../plugins/cmd";
-const { commands } = require('../../commands.json')
+const { deploy, commands } = require('../../commands.json')
 
 export class _Guild extends _BaseObj {
     origin: Guild;
@@ -18,15 +18,17 @@ export class _Guild extends _BaseObj {
         super(amateras, info, amateras.guilds.collection, ['channels', 'notifiers'])
         this.origin = guild
         this.name = guild.name
-        this.channels = new _GuildChannelManager(amateras, this)
+        this.channels = new _GuildChannelManager(amateras, this, {hints: info.hints})
         this.notifiers = new _GuildNotifierManager(amateras, this, {list: info.notifiers})
     }
 
     async init() {
         console.log(cmd.Green, 'Guild Commands Deploy...')
-        console.time('| Commands Deployed')
-        await this.deployCommand()
-        console.timeEnd('| Commands Deployed')
+        if (deploy) {
+            console.time('| Commands Deployed')
+            await this.deployCommand()
+            console.timeEnd('| Commands Deployed')
+        } else console.log('| Commands Deploy Disabled')
         console.time('| Channels Initialized')
         await this.channels.init()
         console.timeEnd('| Channels Initialized')
@@ -50,7 +52,8 @@ export class _Guild extends _BaseObj {
 
     presave() {
         return {
-            notifiers: this.notifiers.list
+            notifiers: this.notifiers.list,
+            hints: this.channels.hintChannels
         }
     }
 }
@@ -58,13 +61,13 @@ export class _Guild extends _BaseObj {
 export interface _GuildDB {
     id: string;
     name?: string;
-    index: number;
     notifiers?: string[]
+    hints?: string[]
 }
 
 export interface _GuildInfo {
     id: string;
     name: string;
-    index: number;
     notifiers: string[]
+    hints: string[]
 }

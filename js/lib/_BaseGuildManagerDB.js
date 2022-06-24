@@ -18,11 +18,6 @@ class _BaseGuildManagerDB extends _Base_1._Base {
         this.collection = collection;
         this.cache = new Map;
     }
-    index() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.collection.countDocuments();
-        });
-    }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
             this._guild.save();

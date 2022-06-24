@@ -30,7 +30,6 @@ class _BaseObj extends _Base_1._Base {
         __BaseObj_unsave.set(this, void 0);
         __BaseObj_collection.set(this, void 0);
         this.id = info.id;
-        this.index = info.index;
         __classPrivateFieldSet(this, __BaseObj_unsave, ['origin', 'amateras'].concat(unsave), "f");
         __classPrivateFieldSet(this, __BaseObj_collection, collection, "f");
     }

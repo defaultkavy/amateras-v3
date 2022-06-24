@@ -1,18 +1,19 @@
-import { ButtonInteraction, CommandInteraction, Guild, Interaction } from "discord.js";
+import { ButtonInteraction, CommandInteraction, Guild, ModalSubmitInteraction } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _Base } from "./_Base";
 import { _Guild } from "./_Guild";
+import { _TextBaseChannel } from "./_TextBaseChannel";
 import { _TextChannel } from "./_TextChannel";
 import { _ThreadChannel } from "./_ThreadChannel";
 import { _User } from "./_User";
 
 export class _Interaction extends _Base {
-    origin: CommandInteraction | ButtonInteraction;
+    origin: CommandInteraction | ButtonInteraction | ModalSubmitInteraction;
     _user: _User;
     _guild?: _Guild;
-    _channel?: _TextChannel | _ThreadChannel;
+    _channel?: _TextBaseChannel;
     valid = false
-    constructor(amateras: Amateras, interaction: CommandInteraction | ButtonInteraction, _user: _User) {
+    constructor(amateras: Amateras, interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction, _user: _User) {
         super(amateras)
         this.origin = interaction
         this._user = _user
@@ -24,8 +25,9 @@ export class _Interaction extends _Base {
         if (!_guild) return false
         this._guild = _guild
         if (!this.origin.channel) return false
+        console.debug(this.origin)
         const _channel = this._guild.channels.cache.get(this.origin.channel.id)
-        if (!_channel || !(_channel.isTextBased())) return false
+        if (!_channel || !_channel.isTextBased()) return false
         this._channel = _channel
         return true
     }
@@ -33,6 +35,6 @@ export class _Interaction extends _Base {
 
 export interface _ValidInteraction extends _Interaction {
     _guild: _Guild;
-    _channel: _TextChannel | _ThreadChannel;
+    _channel: _TextBaseChannel;
     valid: true
 }

@@ -14,10 +14,6 @@ export class _BaseGuildManagerDB<T, D> extends _Base {
         this.collection = collection
         this.cache = new Map
     }
-    
-    async index() {
-        return await this.collection.countDocuments()
-    }
 
     async save() {
         this._guild.save()

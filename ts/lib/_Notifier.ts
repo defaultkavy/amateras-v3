@@ -41,7 +41,6 @@ export class _Notifier extends _Base {
         }
 
         this.videosCache.set(videoInfo.id, youtubeInfo)
-        console.debug(videoInfo.id)
     }
 
     async fetchChannel() {

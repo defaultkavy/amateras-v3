@@ -1,0 +1,30 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+module.exports = {
+    name: 'messageCreate',
+    once: false,
+    execute(message, amateras) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const _message = amateras.messages.build(message);
+            if (!_message)
+                return;
+            if (_message._channel.hint) {
+                if (_message._channel.hint.sending)
+                    return;
+                if (_message._channel.hint._message && _message.id === _message._channel.hint._message.id)
+                    return;
+                _message._channel.hint.send();
+            }
+        });
+    }
+};
+//# sourceMappingURL=messageCreate.js.map

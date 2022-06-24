@@ -4,6 +4,7 @@ import fs from 'fs'
 import { _CommandInteraction } from "../lib/_CommandInteraction";
 import { _ValidInteraction } from "../lib/_Interaction";
 import { _ButtonInteraction } from "../lib/_ButtonInteraction";
+import { _ModalInteraction } from "../lib/_ModalInteraction";
 
 module.exports = {
     name: 'interactionCreate',
@@ -14,7 +15,7 @@ module.exports = {
         // Command interaction
         if (interact.isCommand()) {
             const _validInteract = new _CommandInteraction(amateras, interact, _user)
-            if (!_validInteract.isValid()) return console.debug(2)
+            if (!_validInteract.isValid()) return
             executeCommand(`commands/${interact.commandName}`, _validInteract)
         }
 
@@ -24,12 +25,23 @@ module.exports = {
             if (!_validInteract.isValid()) return
             executeCommand(`reacts/${interact.customId}`, _validInteract)
         }
+
+        // Modal interaction
+        if (interact.isModalSubmit()) {
+            const _validInteract = new _ModalInteraction(amateras, interact, _user)
+            if (!_validInteract.isValid()) return
+            executeCommand(`reacts/${interact.customId}`, _validInteract)
+        }
         
         function executeCommand(path: string, _interact: _ValidInteraction) {
             // Check command file exist
             if (fs.existsSync(`./js/${path}.js`)) {
                 const commandFn = require(`../${path}.js`);
-                commandFn.default(_interact, amateras);
+                try {
+                    commandFn.default(_interact, amateras);
+                } catch(err) {
+                    console.log(err)
+                }
             } else {
                 //throw new Error('Command not exist. Function file not found.')
             }

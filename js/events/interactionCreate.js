@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const _CommandInteraction_1 = require("../lib/_CommandInteraction");
 const _ButtonInteraction_1 = require("../lib/_ButtonInteraction");
+const _ModalInteraction_1 = require("../lib/_ModalInteraction");
 module.exports = {
     name: 'interactionCreate',
     once: false,
@@ -27,7 +28,7 @@ module.exports = {
             if (interact.isCommand()) {
                 const _validInteract = new _CommandInteraction_1._CommandInteraction(amateras, interact, _user);
                 if (!_validInteract.isValid())
-                    return console.debug(2);
+                    return;
                 executeCommand(`commands/${interact.commandName}`, _validInteract);
             }
             // Button interaction
@@ -37,11 +38,23 @@ module.exports = {
                     return;
                 executeCommand(`reacts/${interact.customId}`, _validInteract);
             }
+            // Modal interaction
+            if (interact.isModalSubmit()) {
+                const _validInteract = new _ModalInteraction_1._ModalInteraction(amateras, interact, _user);
+                if (!_validInteract.isValid())
+                    return;
+                executeCommand(`reacts/${interact.customId}`, _validInteract);
+            }
             function executeCommand(path, _interact) {
                 // Check command file exist
                 if (fs_1.default.existsSync(`./js/${path}.js`)) {
                     const commandFn = require(`../${path}.js`);
-                    commandFn.default(_interact, amateras);
+                    try {
+                        commandFn.default(_interact, amateras);
+                    }
+                    catch (err) {
+                        console.log(err);
+                    }
                 }
                 else {
                     //throw new Error('Command not exist. Function file not found.')

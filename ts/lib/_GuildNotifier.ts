@@ -2,11 +2,11 @@ import { Amateras } from "./Amateras";
 import { _TextChannel } from "./_TextChannel";
 import { MessageActionRow, MessageActionRowOptions, MessageButtonOptions, MessageComponentOptions, MessageEmbedOptions, Role } from "discord.js";
 import { wordCounter } from "../plugins/tools";
-import { _BaseGuildObj } from "./_BaseGuildObj";
+import { _BaseGuildObjDB } from "./_BaseGuildObjDB";
 import { _Guild } from "./_Guild";
 import { youtubeInfo, youtubeVideoInfo } from "./_Notifier";
 
-export class _GuildNotifier extends _BaseGuildObj {
+export class _GuildNotifier extends _BaseGuildObjDB {
     id: string;
     _channel: _TextChannel;
     message?: string;
@@ -74,9 +74,9 @@ export class _GuildNotifier extends _BaseGuildObj {
 
     async embed(): Promise<MessageEmbedOptions | void> {
         const _notifier = this.amateras.notifiers.cache.get(this.id)
-        if (!_notifier) return console.debug(1)
+        if (!_notifier) return
         const channelInfo = await _notifier.fetchChannel()
-        if (!channelInfo) return console.debug(2)
+        if (!channelInfo) return
         return {
             title: channelInfo[0].snippet!.title!,
             thumbnail: {
@@ -120,7 +120,6 @@ export interface _GuildNotifierDB {
     message?: string;
     roleId?: string;
     channelId: string;
-    index: number;
     videosSent: string[]
 }
 
@@ -136,6 +135,5 @@ export interface _GuildNotifierInfo {
     message?: string;
     roleId?: string;
     _channel: _TextChannel;
-    index: number;
     videosSent: string[]
 }

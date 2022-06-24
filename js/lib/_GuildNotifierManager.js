@@ -58,9 +58,9 @@ class _GuildNotifierManager extends _BaseGuildManagerDB_1._BaseGuildManagerDB {
     }
     buildData(data, _channel) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Object.assign(Object.assign({}, data), { index: checkIndex(data) ? data.index : yield this.index(), _channel: _channel, videosSent: checkIndex(data) ? data.videosSent : [] });
-            function checkIndex(data) {
-                return 'index' in data;
+            return Object.assign(Object.assign({}, data), { _channel: _channel, videosSent: check(data) ? data.videosSent : [] });
+            function check(data) {
+                return 'videoSent' in data;
             }
         });
     }

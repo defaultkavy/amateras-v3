@@ -1,14 +1,14 @@
+import { MessageActionRow, Modal, ModalOptions, TextInputComponent } from "discord.js";
 import { Amateras } from "../lib/Amateras";
 import { _ValidCommandInteraction } from "../lib/_CommandInteraction";
 import { _ValidInteraction } from "../lib/_Interaction";
 
 export default async function mod(interact: _ValidCommandInteraction, amateras: Amateras) {
-    await interact.origin.deferReply({ephemeral: true})
     for (const subcmd0 of interact.origin.options.data) {
         if (subcmd0.name === 'notify') {
+            await interact.origin.deferReply({ephemeral: true})
             if (!subcmd0.options) return
             for (const subcmd1 of subcmd0.options) {
-                if (!subcmd1.options) return
                 if (subcmd1.name === 'set') {
                     const obj: {
                         id: string,
@@ -19,6 +19,7 @@ export default async function mod(interact: _ValidCommandInteraction, amateras: 
                         id: '',
                         channelId: ''
                     }
+                    if (!subcmd1.options) return
                     for (const subcmd2 of subcmd1.options) {
                         if (subcmd2.name === 'id') obj.id = subcmd2.value as string
                         else if (subcmd2.name === 'channel') obj.channelId = subcmd2.value as string
@@ -45,6 +46,52 @@ export default async function mod(interact: _ValidCommandInteraction, amateras: 
                     if (!embed) return interact.origin.followUp({content: 'Error.', ephemeral: true})
                     amateras.messages.send(interact._channel.origin, {embeds: [embed], components: [_notifier.components]}, 'NOTIFIER_PANEL', {notifierId: _notifier.id})
                     interact.origin.followUp({content: 'Sent.', ephemeral: true})
+                }
+            }
+        } else if (subcmd0.name === 'hint') {
+            if (!subcmd0.options) return
+            for (const subcmd1 of subcmd0.options) {
+                if (subcmd1.name === 'on') {
+                    if (!interact._channel.isText()) return interact.origin.reply({content: 'Must be Text Channel', ephemeral: true})
+                    const modal: ModalOptions = {
+                        title: "Channel hint form",
+                        customId: "hintModal",
+                        components: [
+                            {
+                                type: 'ACTION_ROW',
+                                components: [
+                                    {
+                                        type: 'TEXT_INPUT',
+                                        customId: "title",
+                                        label: "Title",
+                                        style: 'SHORT',
+                                        minLength: 1,
+                                        maxLength: 4000,
+                                        placeholder: "Title"
+                                    }
+                                ]
+                            },
+                            {
+                                type: 'ACTION_ROW',
+                                components: [
+                                    {
+                                        type: 'TEXT_INPUT',
+                                        customId: "description",
+                                        label: "Description",
+                                        style: 'PARAGRAPH',
+                                        minLength: 1,
+                                        maxLength: 4000,
+                                        placeholder: "Hint..."
+                                    }
+                                ]
+                            }
+                        ]
+                      }
+                    await interact.origin.showModal(modal)
+                } else if (subcmd1.name === 'off') {
+                    if (!interact._channel.isText()) return interact.origin.reply({content: 'Must be Text Channel', ephemeral: true})
+                    
+                    interact.origin.reply({content: await interact._channel.disableHint(), ephemeral: true})
                 }
             }
         }

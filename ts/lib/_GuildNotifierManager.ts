@@ -34,13 +34,12 @@ export class _GuildNotifierManager extends _BaseGuildManagerDB<_GuildNotifier, _
     async buildData(data: _GuildNotifierOptions | _GuildNotifierDB, _channel: _TextChannel): Promise<_GuildNotifierInfo> {
         return {
             ...data,
-            index: checkIndex(data) ? data.index : await this.index(),
             _channel: _channel,
-            videosSent: checkIndex(data) ? data.videosSent : []
+            videosSent: check(data) ? data.videosSent : []
         }
 
-        function checkIndex(data: _GuildNotifierOptions | _GuildNotifierDB): data is _GuildNotifierDB {
-            return 'index' in data
+        function check(data: _GuildNotifierOptions | _GuildNotifierDB): data is _GuildNotifierDB {
+            return 'videoSent' in data
         }
     }
 }

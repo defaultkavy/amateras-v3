@@ -19,21 +19,25 @@ const _GuildNotifierManager_1 = require("./_GuildNotifierManager");
 const rest_1 = require("@discordjs/rest");
 const v9_1 = require("discord-api-types/v9");
 const cmd_1 = __importDefault(require("../plugins/cmd"));
-const { commands } = require('../../commands.json');
+const { deploy, commands } = require('../../commands.json');
 class _Guild extends _BaseObj_1._BaseObj {
     constructor(amateras, guild, info) {
         super(amateras, info, amateras.guilds.collection, ['channels', 'notifiers']);
         this.origin = guild;
         this.name = guild.name;
-        this.channels = new _GuildChannelManager_1._GuildChannelManager(amateras, this);
+        this.channels = new _GuildChannelManager_1._GuildChannelManager(amateras, this, { hints: info.hints });
         this.notifiers = new _GuildNotifierManager_1._GuildNotifierManager(amateras, this, { list: info.notifiers });
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(cmd_1.default.Green, 'Guild Commands Deploy...');
-            console.time('| Commands Deployed');
-            yield this.deployCommand();
-            console.timeEnd('| Commands Deployed');
+            if (deploy) {
+                console.time('| Commands Deployed');
+                yield this.deployCommand();
+                console.timeEnd('| Commands Deployed');
+            }
+            else
+                console.log('| Commands Deploy Disabled');
             console.time('| Channels Initialized');
             yield this.channels.init();
             console.timeEnd('| Channels Initialized');
@@ -55,7 +59,8 @@ class _Guild extends _BaseObj_1._BaseObj {
     }
     presave() {
         return {
-            notifiers: this.notifiers.list
+            notifiers: this.notifiers.list,
+            hints: this.channels.hintChannels
         };
     }
 }
