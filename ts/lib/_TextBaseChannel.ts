@@ -1,13 +1,13 @@
-import { TextChannel, ThreadChannel, ThreadChannelTypes } from "discord.js";
+import { NewsChannel, TextChannel, ThreadChannel, ThreadChannelTypes } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _GuildChannel } from "./_BaseGuildChannel";
 import { _Guild } from "./_Guild";
 import { _Hint, _HintInfo } from "./_Hint";
 
 export class _TextBaseChannel extends _GuildChannel {
-    origin: TextChannel | ThreadChannel;
+    origin: TextChannel | ThreadChannel | NewsChannel;
     hint?: _Hint;
-    constructor(amateras: Amateras, _guild: _Guild, channel: TextChannel | ThreadChannel) {
+    constructor(amateras: Amateras, _guild: _Guild, channel: TextChannel | ThreadChannel | NewsChannel) {
         super(amateras, _guild, channel)
         this.origin = channel
     }

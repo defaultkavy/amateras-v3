@@ -5,7 +5,7 @@ const _TextBaseChannel_1 = require("./_TextBaseChannel");
 class _TextChannel extends _TextBaseChannel_1._TextBaseChannel {
     constructor(amateras, _guild, channel) {
         super(amateras, _guild, channel);
-        this.type = "GUILD_TEXT";
+        this.type = channel.type;
         this.origin = channel;
     }
 }

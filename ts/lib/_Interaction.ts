@@ -25,7 +25,6 @@ export class _Interaction extends _Base {
         if (!_guild) return false
         this._guild = _guild
         if (!this.origin.channel) return false
-        console.debug(this.origin)
         const _channel = this._guild.channels.cache.get(this.origin.channel.id)
         if (!_channel || !_channel.isTextBased()) return false
         this._channel = _channel

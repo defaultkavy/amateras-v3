@@ -1,3 +1,4 @@
+import { GuildBasedChannel, GuildChannel, TextChannel } from "discord.js";
 import { WithId } from "mongodb";
 import { Amateras } from "./Amateras";
 import { _GuildChannel } from "./_BaseGuildChannel";
@@ -23,13 +24,7 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
         for (const channel of this._guild.origin.channels.cache.values()) {
             // filter existed channel
             if (this.cache.has(channel.id)) continue
-            if (channel.type === 'GUILD_TEXT') {
-                const _channel = new _TextChannel(this.amateras, this._guild, channel)
-                this.cache.set(_channel.id, _channel)
-            } else if (channel.type === 'GUILD_PUBLIC_THREAD') {
-                const _channel = new _ThreadChannel(this.amateras, this._guild, channel)
-                this.cache.set(_channel.id, _channel)
-            }
+            this.add(channel)
         }
 
         for (const hintId of this.#hints) {
@@ -43,6 +38,17 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
                 _message: message ? new _Message(this.amateras, {_guild: this._guild, _channel: _channel, message: message, id: message.id}) : undefined
             }
             _channel.enableHint(info)
+        }
+    }
+
+    add(channel: GuildBasedChannel | GuildChannel) {
+        if (channel.type === 'GUILD_TEXT' || channel.type === 'GUILD_NEWS') {
+            if (!channel.isText()) return
+            const _channel = new _TextChannel(this.amateras, this._guild, channel)
+            this.cache.set(_channel.id, _channel)
+        } else if (channel.isThread()) {
+            const _channel = new _ThreadChannel(this.amateras, this._guild, channel)
+            this.cache.set(_channel.id, _channel)
         }
     }
 

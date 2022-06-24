@@ -43,14 +43,7 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
                 // filter existed channel
                 if (this.cache.has(channel.id))
                     continue;
-                if (channel.type === 'GUILD_TEXT') {
-                    const _channel = new _TextChannel_1._TextChannel(this.amateras, this._guild, channel);
-                    this.cache.set(_channel.id, _channel);
-                }
-                else if (channel.type === 'GUILD_PUBLIC_THREAD') {
-                    const _channel = new _ThreadChannel_1._ThreadChannel(this.amateras, this._guild, channel);
-                    this.cache.set(_channel.id, _channel);
-                }
+                this.add(channel);
             }
             for (const hintId of __classPrivateFieldGet(this, __GuildChannelManager_hints, "f")) {
                 const hint = yield this.amateras.db.collection('channels_hint').findOne({ id: hintId });
@@ -64,6 +57,18 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
                 _channel.enableHint(info);
             }
         });
+    }
+    add(channel) {
+        if (channel.type === 'GUILD_TEXT' || channel.type === 'GUILD_NEWS') {
+            if (!channel.isText())
+                return;
+            const _channel = new _TextChannel_1._TextChannel(this.amateras, this._guild, channel);
+            this.cache.set(_channel.id, _channel);
+        }
+        else if (channel.isThread()) {
+            const _channel = new _ThreadChannel_1._ThreadChannel(this.amateras, this._guild, channel);
+            this.cache.set(_channel.id, _channel);
+        }
     }
     get(id) {
         const cached = this.cache.get(id);
