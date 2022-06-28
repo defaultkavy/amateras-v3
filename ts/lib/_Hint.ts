@@ -12,6 +12,7 @@ export class _Hint extends _BaseGuildObjDB {
     _channel: _TextBaseChannel;
     _message?: _Message
     sending: boolean;
+    timeout: boolean;
     constructor(amateras: Amateras, _guild: _Guild, _channel: _TextBaseChannel, info: _HintInfo) {
         super(amateras, _guild, info, amateras.db.collection('channels_hint'), ['_channel', '_message'])
         this._channel = _channel
@@ -19,20 +20,33 @@ export class _Hint extends _BaseGuildObjDB {
         this.description = info.description
         this._message = info._message
         this.sending = false
+        this.timeout = true
     }
 
     async send() {
+        // Check message is sending or timeout
+        if (this.timeout === false || this.sending === true) return
+        // Check last message is hint message
+        if (this._channel.origin.lastMessage && this._message && this._channel.origin.lastMessage.id === this._message.id) return
         this.sending = true
-        await this.delete()
+        this.delete()
         const message = await this._channel.origin.send({embeds: [this.hintEmbed]})
         this._message = this.amateras.messages.build(message)
         await this.save()
         this.sending = false
+        //this.timeout = false
+        //this.startTimeout()
     }
 
     async delete() {
         if (this._message) await this._message.origin.delete().catch()
-        this._message = undefined
+    }
+
+    startTimeout() {
+        setTimeout(() => {
+            this.timeout = true
+            this.send()
+        }, 120 * 1000)
     }
 
     get hintEmbed() {

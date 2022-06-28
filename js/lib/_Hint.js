@@ -19,23 +19,37 @@ class _Hint extends _BaseGuildObjDB_1._BaseGuildObjDB {
         this.description = info.description;
         this._message = info._message;
         this.sending = false;
+        this.timeout = true;
     }
     send() {
         return __awaiter(this, void 0, void 0, function* () {
+            // Check message is sending or timeout
+            if (this.timeout === false || this.sending === true)
+                return;
+            // Check last message is hint message
+            if (this._channel.origin.lastMessage && this._message && this._channel.origin.lastMessage.id === this._message.id)
+                return;
             this.sending = true;
-            yield this.delete();
+            this.delete();
             const message = yield this._channel.origin.send({ embeds: [this.hintEmbed] });
             this._message = this.amateras.messages.build(message);
             yield this.save();
             this.sending = false;
+            //this.timeout = false
+            //this.startTimeout()
         });
     }
     delete() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._message)
                 yield this._message.origin.delete().catch();
-            this._message = undefined;
         });
+    }
+    startTimeout() {
+        setTimeout(() => {
+            this.timeout = true;
+            this.send();
+        }, 120 * 1000);
     }
     get hintEmbed() {
         const embed = {

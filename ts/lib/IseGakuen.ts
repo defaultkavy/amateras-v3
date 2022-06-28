@@ -5,8 +5,10 @@ import { MessageEmbedOptions, User } from "discord.js";
 
 export class IseGakuen extends _Base {
     sheet?: GoogleSpreadsheetWorksheet;
+    grade: string[];
     constructor(amateras: Amateras) {
         super(amateras)
+        this.grade = ['', '高一', '高二', '高三']
     }
 
     async init() {
@@ -60,7 +62,7 @@ export class IseGakuen extends _Base {
                 },
                 {
                     name: '年级',
-                    value: `${ISE_GRADE[+data.grade]}`,
+                    value: `${this.grade[+data.grade]}`,
                     inline: true
                 },
                 {
@@ -88,10 +90,4 @@ export interface ISE_STUDENT_DATA {
     race: string,
     grade: string,
     characterCard: string
-}
-
-enum ISE_GRADE {
-    '高一',
-    '高二',
-    '高三'
 }

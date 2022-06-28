@@ -15,6 +15,7 @@ const google_spreadsheet_1 = require("google-spreadsheet");
 class IseGakuen extends _Base_1._Base {
     constructor(amateras) {
         super(amateras);
+        this.grade = ['', '高一', '高二', '高三'];
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -74,7 +75,7 @@ class IseGakuen extends _Base_1._Base {
                     },
                     {
                         name: '年级',
-                        value: `${ISE_GRADE[+data.grade]}`,
+                        value: `${this.grade[+data.grade]}`,
                         inline: true
                     },
                     {
@@ -92,10 +93,4 @@ class IseGakuen extends _Base_1._Base {
     }
 }
 exports.IseGakuen = IseGakuen;
-var ISE_GRADE;
-(function (ISE_GRADE) {
-    ISE_GRADE[ISE_GRADE["\u9AD8\u4E00"] = 0] = "\u9AD8\u4E00";
-    ISE_GRADE[ISE_GRADE["\u9AD8\u4E8C"] = 1] = "\u9AD8\u4E8C";
-    ISE_GRADE[ISE_GRADE["\u9AD8\u4E09"] = 2] = "\u9AD8\u4E09";
-})(ISE_GRADE || (ISE_GRADE = {}));
 //# sourceMappingURL=IseGakuen.js.map
