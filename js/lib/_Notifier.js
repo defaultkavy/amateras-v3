@@ -8,14 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._Notifier = void 0;
 const _Base_1 = require("./_Base");
-const request_promise_1 = __importDefault(require("request-promise"));
-const cheerio_1 = __importDefault(require("cheerio"));
 class _Notifier extends _Base_1._Base {
     constructor(amateras, info) {
         super(amateras);
@@ -35,10 +30,18 @@ class _Notifier extends _Base_1._Base {
     }
     get() {
         return __awaiter(this, void 0, void 0, function* () {
-            const videoInfo = yield this.fetchVideo();
+            const videoId = yield this.amateras.system.youtube.fetchStream(this.id);
+            if (!videoId)
+                return;
+            const cached = this.videosCache.get(videoId);
+            if (cached)
+                return cached;
+            const videoInfo = yield this.amateras.system.youtube.fetchVideo(videoId);
             if (!videoInfo)
                 return;
-            const channelInfo = yield this.fetchChannel();
+            const channelInfo = yield this.amateras.system.youtube.fetchChannel(this.id);
+            if (!channelInfo)
+                return;
             if (!channelInfo || !channelInfo[0] || !channelInfo[0].snippet)
                 return;
             const youtubeInfo = Object.assign(Object.assign({}, videoInfo), { channelThumbnailURL: channelInfo[0].snippet.thumbnails.high.url });
@@ -49,37 +52,6 @@ class _Notifier extends _Base_1._Base {
                 _guildNotifier.send(youtubeInfo);
             }
             this.videosCache.set(videoInfo.id, youtubeInfo);
-        });
-    }
-    fetchChannel() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.amateras.system.youtube.channels.list({
-                id: [this.id],
-                part: ['snippet,contentDetails,statistics']
-            }).then((res) => res.data.items);
-        });
-    }
-    fetchVideo() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let videoId = undefined;
-            return yield (0, request_promise_1.default)(`https://www.youtube.com/channel/${this.id}/live`).then((html) => __awaiter(this, void 0, void 0, function* () {
-                for (const ele of (0, cheerio_1.default)('link', html)) {
-                    if (ele.attribs.rel === 'canonical')
-                        videoId = ele.attribs.href.slice(ele.attribs.href.length - 11, ele.attribs.href.length);
-                }
-                if (!videoId)
-                    return;
-                const cached = this.videosCache.get(videoId);
-                if (cached)
-                    return cached;
-                const videoInfo = yield this.amateras.system.youtube.videos.list({
-                    id: [videoId],
-                    part: ['snippet,contentDetails,statistics,liveStreamingDetails']
-                }).then((res) => res.data.items);
-                if (!videoInfo || !videoInfo[0] || !videoInfo[0].snippet)
-                    return;
-                return Object.assign(Object.assign({}, videoInfo[0].snippet), { id: videoInfo[0].id, startTime: videoInfo[0].liveStreamingDetails.scheduledStartTime });
-            }));
         });
     }
 }

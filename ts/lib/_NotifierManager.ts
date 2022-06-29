@@ -15,10 +15,10 @@ export class _NotifierManager extends _BaseManager<_Notifier> {
             if (this.amateras.ready) cached.get()
             return cached
         }
-        const obj = new _Notifier(this.amateras, {id: id})
-        this.cache.set(obj.id, obj)
-        obj.subscribe(_guild)
-        if (this.amateras.ready) obj.start()
-        return obj
+        const _notifier = new _Notifier(this.amateras, {id: id})
+        this.cache.set(_notifier.id, _notifier)
+        _notifier.subscribe(_guild)
+        if (this.amateras.ready) _notifier.start()
+        return _notifier
     }
 }

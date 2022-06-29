@@ -26,7 +26,8 @@ export default async function mod(interact: _ValidCommandInteraction, amateras: 
                         else if (subcmd2.name === 'role') obj.roleId = subcmd2.value as string
                         else if (subcmd2.name === 'message') obj.message = subcmd2.value as string
                     }
-        
+                    const channel = await amateras.system.youtube.fetchChannel(obj.channelId)
+                    if (!channel) return interact.origin.followUp({content: 'Channel not exist.', ephemeral: true})
                     await interact._guild.notifiers.add(obj)
                     interact._guild.notifiers.save()
                     interact.origin.followUp({content: 'Notifier set.', ephemeral: true})

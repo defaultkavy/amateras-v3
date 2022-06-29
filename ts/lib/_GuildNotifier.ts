@@ -48,7 +48,7 @@ export class _GuildNotifier extends _BaseGuildObjDB {
             },
             color: 'RED',
             image: {
-                url: videoInfo.thumbnails ? videoInfo.thumbnails.maxres!.url! : undefined,
+                url: videoInfo.thumbnails ? videoInfo.thumbnails.maxres ? videoInfo.thumbnails.maxres.url! : undefined : undefined,
             },
             description: videoInfo.description ? wordCounter(videoInfo.description, 100, 1) : undefined,
             footer: {
@@ -75,7 +75,7 @@ export class _GuildNotifier extends _BaseGuildObjDB {
     async embed(): Promise<MessageEmbedOptions | void> {
         const _notifier = this.amateras.notifiers.cache.get(this.id)
         if (!_notifier) return
-        const channelInfo = await _notifier.fetchChannel()
+        const channelInfo = await this.amateras.system.youtube.fetchChannel(this.id)
         if (!channelInfo) return
         return {
             title: channelInfo[0].snippet!.title!,

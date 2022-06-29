@@ -1,7 +1,5 @@
 import { Amateras } from "./Amateras";
 import { _Base } from "./_Base";
-import request from 'request-promise'
-import $ from 'cheerio'
 import { youtube_v3 } from "googleapis";
 import { _Guild } from "./_Guild";
 
@@ -29,11 +27,17 @@ export class _Notifier extends _Base {
     }
 
     async get() {
-        const videoInfo = await this.fetchVideo()
+        const videoId = await this.amateras.system.youtube.fetchStream(this.id)
+        if (!videoId) return
+        const cached = this.videosCache.get(videoId)
+        if (cached) return cached
+        const videoInfo = await this.amateras.system.youtube.fetchVideo(videoId)
         if (!videoInfo) return
-        const channelInfo = await this.fetchChannel()
+        const channelInfo = await this.amateras.system.youtube.fetchChannel(this.id)
+        if (!channelInfo) return
         if (!channelInfo || !channelInfo[0] || !channelInfo[0].snippet) return
         const youtubeInfo = {...videoInfo, channelThumbnailURL: channelInfo[0].snippet.thumbnails!.high!.url!}
+
         for (const _guild of this.subscribed.values()) {
             const _guildNotifier = _guild.notifiers.cache.get(this.id)
             if (!_guildNotifier) continue
@@ -41,39 +45,6 @@ export class _Notifier extends _Base {
         }
 
         this.videosCache.set(videoInfo.id, youtubeInfo)
-    }
-
-    async fetchChannel() {
-        return this.amateras.system.youtube.channels.list({
-            id: [this.id],
-            part: ['snippet,contentDetails,statistics']
-        }).then((res) => res.data.items)
-    }
-
-    async fetchVideo(): Promise<youtubeVideoInfo | undefined> {
-        let videoId: undefined | string = undefined
-        return await request(`https://www.youtube.com/channel/${this.id}/live`).then(async (html) => {
-            for (const ele of $('link', html)) {
-                if (ele.attribs.rel === 'canonical') videoId = ele.attribs.href.slice(ele.attribs.href.length - 11, ele.attribs.href.length)
-            }
-            
-            if (!videoId) return
-            const cached = this.videosCache.get(videoId)
-            if (cached) return cached
-            
-            const videoInfo = await this.amateras.system.youtube.videos.list({
-                id: [videoId],
-                part: ['snippet,contentDetails,statistics,liveStreamingDetails']
-            }).then((res) => res.data.items)
-
-            if (!videoInfo || !videoInfo[0] || !videoInfo[0].snippet) return
-
-            return {
-                ...videoInfo[0].snippet,
-                id: videoInfo[0].id!, 
-                startTime: videoInfo[0].liveStreamingDetails!.scheduledStartTime!
-            }
-        })
     }
 }
 

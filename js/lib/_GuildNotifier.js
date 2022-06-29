@@ -61,7 +61,7 @@ class _GuildNotifier extends _BaseGuildObjDB_1._BaseGuildObjDB {
                 },
                 color: 'RED',
                 image: {
-                    url: videoInfo.thumbnails ? videoInfo.thumbnails.maxres.url : undefined,
+                    url: videoInfo.thumbnails ? videoInfo.thumbnails.maxres ? videoInfo.thumbnails.maxres.url : undefined : undefined,
                 },
                 description: videoInfo.description ? (0, tools_1.wordCounter)(videoInfo.description, 100, 1) : undefined,
                 footer: {
@@ -89,7 +89,7 @@ class _GuildNotifier extends _BaseGuildObjDB_1._BaseGuildObjDB {
             const _notifier = this.amateras.notifiers.cache.get(this.id);
             if (!_notifier)
                 return;
-            const channelInfo = yield _notifier.fetchChannel();
+            const channelInfo = yield this.amateras.system.youtube.fetchChannel(this.id);
             if (!channelInfo)
                 return;
             return {
