@@ -73,6 +73,32 @@
                             "type": 1
                         }
                     ]
+                },
+                {
+                    "name": "cmd",
+                    "description": "伺服器指令设定",
+                    "type": 2,
+                    "options": [
+                        {
+                            "name": "limit",
+                            "description": "为指令添加频道使用限制",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "cmd",
+                                    "description": "伺服器指令",
+                                    "type": 3,
+                                    "required": true,
+                                    "autocomplete": true
+                                },
+                                {
+                                    "name": "channel",
+                                    "description": "频道",
+                                    "type": 7
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         },
@@ -94,7 +120,7 @@
             "options": [
                 {
                     "name": "register",
-                    "description": "等级你的角色",
+                    "description": "登记你的角色",
                     "type": 1,
                     "options": [
                         {

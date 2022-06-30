@@ -16,45 +16,27 @@ exports._Guild = void 0;
 const _BaseObj_1 = require("./_BaseObj");
 const _GuildChannelManager_1 = require("./_GuildChannelManager");
 const _GuildNotifierManager_1 = require("./_GuildNotifierManager");
-const rest_1 = require("@discordjs/rest");
-const v9_1 = require("discord-api-types/v9");
 const cmd_1 = __importDefault(require("../plugins/cmd"));
-const { deploy, commands } = require('../../commands.json');
+const _GuildCommandManager_1 = require("./_GuildCommandManager");
 class _Guild extends _BaseObj_1._BaseObj {
     constructor(amateras, guild, info) {
-        super(amateras, info, amateras.guilds.collection, ['channels', 'notifiers']);
+        super(amateras, info, amateras.guilds.collection, ['channels', 'notifiers', 'commands']);
         this.origin = guild;
         this.name = guild.name;
         this.channels = new _GuildChannelManager_1._GuildChannelManager(amateras, this, { hints: info.hints });
         this.notifiers = new _GuildNotifierManager_1._GuildNotifierManager(amateras, this, { list: info.notifiers });
+        this.commands = new _GuildCommandManager_1._GuildCommandManager(amateras, this, { commands: info.commands });
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(cmd_1.default.Green, 'Guild Commands Deploy...');
-            if (deploy) {
-                console.time('| Commands Deployed');
-                yield this.deployCommand();
-                console.timeEnd('| Commands Deployed');
-            }
-            else
-                console.log('| Commands Deploy Disabled');
+            yield this.commands.init();
             console.time('| Channels Initialized');
             yield this.channels.init();
             console.timeEnd('| Channels Initialized');
             console.time('| Notifiers Initialized');
             yield this.notifiers.init();
             console.timeEnd('| Notifiers Initialized');
-        });
-    }
-    deployCommand() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const rest = new rest_1.REST({ version: '9' }).setToken(this.amateras.client.token);
-            try {
-                yield rest.put(v9_1.Routes.applicationGuildCommands(this.amateras.me.id, this.id), { body: commands });
-            }
-            catch (err) {
-                console.error(err);
-            }
         });
     }
     presave() {

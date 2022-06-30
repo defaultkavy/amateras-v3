@@ -34,7 +34,8 @@ class _GuildManager extends _BaseManagerDB_1._BaseManagerDB {
                 id: guild.id,
                 name: guild.name,
                 notifiers: dbObj ? dbObj.notifiers ? dbObj.notifiers : [] : [],
-                hints: dbObj ? dbObj.hints ? dbObj.hints : [] : []
+                hints: dbObj ? dbObj.hints ? dbObj.hints : [] : [],
+                commands: dbObj ? dbObj.commands ? dbObj.commands : [] : [],
             };
         });
     }

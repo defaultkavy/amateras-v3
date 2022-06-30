@@ -25,7 +25,8 @@ export class _GuildManager extends _BaseManagerDB<_Guild, _GuildDB> {
             id: guild.id,
             name: guild.name,
             notifiers: dbObj ? dbObj.notifiers ? dbObj.notifiers : [] : [],
-            hints: dbObj ? dbObj.hints ? dbObj.hints : [] : []
+            hints: dbObj ? dbObj.hints ? dbObj.hints : [] : [],
+            commands: dbObj ? dbObj.commands ? dbObj.commands : [] : [],
         }
     }
 }

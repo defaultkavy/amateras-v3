@@ -16,6 +16,7 @@ const fs_1 = __importDefault(require("fs"));
 const _CommandInteraction_1 = require("../lib/_CommandInteraction");
 const _ButtonInteraction_1 = require("../lib/_ButtonInteraction");
 const _ModalInteraction_1 = require("../lib/_ModalInteraction");
+const _AutoCompleteInteraction_1 = require("../lib/_AutoCompleteInteraction");
 module.exports = {
     name: 'interactionCreate',
     once: false,
@@ -29,6 +30,13 @@ module.exports = {
                 const _validInteract = new _CommandInteraction_1._CommandInteraction(amateras, interact, _user);
                 if (!_validInteract.isValid())
                     return;
+                // Check limited channel list
+                const _guildCommand = _validInteract._guild.commands.cache.get(interact.commandId);
+                if (_guildCommand &&
+                    _guildCommand.limitedChannels.length !== 0 &&
+                    !_guildCommand.limitedChannels.includes(_validInteract._channel.id))
+                    return interact.reply({ content: '无法在此频道中使用', ephemeral: true });
+                //
                 executeCommand(`commands/${interact.commandName}`, _validInteract);
             }
             // Button interaction
@@ -45,12 +53,23 @@ module.exports = {
                     return;
                 executeCommand(`reacts/${interact.customId}`, _validInteract);
             }
-            function executeCommand(path, _interact) {
+            // AutoComplete Interaction
+            if (interact.isAutocomplete()) {
+                const _validInteract = new _AutoCompleteInteraction_1._AutoCompleteInteraction(amateras, interact, _user);
+                if (!_validInteract.isValid())
+                    return;
+                executeCommand(`commands/${interact.commandName}`, _validInteract, true);
+            }
+            function executeCommand(path, _interact, autocomplete) {
                 // Check command file exist
                 if (fs_1.default.existsSync(`./js/${path}.js`)) {
                     const commandFn = require(`../${path}.js`);
                     try {
-                        commandFn.default(_interact, amateras);
+                        if (!autocomplete)
+                            commandFn.default(_interact, amateras);
+                        else {
+                            commandFn.autocomplete(_interact, amateras);
+                        }
                     }
                     catch (err) {
                         console.log(err);

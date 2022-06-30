@@ -1,5 +1,6 @@
-import { MessageActionRow, Modal, ModalOptions, TextInputComponent } from "discord.js";
+import { ApplicationCommandChoicesOption, ApplicationCommandOptionChoiceData, ModalOptions } from "discord.js";
 import { Amateras } from "../lib/Amateras";
+import { _ValidAutoCompleteInteraction } from "../lib/_AutoCompleteInteraction";
 import { _ValidCommandInteraction } from "../lib/_CommandInteraction";
 import { _ValidInteraction } from "../lib/_Interaction";
 
@@ -82,7 +83,7 @@ export default async function mod(interact: _ValidCommandInteraction, amateras: 
                                         style: 'PARAGRAPH',
                                         minLength: 1,
                                         maxLength: 4000,
-                                        placeholder: "Hint..."
+                                        placeholder: "Description"
                                     }
                                 ]
                             }
@@ -93,6 +94,61 @@ export default async function mod(interact: _ValidCommandInteraction, amateras: 
                     if (!interact._channel.isText()) return interact.origin.reply({content: 'Must be Text Channel', ephemeral: true})
                     
                     interact.origin.reply({content: await interact._channel.disableHint(), ephemeral: true})
+                }
+            }
+        } else if (subcmd0.name === 'cmd') {
+            if (!subcmd0.options) return
+            for (const subcmd1 of subcmd0.options) {
+                if (subcmd1.name === 'limit') {
+                    if (!subcmd1.options) return
+                    
+                    const obj = {name: '', channelId: ''}
+                    for (const subcmd2 of subcmd1.options) {
+                        if (subcmd2.name === 'cmd') obj.name = subcmd2.value as string
+                        else if (subcmd2.name === 'channel') obj.channelId = subcmd2.value as string
+                    }
+
+                    const arr = Array.from(interact._guild.commands.cache.values())
+                    const _guildCommand = arr.find(_guildCommand => _guildCommand.name === obj.name)
+                    if (!_guildCommand) return interact.origin.reply({content: "Command not found", ephemeral: true})
+                    if (obj.channelId === '') {
+                        let _channels = 'Limited Channel:\n'
+                        for (const channelId of _guildCommand.limitedChannels) {
+                            const _channel = interact._guild.channels.cache.get(channelId)
+                            if (_channel) _channels += `${_channel.origin}\n`
+                        }
+                        interact.origin.reply({content: _channels, ephemeral: true})
+                    } else {
+                        if (_guildCommand.limitedChannels.includes(obj.channelId)) {
+                            _guildCommand.removeChannel(obj.channelId)
+                            interact.origin.reply({content: 'Limit channel remove', ephemeral: true})
+                        } else {
+                            _guildCommand.addChannel(obj.channelId)
+                            interact.origin.reply({content: 'Limit channel set', ephemeral: true})
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+export async function autocomplete(interact: _ValidAutoCompleteInteraction, amateras: Amateras) {
+
+    for (const subcmd0 of interact.origin.options.data) {
+        if (subcmd0.name === 'cmd') {
+            if (!subcmd0.options) return
+            for (const subcmd1 of subcmd0.options) {
+                if (subcmd1.name === 'limit') {
+                    if (!subcmd1.options) return
+                    for (const subcmd2 of subcmd1.options) {
+                        if (subcmd2.name === 'cmd') {
+                            const choices = Array.from(interact._guild.commands.cache.values())
+                            // filter characters
+                            const filtered = choices.filter(choice => choice.name.startsWith(subcmd2.value as string))
+                            interact.origin.respond(filtered.map(choice => ({name: choice.name, value: choice.name})))
+                        }
+                    }
                 }
             }
         }

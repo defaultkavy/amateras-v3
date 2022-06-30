@@ -1,4 +1,4 @@
-import { ButtonInteraction, CommandInteraction, Guild, ModalSubmitInteraction } from "discord.js";
+import { Interaction } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _Base } from "./_Base";
 import { _Guild } from "./_Guild";
@@ -8,12 +8,12 @@ import { _ThreadChannel } from "./_ThreadChannel";
 import { _User } from "./_User";
 
 export class _Interaction extends _Base {
-    origin: CommandInteraction | ButtonInteraction | ModalSubmitInteraction;
+    origin: Interaction;
     _user: _User;
     _guild?: _Guild;
     _channel?: _TextBaseChannel;
     valid = false
-    constructor(amateras: Amateras, interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction, _user: _User) {
+    constructor(amateras: Amateras, interaction: Interaction, _user: _User) {
         super(amateras)
         this.origin = interaction
         this._user = _user

@@ -4,50 +4,33 @@ import { _Base } from "./_Base";
 import { _BaseObj } from "./_BaseObj";
 import { _GuildChannelManager } from "./_GuildChannelManager";
 import { _GuildNotifierManager } from "./_GuildNotifierManager";
-import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v9';
 import cmd from "../plugins/cmd";
-const { deploy, commands } = require('../../commands.json')
+import { _GuildCommandManager } from "./_GuildCommandManager";
 
 export class _Guild extends _BaseObj {
     origin: Guild;
     name: string;
     channels: _GuildChannelManager;
     notifiers: _GuildNotifierManager;
+    commands: _GuildCommandManager;
     constructor(amateras: Amateras, guild: Guild, info: _GuildInfo) {
-        super(amateras, info, amateras.guilds.collection, ['channels', 'notifiers'])
+        super(amateras, info, amateras.guilds.collection, ['channels', 'notifiers', 'commands'])
         this.origin = guild
         this.name = guild.name
         this.channels = new _GuildChannelManager(amateras, this, {hints: info.hints})
         this.notifiers = new _GuildNotifierManager(amateras, this, {list: info.notifiers})
+        this.commands = new _GuildCommandManager(amateras, this, {commands: info.commands})
     }
 
     async init() {
         console.log(cmd.Green, 'Guild Commands Deploy...')
-        if (deploy) {
-            console.time('| Commands Deployed')
-            await this.deployCommand()
-            console.timeEnd('| Commands Deployed')
-        } else console.log('| Commands Deploy Disabled')
+        await this.commands.init()
         console.time('| Channels Initialized')
         await this.channels.init()
         console.timeEnd('| Channels Initialized')
         console.time('| Notifiers Initialized')
         await this.notifiers.init()
         console.timeEnd('| Notifiers Initialized')
-    }
-
-    async deployCommand() {
-        const rest = new REST({ version: '9' }).setToken(this.amateras.client.token!);
-
-        try {
-            await rest.put(
-                Routes.applicationGuildCommands(this.amateras.me.id, this.id),
-                { body: commands },
-            );
-        } catch(err) {
-            console.error(err);
-        }
     }
 
     presave() {
@@ -63,6 +46,7 @@ export interface _GuildDB {
     name?: string;
     notifiers?: string[]
     hints?: string[]
+    commands?: string[]
 }
 
 export interface _GuildInfo {
@@ -70,4 +54,5 @@ export interface _GuildInfo {
     name: string;
     notifiers: string[]
     hints: string[]
+    commands: string[]
 }
