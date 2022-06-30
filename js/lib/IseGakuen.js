@@ -15,7 +15,7 @@ const google_spreadsheet_1 = require("google-spreadsheet");
 class IseGakuen extends _Base_1._Base {
     constructor(amateras) {
         super(amateras);
-        this.grade = ['', '高一', '高二', '高三'];
+        this.grade = ['', '一年级', '二年级', '三年级'];
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {

@@ -8,7 +8,7 @@ export class IseGakuen extends _Base {
     grade: string[];
     constructor(amateras: Amateras) {
         super(amateras)
-        this.grade = ['', '高一', '高二', '高三']
+        this.grade = ['', '一年级', '二年级', '三年级']
     }
 
     async init() {
