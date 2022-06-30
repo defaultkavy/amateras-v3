@@ -29,7 +29,7 @@ class _Guild extends _BaseObj_1._BaseObj {
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(cmd_1.default.Green, 'Guild Commands Deploy...');
+            console.log(cmd_1.default.Green, `Initializing Guild: ${this.name}`);
             yield this.commands.init();
             console.time('| Channels Initialized');
             yield this.channels.init();
