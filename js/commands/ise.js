@@ -14,7 +14,7 @@ function default_1(interact, amateras) {
         //await interact.origin.deferReply({ephemeral: false})
         for (const subcmd0 of interact.origin.options.data) {
             if (subcmd0.name === 'register') {
-                if (interact._channel.id !== '972403680844333086')
+                if (interact._channel.id !== '972403680844333086' && interact._channel.id !== '804531119394783276')
                     return interact.origin.reply({ content: '请在指定的频道中使用指令', ephemeral: true });
                 if (!subcmd0.options)
                     return;

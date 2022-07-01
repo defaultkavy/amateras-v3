@@ -49,25 +49,25 @@ export class IseGakuen extends _Base {
     async characterCardEmbed(data: ISE_STUDENT_DATA) {
         const embed: MessageEmbedOptions = {
             author: {
-                name: data.name
+                name: `${data.name}`
             },
             thumbnail: {
                 url: data.characterCard
             },
             fields: [
                 {
-                    name: '年龄',
-                    value: `${data.age}`,
+                    name: `年龄：${data.age}`,
+                    value: `年级：${this.grade[+data.grade]}`,
                     inline: true
                 },
                 {
-                    name: '年级',
-                    value: `${this.grade[+data.grade]}`,
+                    name: `班级：${data.class}`,
+                    value: `\u200b`,
                     inline: true
                 },
                 {
-                    name: '种族',
-                    value: `${data.race}`,
+                    name: `种族：${data.race}`,
+                    value: `\u200b`,
                     inline: true
                 }
             ],
@@ -89,5 +89,6 @@ export interface ISE_STUDENT_DATA {
     gender: 'MALE' | 'FEMALE',
     race: string,
     grade: string,
-    characterCard: string
+    characterCard: string,
+    class: string
 }

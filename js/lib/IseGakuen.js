@@ -62,25 +62,25 @@ class IseGakuen extends _Base_1._Base {
         return __awaiter(this, void 0, void 0, function* () {
             const embed = {
                 author: {
-                    name: data.name
+                    name: `${data.name}`
                 },
                 thumbnail: {
                     url: data.characterCard
                 },
                 fields: [
                     {
-                        name: '年龄',
-                        value: `${data.age}`,
+                        name: `年龄：${data.age}`,
+                        value: `年级：${this.grade[+data.grade]}`,
                         inline: true
                     },
                     {
-                        name: '年级',
-                        value: `${this.grade[+data.grade]}`,
+                        name: `班级：${data.class}`,
+                        value: `\u200b`,
                         inline: true
                     },
                     {
-                        name: '种族',
-                        value: `${data.race}`,
+                        name: `种族：${data.race}`,
+                        value: `\u200b`,
                         inline: true
                     }
                 ],
