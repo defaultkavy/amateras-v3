@@ -1,8 +1,9 @@
-import { GuildBasedChannel, GuildChannel, TextChannel } from "discord.js";
+import { CategoryChannel, GuildBasedChannel, GuildChannel, TextChannel } from "discord.js";
 import { WithId } from "mongodb";
 import { Amateras } from "./Amateras";
-import { _GuildChannel } from "./_BaseGuildChannel";
+import { _GuildChannel } from "./_GuildChannel";
 import { _BaseGuildManager } from "./_BaseGuildManager";
+import { _CategoryChannel } from "./_CategoryChannel";
 import { _Guild } from "./_Guild";
 import { _HintDB, _HintInfo } from "./_Hint";
 import { _Message } from "./_Message";
@@ -49,6 +50,9 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
         } else if (channel.isThread()) {
             const _channel = new _ThreadChannel(this.amateras, this._guild, channel)
             this.cache.set(_channel.id, _channel)
+        } else if (channel.type === 'GUILD_CATEGORY') {
+            const _channel = new _CategoryChannel(this.amateras, this._guild, channel as CategoryChannel)
+            this.cache.set(_channel.id, _channel)
         }
     }
 
@@ -75,14 +79,30 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
             name: string;
         }[] = []
         for (const _channel of this.cache.values()) {
-            if (!_channel.isTextBased()) return
+            if (!_channel.isTextBased()) continue
             const data = {
                 id: _channel.id,
-                name: _channel.name
+                name: _channel.name,
+                parent: _channel.origin.parentId,
+                position: _channel.isText() ? _channel.origin.position : undefined
             }
             text.push(data)
         }
         return text
+    }
+
+    get categories() {
+        const categories = []
+        for (const _channel of this.cache.values()) {
+            if (!_channel.isCategory()) continue
+            const data = {
+                id: _channel.id,
+                name: _channel.name,
+                position: _channel.origin.position
+            }
+            categories.push(data)
+        }
+        return categories
     }
 
 }

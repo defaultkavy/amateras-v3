@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._TextBaseChannel = void 0;
-const _BaseGuildChannel_1 = require("./_BaseGuildChannel");
+const _GuildChannel_1 = require("./_GuildChannel");
 const _Hint_1 = require("./_Hint");
-class _TextBaseChannel extends _BaseGuildChannel_1._GuildChannel {
+class _TextBaseChannel extends _GuildChannel_1._GuildChannel {
     constructor(amateras, _guild, channel) {
         super(amateras, _guild, channel);
         this.origin = channel;

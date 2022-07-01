@@ -1,0 +1,1 @@
+{"version":3,"file":"_CategoryChannel.js","sourceRoot":"","sources":["../../ts/lib/_CategoryChannel.ts"],"names":[],"mappings":";;;AAEA,mDAAgD;AAKhD,MAAa,gBAAiB,SAAQ,6BAAa;IAG/C,YAAY,QAAkB,EAAE,MAAc,EAAE,OAAwB;QACpE,KAAK,CAAC,QAAQ,EAAE,MAAM,EAAE,OAAO,CAAC,CAAA;QAChC,IAAI,CAAC,IAAI,GAAG,OAAO,CAAC,IAAI,CAAA;QACxB,IAAI,CAAC,MAAM,GAAG,OAAO,CAAA;IACzB,CAAC;CACJ;AARD,4CAQC"}

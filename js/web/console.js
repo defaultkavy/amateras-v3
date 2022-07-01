@@ -12,6 +12,7 @@ const originUrl = window.location.protocol + '//' + window.location.host + '/v3'
 const sendButton = document.getElementById('send_button');
 const messageBox = document.getElementById('message_box');
 const guildSelector = document.getElementById('guild_selector');
+const categorySelector = document.getElementById('category_selector');
 const channelSelector = document.getElementById('channel_selector');
 const statusText = document.getElementById('status');
 init();
@@ -26,7 +27,10 @@ function eventHandler() {
         sendButton.addEventListener('click', send);
     }
     if (guildSelector) {
-        guildSelector.addEventListener('change', channelBoxInit);
+        guildSelector.addEventListener('change', categoryBoxInit);
+    }
+    if (categorySelector) {
+        categorySelector.addEventListener('change', channelBoxInit);
     }
     if (messageBox) {
         messageBox.addEventListener('keyup', (ev) => {
@@ -56,7 +60,30 @@ function contentInit() {
                 });
             }
         }
-        channelBoxInit();
+        yield categoryBoxInit();
+    });
+}
+function categoryBoxInit() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield getDiscordData();
+        const guild = data.guilds.find(guild => guild.id === guildSelector.selectedOptions[0].value);
+        if (!guild)
+            return;
+        while (categorySelector.firstChild) {
+            categorySelector.removeChild(categorySelector.firstChild);
+        }
+        guild.categories.sort((a, b) => a.position - b.position);
+        const selectOption = new Option;
+        selectOption.value = 'none';
+        selectOption.innerText = 'Uncategory';
+        categorySelector.appendChild(selectOption);
+        for (const category of guild.categories) {
+            const selectOption = new Option;
+            selectOption.value = category.id;
+            selectOption.innerText = category.name;
+            categorySelector.appendChild(selectOption);
+        }
+        yield channelBoxInit();
     });
 }
 function channelBoxInit() {
@@ -65,10 +92,25 @@ function channelBoxInit() {
         const guild = data.guilds.find(guild => guild.id === guildSelector.selectedOptions[0].value);
         if (!guild)
             return;
+        const channels = guild.channels.filter(channel => {
+            if (categorySelector.selectedOptions[0].value === 'none') {
+                return !channel.parent;
+            }
+            else {
+                return channel.parent === categorySelector.selectedOptions[0].value;
+            }
+        });
+        channels.sort((a, b) => {
+            if (a.position === undefined)
+                return -1;
+            if (b.position === undefined)
+                return 1;
+            return a.position - b.position;
+        });
         while (channelSelector.firstChild) {
             channelSelector.removeChild(channelSelector.firstChild);
         }
-        for (const channel of guild.channels) {
+        for (const channel of channels) {
             const selectOption = new Option;
             selectOption.value = channel.id;
             selectOption.innerText = channel.name;

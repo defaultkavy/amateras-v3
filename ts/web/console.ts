@@ -2,6 +2,7 @@ const originUrl = window.location.protocol + '//' +  window.location.host + '/v3
 const sendButton = document.getElementById('send_button')
 const messageBox = document.getElementById('message_box') as HTMLTextAreaElement
 const guildSelector = document.getElementById('guild_selector') as HTMLSelectElement
+const categorySelector = document.getElementById('category_selector') as HTMLSelectElement
 const channelSelector = document.getElementById('channel_selector') as HTMLSelectElement
 const statusText = document.getElementById('status') as HTMLSpanElement
 init()
@@ -17,7 +18,11 @@ function eventHandler() {
     }
 
     if (guildSelector) {
-        guildSelector.addEventListener('change', channelBoxInit)
+        guildSelector.addEventListener('change', categoryBoxInit)
+    }
+
+    if (categorySelector) {
+        categorySelector.addEventListener('change', channelBoxInit)
     }
 
     if (messageBox) {
@@ -49,18 +54,52 @@ async function contentInit() {
         }
     }
 
-    channelBoxInit()
+    await categoryBoxInit()
 
+}
+
+async function categoryBoxInit() {
+    const data = await getDiscordData()
+    const guild = data.guilds.find(guild => guild.id === guildSelector.selectedOptions[0].value)
+    if (!guild) return
+    while (categorySelector.firstChild) {
+        categorySelector.removeChild(categorySelector.firstChild)
+    }
+    guild.categories.sort((a, b) => a.position - b.position)
+    const selectOption = new Option
+    selectOption.value = 'none'
+    selectOption.innerText = 'Uncategory'
+    categorySelector.appendChild(selectOption)
+    for (const category of guild.categories) {
+        const selectOption = new Option
+        selectOption.value = category.id
+        selectOption.innerText = category.name
+        categorySelector.appendChild(selectOption)
+    }
+
+    await channelBoxInit()
 }
 
 async function channelBoxInit() {
     const data = await getDiscordData()
     const guild = data.guilds.find(guild => guild.id === guildSelector.selectedOptions[0].value)
     if (!guild) return
+    const channels = guild.channels.filter(channel => {
+        if (categorySelector.selectedOptions[0].value === 'none') {
+            return !channel.parent
+        } else {
+            return channel.parent === categorySelector.selectedOptions[0].value
+        }
+    })
+    channels.sort((a, b) => {
+        if (a.position === undefined) return -1
+        if (b.position === undefined) return 1
+        return a.position - b.position
+    })
     while (channelSelector.firstChild) {
         channelSelector.removeChild(channelSelector.firstChild)
     }
-    for (const channel of guild.channels) {
+    for (const channel of channels) {
         const selectOption = new Option
         selectOption.value = channel.id
         selectOption.innerText = channel.name
@@ -110,10 +149,17 @@ interface DiscordData {
 interface DiscordGuild {
     id: string,
     name: string,
-    channels: DiscordChannel[]
+    channels: DiscordChannel[],
+    categories: {
+        id: string,
+        name: string,
+        position: number
+    }[]
 }
 
 interface DiscordChannel {
     id: string,
-    name: string
+    name: string,
+    parent: string | null
+    position: number | undefined
 }

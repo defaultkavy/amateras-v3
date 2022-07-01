@@ -1,6 +1,7 @@
 import { GuildBasedChannel, ThreadChannelTypes } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _BaseGuildObj } from "./_BaseGuildObj";
+import { _CategoryChannel } from "./_CategoryChannel";
 import { _Guild } from "./_Guild";
 import { _TextChannel } from "./_TextChannel";
 import { _ThreadChannel } from "./_ThreadChannel";
@@ -16,7 +17,6 @@ export class _GuildChannel extends _BaseGuildObj {
         this.name = origin.name
         this.origin = origin
         this.type = origin.type
-        
     }
 
     isTextBased(): this is _TextChannel | _ThreadChannel {
@@ -27,5 +27,10 @@ export class _GuildChannel extends _BaseGuildObj {
     isText(): this is _TextChannel {
         if (this.type !== 'GUILD_TEXT') return false
         return true
+    }
+    
+    isCategory(): this is _CategoryChannel {
+        if (this.type === 'GUILD_CATEGORY') return true
+        else return false
     }
 }

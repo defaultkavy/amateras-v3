@@ -1,6 +1,6 @@
 import { NewsChannel, TextChannel, ThreadChannel, ThreadChannelTypes } from "discord.js";
 import { Amateras } from "./Amateras";
-import { _GuildChannel } from "./_BaseGuildChannel";
+import { _GuildChannel } from "./_GuildChannel";
 import { _Guild } from "./_Guild";
 import { _Hint, _HintInfo } from "./_Hint";
 

@@ -1,10 +1,10 @@
 import { Amateras } from "./Amateras";
 import { _TextChannel } from "./_TextChannel";
-import { MessageActionRow, MessageActionRowOptions, MessageButtonOptions, MessageComponentOptions, MessageEmbedOptions, Role } from "discord.js";
+import { MessageActionRow, MessageEmbedOptions, Role } from "discord.js";
 import { wordCounter } from "../plugins/tools";
 import { _BaseGuildObjDB } from "./_BaseGuildObjDB";
 import { _Guild } from "./_Guild";
-import { youtubeInfo, youtubeVideoInfo } from "./_Notifier";
+import { youtubeInfo } from "./_Notifier";
 
 export class _GuildNotifier extends _BaseGuildObjDB {
     id: string;

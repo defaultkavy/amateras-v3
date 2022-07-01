@@ -99,6 +99,7 @@ class Amateras {
                 const guildData = {
                     id: _guild.id,
                     name: _guild.name,
+                    categories: _guild.channels.categories,
                     channels: _guild.channels.textChannels
                 };
                 data.guilds.push(guildData);

@@ -23,6 +23,7 @@ var __GuildChannelManager_hints;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._GuildChannelManager = void 0;
 const _BaseGuildManager_1 = require("./_BaseGuildManager");
+const _CategoryChannel_1 = require("./_CategoryChannel");
 const _Message_1 = require("./_Message");
 const _TextChannel_1 = require("./_TextChannel");
 const _ThreadChannel_1 = require("./_ThreadChannel");
@@ -69,6 +70,10 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
             const _channel = new _ThreadChannel_1._ThreadChannel(this.amateras, this._guild, channel);
             this.cache.set(_channel.id, _channel);
         }
+        else if (channel.type === 'GUILD_CATEGORY') {
+            const _channel = new _CategoryChannel_1._CategoryChannel(this.amateras, this._guild, channel);
+            this.cache.set(_channel.id, _channel);
+        }
     }
     get(id) {
         const cached = this.cache.get(id);
@@ -93,14 +98,30 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
         const text = [];
         for (const _channel of this.cache.values()) {
             if (!_channel.isTextBased())
-                return;
+                continue;
             const data = {
                 id: _channel.id,
-                name: _channel.name
+                name: _channel.name,
+                parent: _channel.origin.parentId,
+                position: _channel.isText() ? _channel.origin.position : undefined
             };
             text.push(data);
         }
         return text;
+    }
+    get categories() {
+        const categories = [];
+        for (const _channel of this.cache.values()) {
+            if (!_channel.isCategory())
+                continue;
+            const data = {
+                id: _channel.id,
+                name: _channel.name,
+                position: _channel.origin.position
+            };
+            categories.push(data);
+        }
+        return categories;
     }
 }
 exports._GuildChannelManager = _GuildChannelManager;
