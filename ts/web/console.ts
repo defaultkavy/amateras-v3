@@ -42,7 +42,7 @@ function eventHandler() {
 
         messageBox.addEventListener('keyup', (ev) => {
 
-            if (virtualKeyboard && ev.key === 'Enter') {
+            if (!virtualKeyboard && ev.key === 'Enter') {
                 if (!ev.shiftKey) send()
             }
         })
