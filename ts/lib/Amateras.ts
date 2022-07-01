@@ -80,12 +80,12 @@ export class Amateras {
     private serverHandler() {
         this.express.use(express.json())
         this.express.use(express.urlencoded({ extended: true }))
-
-        this.express.post('/ko-fi', (req, res) => {
-            const data = JSON.parse(req.body)
+        
+        this.express.get('/file/*', (req, res) => {
+            res.sendFile(global.path + req.originalUrl.slice(5))
         })
 
-        //this.express.listen(30, () => console.log('Port 30 listening.'))
+        this.express.listen(30, () => console.log('Port 30 listening.'))
     }
 }
 

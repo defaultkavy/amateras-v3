@@ -33,6 +33,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // nodejs settings
 process.env.TZ = 'Asia/Kuala_Lumpur';
+global.path = __dirname.slice(0, __dirname.length - 2);
 //
 let config = require('../bot_config.json');
 const cmd_1 = __importDefault(require("./plugins/cmd"));

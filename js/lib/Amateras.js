@@ -79,10 +79,10 @@ class Amateras {
     serverHandler() {
         this.express.use(express_1.default.json());
         this.express.use(express_1.default.urlencoded({ extended: true }));
-        this.express.post('/ko-fi', (req, res) => {
-            const data = JSON.parse(req.body);
+        this.express.get('/file/*', (req, res) => {
+            res.sendFile(global.path + req.originalUrl.slice(5));
         });
-        //this.express.listen(30, () => console.log('Port 30 listening.'))
+        this.express.listen(30, () => console.log('Port 30 listening.'));
     }
 }
 exports.Amateras = Amateras;

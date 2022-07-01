@@ -1,5 +1,6 @@
 // nodejs settings
 process.env.TZ = 'Asia/Kuala_Lumpur'
+global.path = __dirname.slice(0, __dirname.length - 2)
 //
 
 let config = require('../bot_config.json')
@@ -38,4 +39,6 @@ client.on('ready', async () => {
     })
 })
 
-
+declare global {
+    var path: string
+}
