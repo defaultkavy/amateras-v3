@@ -82,7 +82,6 @@ export class Amateras {
         this.express.use(express.urlencoded({ extended: true }))
         
         this.express.get('/file/*', (req, res) => {
-            console.debug(1)
             res.sendFile(global.path + req.originalUrl.slice(5))
         })
 

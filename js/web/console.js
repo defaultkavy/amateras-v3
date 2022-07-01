@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const originUrl = window.location.protocol + '//' + window.location.hostname + ':' + '30';
+const originUrl = window.location.protocol + '//' + window.location.host + '/v3';
 const sendButton = document.getElementById('send_button');
 const messageBox = document.getElementById('message_box');
 const guildSelector = document.getElementById('guild_selector');
