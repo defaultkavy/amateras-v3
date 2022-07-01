@@ -5,6 +5,9 @@ const guildSelector = document.getElementById('guild_selector') as HTMLSelectEle
 const categorySelector = document.getElementById('category_selector') as HTMLSelectElement
 const channelSelector = document.getElementById('channel_selector') as HTMLSelectElement
 const statusText = document.getElementById('status') as HTMLSpanElement
+
+document.body.style.backgroundColor = '#36393f'
+
 init()
 
 async function init() {

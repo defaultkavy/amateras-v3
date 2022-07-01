@@ -15,6 +15,7 @@ const guildSelector = document.getElementById('guild_selector');
 const categorySelector = document.getElementById('category_selector');
 const channelSelector = document.getElementById('channel_selector');
 const statusText = document.getElementById('status');
+document.body.style.backgroundColor = '#36393f';
 init();
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
