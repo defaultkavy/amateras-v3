@@ -89,6 +89,19 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
         }
         return hints;
     }
+    get textChannels() {
+        const text = [];
+        for (const _channel of this.cache.values()) {
+            if (!_channel.isTextBased())
+                return;
+            const data = {
+                id: _channel.id,
+                name: _channel.name
+            };
+            text.push(data);
+        }
+        return text;
+    }
 }
 exports._GuildChannelManager = _GuildChannelManager;
 __GuildChannelManager_hints = new WeakMap();

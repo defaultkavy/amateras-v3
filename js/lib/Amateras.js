@@ -82,6 +82,29 @@ class Amateras {
         this.express.get('/file/*', (req, res) => {
             res.sendFile(global.path + req.originalUrl.slice(5));
         });
+        this.express.post('/console', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const data = req.body;
+            const _guild = this.guilds.cache.get(data.guild);
+            if (!_guild)
+                return;
+            const _channel = _guild.channels.cache.get(data.channel);
+            if (!_channel || !_channel.isTextBased())
+                return;
+            yield _channel.origin.send(data.content);
+            res.send('Send');
+        }));
+        this.express.get('/console-data', (req, res) => {
+            const data = { guilds: [] };
+            for (const _guild of this.guilds.cache.values()) {
+                const guildData = {
+                    id: _guild.id,
+                    name: _guild.name,
+                    channels: _guild.channels.textChannels
+                };
+                data.guilds.push(guildData);
+            }
+            res.send(data);
+        });
         this.express.listen(30, () => console.log('Port 30 listening.'));
     }
 }

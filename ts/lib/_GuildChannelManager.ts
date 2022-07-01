@@ -69,6 +69,22 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
         return hints
     }
 
+    get textChannels() {
+        const text: {
+            id: string;
+            name: string;
+        }[] = []
+        for (const _channel of this.cache.values()) {
+            if (!_channel.isTextBased()) return
+            const data = {
+                id: _channel.id,
+                name: _channel.name
+            }
+            text.push(data)
+        }
+        return text
+    }
+
 }
 
 export interface _GuildChannelManagerInfo {
