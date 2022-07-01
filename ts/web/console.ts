@@ -26,8 +26,23 @@ function eventHandler() {
     }
 
     if (messageBox) {
+        let virtualKeyboard = false
+        messageBox.addEventListener('focus', (ev) => {
+            window.addEventListener('resize', resize)
+        })
+
+        messageBox.addEventListener('blur', (ev) => {
+            window.removeEventListener('resize', resize)
+            virtualKeyboard = false
+        })
+
+        function resize() {
+            virtualKeyboard = true
+        }
+
         messageBox.addEventListener('keyup', (ev) => {
-            if (ev.key === 'Enter') {
+
+            if (virtualKeyboard && ev.key === 'Enter') {
                 if (!ev.shiftKey) send()
             }
         })
