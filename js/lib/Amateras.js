@@ -80,6 +80,7 @@ class Amateras {
         this.express.use(express_1.default.json());
         this.express.use(express_1.default.urlencoded({ extended: true }));
         this.express.get('/file/*', (req, res) => {
+            console.debug(1);
             res.sendFile(global.path + req.originalUrl.slice(5));
         });
         this.express.post('/console', (req, res) => __awaiter(this, void 0, void 0, function* () {
