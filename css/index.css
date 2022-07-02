@@ -20,32 +20,36 @@
   overflow-x: hidden;
 }
 
-#amateras_console .selector_block {
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  margin: 10px;
+#amateras_console .selector_section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
 }
 
-#amateras_console .selector_block span {
+#amateras_console .selector_section .selector_block {
+  display: block;
+  margin: 10px;
+  width: 200px;
+}
+
+#amateras_console .selector_section .selector_block span {
   color: white;
   display: block;
   margin: 0 0 10;
+  font-size: 14px;
+  display: block;
 }
 
-#amateras_console .selector_block select {
+#amateras_console .selector_section .selector_block select {
   background-color: #36393f;
   color: white;
   padding: 10px;
   border-radius: 25px;
   display: block;
+  width: 100%;
 }
 
-#amateras_console .selector_block select option {
+#amateras_console .selector_section .selector_block select option {
   background-color: #2f3136;
 }
 
@@ -183,15 +187,20 @@
 #amateras_console #reply_section span {
   font-size: 12px;
   color: white;
-  width: 160px;
+  padding: 2 5;
+  border: 1px solid grey;
+  margin-right: 10px;
+  cursor: pointer;
+  border-radius: 10px;
 }
 
 #amateras_console #reply_section input {
   background-color: #36393f;
   border: 1px solid grey;
-  padding: 2px;
+  padding: 2px 5px;
   width: 100%;
   color: white;
+  border-radius: 10px;
 }
 
 body {

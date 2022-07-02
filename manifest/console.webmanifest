@@ -1,0 +1,38 @@
+{
+  "background_color": "#232323",
+  "description": "Amateras Console",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Amateras Console",
+  "orientation": "any",
+  "scope": "",
+  "short_name": "Amateras Console",
+  "start_url": "amateras-console.html",
+  "theme_color": "#000000",
+  "categories": [],
+  "screenshots": [
+  ],
+  "icons": [
+    {
+      "src": "images/icon_128.png",
+      "type": "image/png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "images/icon_32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "images/icon_48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "images/icon_16.png",
+      "type": "image/png",
+      "sizes": "16x16"
+    }
+  ],
+  "shortcuts": []
+}

@@ -18,7 +18,9 @@ const categorySelector = document.getElementById('category_selector');
 const channelSelector = document.getElementById('channel_selector');
 const statusText = document.getElementById('status');
 const messagesWrapper = document.querySelector('messages');
+const replyClearButton = document.querySelector('#clear_button');
 const app = document.getElementById('amateras_console');
+let lastmessage = '';
 let reply = false;
 document.body.style.backgroundColor = '#36393f';
 init();
@@ -72,6 +74,12 @@ function eventHandler() {
     }
     if (replyBox) {
         replyBox.addEventListener('blur', replyBoxCheck);
+    }
+    if (replyClearButton) {
+        replyClearButton.addEventListener('click', (ev) => {
+            replyBox.value = '';
+            replyBoxCheck();
+        });
     }
 }
 function replyBoxCheck() {
@@ -180,6 +188,9 @@ function messagesWrapperInit() {
             return;
         const data = yield getChannelMessages(guildSelector.value, channelSelector.value);
         data.messages.sort((a, b) => a.timestamps - b.timestamps);
+        if (lastmessage === data.messages[data.messages.length - 1].id)
+            return;
+        lastmessage = data.messages[data.messages.length - 1].id;
         while (messagesWrapper.firstChild) {
             messagesWrapper.removeChild(messagesWrapper.firstChild);
         }

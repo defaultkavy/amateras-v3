@@ -11,7 +11,9 @@ const categorySelector = document.getElementById('category_selector') as HTMLSel
 const channelSelector = document.getElementById('channel_selector') as HTMLSelectElement
 const statusText = document.getElementById('status') as HTMLSpanElement
 const messagesWrapper = document.querySelector('messages') as HTMLElement
+const replyClearButton = document.querySelector('#clear_button') as HTMLSpanElement
 const app = document.getElementById('amateras_console') as HTMLDivElement
+let lastmessage = ''
 let reply = false
 
 document.body.style.backgroundColor = '#36393f'
@@ -77,6 +79,13 @@ function eventHandler() {
 
     if (replyBox) {
         replyBox.addEventListener('blur', replyBoxCheck)
+    }
+
+    if (replyClearButton) {
+        replyClearButton.addEventListener('click', (ev) => {
+            replyBox.value = ''
+            replyBoxCheck()
+        })
     }
 }
 
@@ -178,7 +187,8 @@ async function messagesWrapperInit() {
     if (!messagesWrapper) return
     const data = await getChannelMessages(guildSelector.value, channelSelector.value)
     data.messages.sort((a, b) => a.timestamps - b.timestamps)
-
+    if (lastmessage === data.messages[data.messages.length - 1].id) return
+    lastmessage = data.messages[data.messages.length - 1].id
     while (messagesWrapper.firstChild) {
         messagesWrapper.removeChild(messagesWrapper.firstChild)
     }
