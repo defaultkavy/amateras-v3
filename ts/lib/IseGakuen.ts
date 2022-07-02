@@ -24,7 +24,7 @@ export class IseGakuen extends _Base {
         const rows = await this.sheet.getRows()
         const headers = this.sheet.headerValues
         const arr: ISE_STUDENT_DATA[] = []
-        for (let i = 1; i < rows.length; i++) {
+        for (let i = 0; i < rows.length; i++) {
             const obj: {[key: string]: any} = {}
             for (const header of headers) {
                 obj[header] = rows[i][header]
