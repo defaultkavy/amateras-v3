@@ -83,7 +83,9 @@ export class Amateras {
         this.express.use(express.urlencoded({ extended: true }))
         
         this.express.get('/file/*', (req, res) => {
-            res.send(global.path + req.originalUrl.slice(5))
+            if (process.platform === 'win32') {
+                res.send(global.path + req.originalUrl.slice(6).replace('/', '\\'))
+            } else res.send(global.path + req.originalUrl.slice(6))
         })
 
         this.express.post('/console', async (req, res) => {
