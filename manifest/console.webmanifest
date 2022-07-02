@@ -5,9 +5,9 @@
   "display": "standalone",
   "name": "Amateras Console",
   "orientation": "any",
-  "scope": "",
-  "short_name": "Amateras Console",
-  "start_url": "amateras-console.html",
+  "scope": "https://isekai.live/",
+  "short_name": "A-Console",
+  "start_url": "https://isekai.live/amateras-console",
   "theme_color": "#000000",
   "categories": [],
   "screenshots": [

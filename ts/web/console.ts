@@ -284,7 +284,7 @@ class Message {
     constructor(data: DiscordMessage) {
         this.node = document.createElement('message-box')
         this.author = document.createElement('author')
-        this.content = document.createElement('content')
+        this.content = document.createElement('message-content')
         this.sticker = document.createElement('sticker')
         this.attachments = document.createElement('attachments')
         this.data = data
