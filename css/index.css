@@ -121,7 +121,7 @@
   margin-right: 10px;
 }
 
-#amateras_console messages message-box content {
+#amateras_console messages message-box message-content {
   display: inline;
   color: #868c9c;
   word-wrap: break-word;
