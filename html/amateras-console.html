@@ -6,16 +6,30 @@
     </header>
     <body>
         <div id="amateras_console">
-            <span>Server</span>
-            <select id="guild_selector"></select>
-            <span>Category</span>
-            <select id="category_selector"></select>
-            <span>Channel</span>
-            <select id="channel_selector"></select>
-            <span>Message</span>
-            <textarea id="message_box"></textarea>
-            <button id="send_button">Send</button>
-            <span id="status"></span>
+            <div class="selector_section">
+                <div class="selector_block">
+                    <span>Server</span>
+                    <select id="guild_selector"></select>
+                </div>
+                <div class="selector_block">
+                    <span>Category</span>
+                    <select id="category_selector"></select>
+                </div>
+                <div class="selector_block">
+                    <span>Channel</span>
+                    <select id="channel_selector"></select>
+                </div>
+            </div>
+            <messages></messages>
+            <div id="reply_section">
+                <span>Reply Message Link</span>
+                <input id="reply_box"></input>
+            </div>
+            <div id="input_section">
+                <textarea id="message_box"></textarea>
+                <button id="send_button">Send</button>
+                <span id="status"></span>
+            </div>
         </div>
     </body>
     <script src="/v3/file/js/web/console.js">

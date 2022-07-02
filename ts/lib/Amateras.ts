@@ -1,4 +1,4 @@
-import { Client, User } from "discord.js";
+import { Client, MessageEmbed, User } from "discord.js";
 import { Db } from "mongodb";
 import cmd from "../plugins/cmd";
 import { _GuildManager } from "./_GuildManager";
@@ -10,6 +10,7 @@ import { _MessageManager } from "./_MessageManager";
 import express, { Express } from 'express'
 import test from '../etc/test'
 import { EventManager } from "./_EventManager";
+import { APIEmbed } from "discord-api-types/v9";
 
 export class Amateras {
     client: Client<true>;
@@ -91,7 +92,17 @@ export class Amateras {
             if (!_guild) return
             const _channel = _guild.channels.cache.get(data.channel)
             if (!_channel || !_channel.isTextBased()) return
-            await _channel.origin.send(data.content)
+
+            if (data.reply) {
+                const regexArr = data.reply.match(/[0-9]\d+/g)
+                const replyId = regexArr ? regexArr[2] : undefined
+                if (!replyId) return
+                const message = await _channel.origin.messages.fetch(replyId).catch(() => undefined)
+                if (!message) return
+                await message.reply({
+                    content: data.content
+                })
+            } else await _channel.origin.send(data.content)
             res.send('Send')
         })
 
@@ -109,6 +120,59 @@ export class Amateras {
             res.send(data)
         })
 
+        this.express.get('/console-data/:guildId/:channelId/messages', (req, res) => {
+            const data: {[key: string]: any, messages: ConsoleMessageOption[]} = { channel: req.params.channelId, guild: req.params.guildId, messages: [] }
+            const _guild = this.guilds.cache.get(data.guild)
+            if (!_guild) return
+            const _channel = _guild.channels.cache.get(data.channel)
+            if (!_channel || !_channel.isTextBased()) return
+            for (const message of _channel.origin.messages.cache.values()) {
+                const attachments = Array.from(message.attachments.values())
+                const attachmentsData = []
+                for (const attachment of attachments) {
+                    attachmentsData.push({
+                        type: attachment.contentType,
+                        url: attachment.url
+                    })
+                }
+                const member = _guild.origin.members.cache.get(message.author.id)
+                const sticker = message.stickers.first()
+                // mention replace
+                const usermentions = message.content.match(/(<@)[0-9]\d+(>)/)
+                if (usermentions) {
+                    for (const usermention of usermentions) {
+                        const mentionMember = _guild.origin.members.cache.get(usermention.slice(2, usermention.length - 1))
+                        if (!mentionMember) continue
+                        message.content = message.content.replace(usermention, ` @${mentionMember.displayName} `)
+                    }
+                }
+                // channel replace
+                const channelTags = message.content.match(/(<#)[0-9]\d+(>)/)
+                if (channelTags) {
+                    for (const channelTag of channelTags) {
+                        const channel = _guild.origin.channels.cache.get(channelTag.slice(2, channelTag.length - 1))
+                        if (!channel) continue
+                        message.content = message.content.replace(channelTag, ` @${channel.name} `)
+                    }
+                }
+                // embed
+                data.messages.push({
+                    id: message.id,
+                    content: message.content,
+                    author: {
+                        name: member ? member.displayName : message.author.username,
+                        id: message.author.id
+                    },
+                    timestamps: message.createdTimestamp,
+                    url: message.url,
+                    sticker: sticker ? sticker.name : undefined,
+                    attachments: attachmentsData,
+                    embeds: Array.from(message.embeds.map((embed) => embed.toJSON()))
+                })
+            }
+            res.send(data)
+        })
+
         this.express.listen(30, () => console.log('Port 30 listening.'))
     }
 }
@@ -122,5 +186,17 @@ export interface AmaterasConfig {
 export interface ConsoleData {
     guild: string,
     channel: string,
-    content: string
+    content: string,
+    reply: string | undefined
+}
+
+export interface ConsoleMessageOption {
+    id: string,
+    content: string,
+    author: { name: string, id: string},
+    timestamps: number,
+    url: string,
+    sticker: string | undefined,
+    attachments: { type: string | null, url: string }[],
+    embeds: APIEmbed[]
 }

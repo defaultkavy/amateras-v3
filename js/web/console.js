@@ -8,23 +8,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const module = {};
 const originUrl = window.location.protocol + '//' + window.location.host + '/v3';
 const sendButton = document.getElementById('send_button');
-const messageBox = document.getElementById('message_box');
+const replyBox = document.getElementById('reply_box');
+const messageInput = document.getElementById('message_box');
 const guildSelector = document.getElementById('guild_selector');
 const categorySelector = document.getElementById('category_selector');
 const channelSelector = document.getElementById('channel_selector');
 const statusText = document.getElementById('status');
+const messagesWrapper = document.querySelector('messages');
+const app = document.getElementById('amateras_console');
+let reply = false;
 document.body.style.backgroundColor = '#36393f';
 init();
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
         eventHandler();
         yield contentInit();
+        connect();
+    });
+}
+function connect() {
+    const sse = new EventSource('/stream');
+    sse.addEventListener('message', (ev) => {
+        const data = JSON.parse(ev.data);
+        if (data.type === 'update') {
+            messagesWrapperInit();
+        }
     });
 }
 function eventHandler() {
-    if (sendButton && messageBox) {
+    if (sendButton && messageInput) {
         sendButton.addEventListener('click', send);
     }
     if (guildSelector) {
@@ -33,24 +48,46 @@ function eventHandler() {
     if (categorySelector) {
         categorySelector.addEventListener('change', channelBoxInit);
     }
-    if (messageBox) {
+    if (channelSelector) {
+        channelSelector.addEventListener('change', messagesWrapperInit);
+    }
+    if (messageInput) {
         let virtualKeyboard = false;
-        messageBox.addEventListener('focus', (ev) => {
+        messageInput.addEventListener('focus', (ev) => {
             window.addEventListener('resize', resize);
         });
-        messageBox.addEventListener('blur', (ev) => {
+        messageInput.addEventListener('blur', (ev) => {
             window.removeEventListener('resize', resize);
             virtualKeyboard = false;
         });
         function resize() {
             virtualKeyboard = true;
         }
-        messageBox.addEventListener('keyup', (ev) => {
+        messageInput.addEventListener('keyup', (ev) => {
             if (!virtualKeyboard && ev.key === 'Enter') {
                 if (!ev.shiftKey)
                     send();
             }
         });
+    }
+    if (replyBox) {
+        replyBox.addEventListener('blur', replyBoxCheck);
+    }
+}
+function replyBoxCheck() {
+    if (replyBox.value !== '') {
+        if (!replyBox.value.match(/(https?:\/\/)?(www\.)?(discord.com)\/channels\/[0-9]\d+\/[0-9]\d+\/[0-9]\d+/)) {
+            replyBox.style.borderColor = '#ff0000';
+            reply = false;
+        }
+        else {
+            replyBox.style.borderColor = 'lime';
+            reply = true;
+        }
+    }
+    else {
+        replyBox.style.borderColor = 'grey';
+        reply = false;
     }
 }
 function getDiscordData() {
@@ -58,10 +95,14 @@ function getDiscordData() {
         return yield (yield fetch(originUrl + '/console-data')).json();
     });
 }
+function getChannelMessages(guildId, channelId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield (yield fetch(originUrl + '/console-data' + `/${guildId}/${channelId}/messages`)).json();
+    });
+}
 function contentInit() {
     return __awaiter(this, void 0, void 0, function* () {
         const data = yield getDiscordData();
-        console.debug(data);
         if (guildSelector && channelSelector) {
             for (const guild of data.guilds) {
                 const selectOption = new Option;
@@ -128,18 +169,38 @@ function channelBoxInit() {
             selectOption.innerText = channel.name;
             channelSelector.appendChild(selectOption);
         }
+        messagesWrapperInit();
+    });
+}
+function messagesWrapperInit() {
+    return __awaiter(this, void 0, void 0, function* () {
+        replyBox.value = '';
+        replyBoxCheck();
+        if (!messagesWrapper)
+            return;
+        const data = yield getChannelMessages(guildSelector.value, channelSelector.value);
+        data.messages.sort((a, b) => a.timestamps - b.timestamps);
+        while (messagesWrapper.firstChild) {
+            messagesWrapper.removeChild(messagesWrapper.firstChild);
+        }
+        for (const message of data.messages) {
+            const messageBox = new Message(message);
+            messagesWrapper.appendChild(messageBox.node);
+        }
+        messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
     });
 }
 function send() {
     return __awaiter(this, void 0, void 0, function* () {
-        if (messageBox.value === '')
+        if (messageInput.value === '')
             return;
-        const content = messageBox.value;
-        messageBox.value = '';
+        const content = messageInput.value;
+        messageInput.value = '';
         const status = yield post(originUrl + '/console', {
             guild: guildSelector.value,
             channel: channelSelector.value,
-            content: content
+            content: content,
+            reply: reply ? replyBox.value : undefined
         });
         if (statusText) {
             statusText.innerText = status;
@@ -166,4 +227,57 @@ function post(host, data) {
         });
     });
 }
+class Message {
+    constructor(data) {
+        this.node = document.createElement('message-box');
+        this.author = document.createElement('author');
+        this.content = document.createElement('content');
+        this.sticker = document.createElement('sticker');
+        this.attachments = document.createElement('attachments');
+        this.data = data;
+        this.init();
+    }
+    init() {
+        this.author.innerText = this.data.author.name;
+        this.content.innerText = this.data.content;
+        this.node.appendChild(this.author);
+        if (this.data.sticker) {
+            this.sticker.innerText = this.data.sticker;
+            this.node.appendChild(this.sticker);
+        }
+        else {
+            this.node.appendChild(this.content);
+        }
+        for (const attachment of this.data.attachments) {
+            const attachmentBox = document.createElement('attachment');
+            attachmentBox.innerText = attachment.type ? attachment.type : 'Unknown File';
+            attachmentBox.addEventListener('click', (ev) => {
+                window.open(attachment.url, '_Blank');
+            });
+            this.attachments.appendChild(attachmentBox);
+        }
+        for (const embed of this.data.embeds) {
+            const embedBox = document.createElement('object-embed');
+            embedBox.innerText = 'object/embed';
+            this.node.appendChild(embedBox);
+        }
+        this.node.appendChild(this.attachments);
+        this.eventHandler();
+    }
+    eventHandler() {
+        this.node.addEventListener('mouseenter', (ev) => {
+            const replyButton = document.createElement('reply-button');
+            replyButton.innerText = 'Reply';
+            this.node.appendChild(replyButton);
+            replyButton.addEventListener('click', (ev) => {
+                replyBox.value = this.data.url;
+                replyBoxCheck();
+            });
+            this.node.addEventListener('mouseleave', (ev) => {
+                replyButton.remove();
+            });
+        });
+    }
+}
+module.exports = {};
 //# sourceMappingURL=console.js.map

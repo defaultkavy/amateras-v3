@@ -10,6 +10,11 @@ export class _TextBaseChannel extends _GuildChannel {
     constructor(amateras: Amateras, _guild: _Guild, channel: TextChannel | ThreadChannel | NewsChannel) {
         super(amateras, _guild, channel)
         this.origin = channel
+        this.init()
+    }
+
+    async init() {
+        this.origin.messages.fetch({limit: 100})
     }
 
     async enableHint(info: _HintInfo) {

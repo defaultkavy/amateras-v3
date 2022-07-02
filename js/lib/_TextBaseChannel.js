@@ -16,6 +16,12 @@ class _TextBaseChannel extends _GuildChannel_1._GuildChannel {
     constructor(amateras, _guild, channel) {
         super(amateras, _guild, channel);
         this.origin = channel;
+        this.init();
+    }
+    init() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.origin.messages.fetch({ limit: 100 });
+        });
     }
     enableHint(info) {
         return __awaiter(this, void 0, void 0, function* () {
