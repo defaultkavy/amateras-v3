@@ -160,7 +160,7 @@ export class Amateras {
                     id: message.id,
                     content: message.content,
                     author: {
-                        name: member ? member.displayName : message.author.username,
+                        name: member ? member.nickname ? member.displayName : message.author.username : message.author.username,
                         id: message.author.id
                     },
                     timestamps: message.createdTimestamp,
