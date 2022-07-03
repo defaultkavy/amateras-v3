@@ -1,20 +1,24 @@
-import { APIEmbed } from "discord-api-types/v9"
-import { Client } from "./Client"
+import { AdminPage } from "./AdminPage.js"
+import { BasePageElement } from "./BasePageElement.js"
+import { Client } from "./Client.js"
+import { Page } from "./Page.js"
+import { DiscordMessageOptions } from "./_MessageWrapper.js"
 
-export class _MessageBox {
-    node: HTMLElement
+export class _MessageBox extends BasePageElement {
     author: HTMLElement
+    page: AdminPage
     data: DiscordMessageOptions
     content: HTMLElement
     sticker: HTMLElement
     attachments: HTMLElement
-    constructor(client: Client, data: DiscordMessageOptions) {
-        this.node = document.createElement('message-box')
+    constructor(client: Client, page: AdminPage, node: HTMLElement, data: DiscordMessageOptions) {
+        super(client, page, node)
+        this.page = page
+        this.data = data
         this.author = document.createElement('author')
         this.content = document.createElement('message-content')
         this.sticker = document.createElement('sticker')
         this.attachments = document.createElement('attachments')
-        this.data = data
         this.init()
     }
 
@@ -56,8 +60,8 @@ export class _MessageBox {
             this.node.appendChild(replyButton)
 
             replyButton.addEventListener('click', (ev) => {
-                replyBox.value = this.data.url
-                replyBoxCheck()
+                this.page.reply.node.value = this.data.url
+                this.page.reply.check()
             })
 
             this.node.addEventListener('mouseleave', (ev) => {
@@ -65,15 +69,4 @@ export class _MessageBox {
             })
         })
     }
-}
-
-export interface DiscordMessageOptions {
-    id: string,
-    content: string,
-    author: { name: string, id: string},
-    timestamps: number,
-    url: string,
-    sticker: string | undefined,
-    attachments: { type: string | null, url: string }[],
-    embeds: APIEmbed[]
 }

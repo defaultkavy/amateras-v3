@@ -1,4 +1,4 @@
-#amateras_console {
+app-page#admin_console {
     background-color: #36393f;
     display: flex;
     flex-direction: column;
@@ -76,7 +76,7 @@
         display: block;
     }
 
-    messages {
+    message-wrapper {
         display: block;
         background-color: #36393f;
         color: white;
@@ -167,7 +167,7 @@
         }
     }
 
-    #reply_section {
+    .reply_section {
         display: flex;
         margin: 10 0;
 

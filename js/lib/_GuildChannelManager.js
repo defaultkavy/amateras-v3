@@ -123,6 +123,37 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
         }
         return categories;
     }
+    listCategories(list) {
+        const categories = [];
+        for (const id of list) {
+            const _channel = this.cache.get(id);
+            if (!_channel || !_channel.isCategory())
+                continue;
+            const data = {
+                id: _channel.id,
+                name: _channel.name,
+                position: _channel.origin.position
+            };
+            categories.push(data);
+        }
+        return categories;
+    }
+    listTextChannels(list) {
+        const channels = [];
+        for (const id of list) {
+            const _channel = this.cache.get(id);
+            if (!_channel || !_channel.isTextBased())
+                continue;
+            const data = {
+                id: _channel.id,
+                name: _channel.name,
+                parent: _channel.origin.parentId,
+                position: _channel.isText() ? _channel.origin.position : undefined
+            };
+            channels.push(data);
+        }
+        return channels;
+    }
 }
 exports._GuildChannelManager = _GuildChannelManager;
 __GuildChannelManager_hints = new WeakMap();

@@ -105,6 +105,37 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
         return categories
     }
 
+    listCategories(list: string[]) {
+        const categories = []
+        for (const id of list) {
+            const _channel = this.cache.get(id)
+            if (!_channel || !_channel.isCategory()) continue
+            const data = {
+                id: _channel.id,
+                name: _channel.name,
+                position: _channel.origin.position
+            }
+            categories.push(data)
+        }
+        return categories
+    }
+
+    listTextChannels(list: string[]) {
+        const channels = []
+        for (const id of list) {
+            const _channel = this.cache.get(id)
+            if (!_channel || !_channel.isTextBased()) continue
+            const data = {
+                id: _channel.id,
+                name: _channel.name,
+                parent: _channel.origin.parentId,
+                position: _channel.isText() ? _channel.origin.position : undefined
+            }
+            channels.push(data)
+        }
+        return channels
+    }
+
 }
 
 export interface _GuildChannelManagerInfo {

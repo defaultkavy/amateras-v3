@@ -1,6 +1,7 @@
-import { Base } from "./Base";
-import { Client } from "./Client";
-import { Page } from "./Page";
+import { Base } from "./Base.js";
+import { Client } from "./Client.js";
+import { Page } from "./Page.js";
+
 
 export class BasePageElement extends Base {
     page: Page;
@@ -9,5 +10,11 @@ export class BasePageElement extends Base {
         super(client)
         this.page = page
         this.node = node
+    }
+
+    clearChild() {
+        while (this.node.firstChild) {
+            this.node.removeChild(this.node.firstChild)
+        }
     }
 }

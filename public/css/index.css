@@ -1,4 +1,4 @@
-#amateras_console {
+app-page#admin_console {
   background-color: #36393f;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -20,19 +20,19 @@
   overflow-x: hidden;
 }
 
-#amateras_console .selector_section {
+app-page#admin_console .selector_section {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
 }
 
-#amateras_console .selector_section .selector_block {
+app-page#admin_console .selector_section .selector_block {
   display: block;
   margin: 10px;
   width: 200px;
 }
 
-#amateras_console .selector_section .selector_block span {
+app-page#admin_console .selector_section .selector_block span {
   color: white;
   display: block;
   margin: 0 0 10;
@@ -40,7 +40,7 @@
   display: block;
 }
 
-#amateras_console .selector_section .selector_block select {
+app-page#admin_console .selector_section .selector_block select {
   background-color: #36393f;
   color: white;
   padding: 10px;
@@ -49,11 +49,11 @@
   width: 100%;
 }
 
-#amateras_console .selector_section .selector_block select option {
+app-page#admin_console .selector_section .selector_block select option {
   background-color: #2f3136;
 }
 
-#amateras_console button {
+app-page#admin_console button {
   display: inline-block;
   margin: 10 0 10;
   background-color: transparent;
@@ -65,18 +65,18 @@
   cursor: pointer;
 }
 
-#amateras_console button:hover {
+app-page#admin_console button:hover {
   background-color: #2f3136;
 }
 
-#amateras_console #status {
+app-page#admin_console #status {
   color: lime;
   font-size: 12px;
   display: inline-block;
   margin: 0 10;
 }
 
-#amateras_console textarea {
+app-page#admin_console textarea {
   width: 100%;
   height: 100px;
   resize: vertical;
@@ -87,7 +87,7 @@
   display: block;
 }
 
-#amateras_console messages {
+app-page#admin_console message-wrapper {
   display: block;
   background-color: #36393f;
   color: white;
@@ -95,39 +95,39 @@
   overflow-y: scroll;
 }
 
-#amateras_console messages::-webkit-scrollbar {
+app-page#admin_console message-wrapper::-webkit-scrollbar {
   width: 5px;
   background-color: #202225;
   border-radius: 5px;
 }
 
-#amateras_console messages::-webkit-scrollbar-thumb {
+app-page#admin_console message-wrapper::-webkit-scrollbar-thumb {
   background-color: white;
   border-radius: 5px;
 }
 
-#amateras_console messages message-box {
+app-page#admin_console message-wrapper message-box {
   display: block;
   padding: 10px;
   position: relative;
 }
 
-#amateras_console messages message-box:hover {
+app-page#admin_console message-wrapper message-box:hover {
   background-color: #2f3136;
 }
 
-#amateras_console messages message-box author {
+app-page#admin_console message-wrapper message-box author {
   display: inline-block;
   margin-right: 10px;
 }
 
-#amateras_console messages message-box message-content {
+app-page#admin_console message-wrapper message-box message-content {
   display: inline;
   color: #868c9c;
   word-wrap: break-word;
 }
 
-#amateras_console messages message-box object-embed {
+app-page#admin_console message-wrapper message-box object-embed {
   color: white;
   display: inline;
   font-size: 14px;
@@ -136,18 +136,18 @@
   background-color: #202225;
 }
 
-#amateras_console messages message-box sticker {
+app-page#admin_console message-wrapper message-box sticker {
   font-size: 14px;
   padding: 5 10;
   border-radius: 10px;
   background-color: #202225;
 }
 
-#amateras_console messages message-box attachments {
+app-page#admin_console message-wrapper message-box attachments {
   display: block;
 }
 
-#amateras_console messages message-box attachments attachment {
+app-page#admin_console message-wrapper message-box attachments attachment {
   font-size: 14px;
   padding: 5 10;
   border-radius: 10px;
@@ -158,11 +158,11 @@
   cursor: pointer;
 }
 
-#amateras_console messages message-box attachments attachment:hover {
+app-page#admin_console message-wrapper message-box attachments attachment:hover {
   color: white;
 }
 
-#amateras_console messages message-box reply-button {
+app-page#admin_console message-wrapper message-box reply-button {
   position: absolute;
   font-size: 14px;
   z-index: 1;
@@ -177,14 +177,14 @@
   background-color: #2f3136;
 }
 
-#amateras_console #reply_section {
+app-page#admin_console .reply_section {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   margin: 10 0;
 }
 
-#amateras_console #reply_section span {
+app-page#admin_console .reply_section span {
   font-size: 12px;
   color: white;
   padding: 2 5;
@@ -194,13 +194,64 @@
   border-radius: 10px;
 }
 
-#amateras_console #reply_section input {
+app-page#admin_console .reply_section input {
   background-color: #36393f;
   border: 1px solid grey;
   padding: 2px 5px;
   width: 100%;
   color: white;
   border-radius: 10px;
+}
+
+app-page#console_login {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-family: Microsoft Yahei;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100%;
+}
+
+app-page#console_login span {
+  color: #cccccc;
+  display: block;
+  width: 200px;
+}
+
+app-page#console_login input {
+  display: block;
+  width: 200px;
+  margin: 10px;
+  background-color: #36393f;
+  border: 1px solid grey;
+  padding: 2px 5px;
+  color: white;
+  border-radius: 10px;
+}
+
+app-page#console_login button {
+  display: inline-block;
+  margin: 10 0 10;
+  background-color: transparent;
+  border: 1px solid grey;
+  padding: 10px 20px;
+  border-radius: 25px;
+  color: white;
+  min-width: 100px;
+  cursor: pointer;
+}
+
+app-page#console_login button:hover {
+  background-color: #2f3136;
 }
 
 body {

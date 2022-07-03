@@ -10,7 +10,7 @@ import { _MessageManager } from "./_MessageManager";
 import express, { Express } from 'express'
 import test from '../etc/test'
 import { EventManager } from "./_EventManager";
-import { APIEmbed } from "discord-api-types/v9";
+import { ConsoleData, ConsoleDB, ConsoleLoginInfo, ConsoleMessageOption } from "./Console.js";
 
 export class Amateras {
     client: Client<true>;
@@ -25,6 +25,7 @@ export class Amateras {
     ready: boolean;
     express: Express;
     events: EventManager;
+    sessions: Map<string, ConsoleDB>;
     constructor(conf: AmaterasConfig) {
         this.ready = false
         this.client = conf.client
@@ -38,6 +39,7 @@ export class Amateras {
         this.messages = new _MessageManager(this)
         this.express = express()
         this.events = new EventManager(this)
+        this.sessions = new Map
         this.init()
     }
 
@@ -49,6 +51,8 @@ export class Amateras {
         await this.guilds.init()
         // init all events
         await this.events.init()
+        // init system
+        await this.system.init()
         // start handle commands
         this.eventHandler()
         this.ready = true
@@ -88,6 +92,22 @@ export class Amateras {
             } else res.send(global.path + req.originalUrl.slice(6))
         })
 
+        this.express.post('/login', async (req,res) => {
+            const data = req.body as ConsoleLoginInfo
+            const userData = await this.system.console.getUser(data.username)
+            if (!userData) return res.send('User not exist')
+            if (userData.password !== data.password) return res.send('Wrong password')
+            this.sessions.set(data.sessionID, userData)
+            res.send('Login successful')
+        })
+
+        this.express.post('/session', async (req, res) => {
+            const data = req.body as { sessionID: string }
+            const get = this.sessions.get(data.sessionID)
+            if (!get) res.send(false)
+            else res.send(true)
+        })
+
         this.express.post('/console', async (req, res) => {
             const data = req.body as ConsoleData
             const _guild = this.guilds.cache.get(data.guild)
@@ -108,18 +128,39 @@ export class Amateras {
             res.send('Send')
         })
 
-        this.express.get('/console-data', (req, res) => {
-            const data: any = { guilds: [] }
-            for (const _guild of this.guilds.cache.values()) {
-                const guildData = {
-                    id: _guild.id,
-                    name: _guild.name,
-                    categories: _guild.channels.categories,
-                    channels: _guild.channels.textChannels
+        this.express.get('/console-data', async (req, res) => {
+            const sessionID = req.query.sessionID as string
+            const get = this.sessions.get(sessionID)
+            if (!get) return res.send({ success: false, message: 'session error' })
+            if (get.role === 'admin') {
+                const data: any = { guilds: [], success: true }
+                for (const _guild of this.guilds.cache.values()) {
+                    const guildData = {
+                        id: _guild.id,
+                        name: _guild.name,
+                        categories: _guild.channels.categories,
+                        channels: _guild.channels.textChannels
+                    }
+                    data.guilds.push(guildData)
                 }
-                data.guilds.push(guildData)
+                res.send(data)
+            } else {
+                const _guild = this.guilds.cache.get('744127668064092160')
+                if (!_guild) return res.send({ success: false, message: 'guild cache error' })
+                const limitAccess = await this.system.console.getLimitAccess()
+                if (!limitAccess) return res.send({ success: false, message: 'limit error' })
+                const data = {
+                    guilds: [
+                        {
+                            id: _guild.id,
+                            name: _guild.name,
+                            categories: _guild.channels.listCategories(limitAccess.categories),
+                            channels: _guild.channels.listTextChannels(limitAccess.channels)
+                        }
+                    ]
+                }
+                res.send(data)
             }
-            res.send(data)
         })
 
         this.express.get('/console-data/:guildId/:channelId/messages', (req, res) => {
@@ -185,20 +226,6 @@ export interface AmaterasConfig {
     config: {}
 }
 
-export interface ConsoleData {
-    guild: string,
-    channel: string,
-    content: string,
-    reply: string | undefined
-}
-
-export interface ConsoleMessageOption {
-    id: string,
-    content: string,
-    author: { name: string, id: string},
-    timestamps: number,
-    url: string,
-    sticker: string | undefined,
-    attachments: { type: string | null, url: string }[],
-    embeds: APIEmbed[]
+export interface Session {
+    sessionID: string
 }

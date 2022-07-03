@@ -37,6 +37,7 @@ class Amateras {
         this.messages = new _MessageManager_1._MessageManager(this);
         this.express = (0, express_1.default)();
         this.events = new _EventManager_1.EventManager(this);
+        this.sessions = new Map;
         this.init();
     }
     init() {
@@ -48,6 +49,8 @@ class Amateras {
             yield this.guilds.init();
             // init all events
             yield this.events.init();
+            // init system
+            yield this.system.init();
             // start handle commands
             this.eventHandler();
             this.ready = true;
@@ -86,6 +89,24 @@ class Amateras {
             else
                 res.send(global.path + req.originalUrl.slice(6));
         });
+        this.express.post('/login', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const data = req.body;
+            const userData = yield this.system.console.getUser(data.username);
+            if (!userData)
+                return res.send('User not exist');
+            if (userData.password !== data.password)
+                return res.send('Wrong password');
+            this.sessions.set(data.sessionID, userData);
+            res.send('Login successful');
+        }));
+        this.express.post('/session', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const data = req.body;
+            const get = this.sessions.get(data.sessionID);
+            if (!get)
+                res.send(false);
+            else
+                res.send(true);
+        }));
         this.express.post('/console', (req, res) => __awaiter(this, void 0, void 0, function* () {
             const data = req.body;
             const _guild = this.guilds.cache.get(data.guild);
@@ -110,19 +131,44 @@ class Amateras {
                 yield _channel.origin.send(data.content);
             res.send('Send');
         }));
-        this.express.get('/console-data', (req, res) => {
-            const data = { guilds: [] };
-            for (const _guild of this.guilds.cache.values()) {
-                const guildData = {
-                    id: _guild.id,
-                    name: _guild.name,
-                    categories: _guild.channels.categories,
-                    channels: _guild.channels.textChannels
-                };
-                data.guilds.push(guildData);
+        this.express.get('/console-data', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const sessionID = req.query.sessionID;
+            const get = this.sessions.get(sessionID);
+            if (!get)
+                return res.send({ success: false, message: 'session error' });
+            if (get.role === 'admin') {
+                const data = { guilds: [], success: true };
+                for (const _guild of this.guilds.cache.values()) {
+                    const guildData = {
+                        id: _guild.id,
+                        name: _guild.name,
+                        categories: _guild.channels.categories,
+                        channels: _guild.channels.textChannels
+                    };
+                    data.guilds.push(guildData);
+                }
+                res.send(data);
             }
-            res.send(data);
-        });
+            else {
+                const _guild = this.guilds.cache.get('744127668064092160');
+                if (!_guild)
+                    return res.send({ success: false, message: 'guild cache error' });
+                const limitAccess = yield this.system.console.getLimitAccess();
+                if (!limitAccess)
+                    return res.send({ success: false, message: 'limit error' });
+                const data = {
+                    guilds: [
+                        {
+                            id: _guild.id,
+                            name: _guild.name,
+                            categories: _guild.channels.listCategories(limitAccess.categories),
+                            channels: _guild.channels.listTextChannels(limitAccess.channels)
+                        }
+                    ]
+                };
+                res.send(data);
+            }
+        }));
         this.express.get('/console-data/:guildId/:channelId/messages', (req, res) => {
             const data = { channel: req.params.channelId, guild: req.params.guildId, messages: [] };
             const _guild = this.guilds.cache.get(data.guild);

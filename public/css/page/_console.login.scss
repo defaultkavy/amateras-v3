@@ -1,0 +1,42 @@
+app-page#console_login {
+    display: flex;
+    font-family: Microsoft Yahei;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    span {
+        color: #cccccc;
+        display: block;
+        width: 200px;
+    }
+
+    input {
+        display: block;
+        width: 200px;
+        margin: 10px;
+        background-color: #36393f;
+        border: 1px solid grey;
+        padding: 2px 5px;
+        color: white;
+        border-radius: 10px;
+    }
+
+    button {
+        display: inline-block;
+        margin: 10 0 10;
+        background-color: transparent;
+        border: 1px solid grey;
+        padding: 10px 20px;
+        border-radius: 25px;
+        color: white;
+        min-width: 100px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #2f3136;
+        }
+    }
+
+}

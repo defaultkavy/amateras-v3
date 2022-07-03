@@ -1,11 +1,13 @@
-export class _MessageBox {
-    constructor(client, data) {
-        this.node = document.createElement('message-box');
+import { BasePageElement } from "./BasePageElement.js";
+export class _MessageBox extends BasePageElement {
+    constructor(client, page, node, data) {
+        super(client, page, node);
+        this.page = page;
+        this.data = data;
         this.author = document.createElement('author');
         this.content = document.createElement('message-content');
         this.sticker = document.createElement('sticker');
         this.attachments = document.createElement('attachments');
-        this.data = data;
         this.init();
     }
     init() {
@@ -41,8 +43,8 @@ export class _MessageBox {
             replyButton.innerText = 'Reply';
             this.node.appendChild(replyButton);
             replyButton.addEventListener('click', (ev) => {
-                replyBox.value = this.data.url;
-                replyBoxCheck();
+                this.page.reply.node.value = this.data.url;
+                this.page.reply.check();
             });
             this.node.addEventListener('mouseleave', (ev) => {
                 replyButton.remove();

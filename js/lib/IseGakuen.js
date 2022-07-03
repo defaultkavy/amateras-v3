@@ -33,7 +33,7 @@ class IseGakuen extends _Base_1._Base {
             const rows = yield this.sheet.getRows();
             const headers = this.sheet.headerValues;
             const arr = [];
-            for (let i = 1; i < rows.length; i++) {
+            for (let i = 0; i < rows.length; i++) {
                 const obj = {};
                 for (const header of headers) {
                     obj[header] = rows[i][header];
