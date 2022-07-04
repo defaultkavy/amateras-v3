@@ -12,12 +12,10 @@ app-page#admin_console {
           align-items: stretch;
   height: 100vh;
   width: 100%;
-  padding: 10;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   font-family: Microsoft Yahei;
   font-size: 18px;
-  overflow-x: hidden;
 }
 
 app-page#admin_console .selector_section {
@@ -53,38 +51,52 @@ app-page#admin_console .selector_section .selector_block select option {
   background-color: #2f3136;
 }
 
-app-page#admin_console button {
-  display: inline-block;
-  margin: 10 0 10;
-  background-color: transparent;
-  border: 1px solid grey;
-  padding: 10px;
-  border-radius: 25px;
-  color: white;
-  width: 100px;
-  cursor: pointer;
-}
-
-app-page#admin_console button:hover {
-  background-color: #2f3136;
-}
-
 app-page#admin_console #status {
   color: lime;
   font-size: 12px;
-  display: inline-block;
+  display: none;
   margin: 0 10;
 }
 
-app-page#admin_console textarea {
+app-page#admin_console .input_section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   width: 100%;
-  height: 100px;
-  resize: vertical;
-  padding: 10px;
+  padding: 10;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+app-page#admin_console .input_section textarea {
+  width: 100%;
+  height: calc(1em + 18px);
+  resize: none;
+  padding: 5 10px;
   font-size: 16px;
+  font-family: Microsoft Yahei;
   color: white;
   background-color: #40444b;
   display: block;
+  border-radius: 16px;
+}
+
+app-page#admin_console .input_section button {
+  display: inline-block;
+  margin-left: 10;
+  background-color: transparent;
+  border: 1px solid grey;
+  border-radius: 25px;
+  color: white;
+  width: calc(1em + 20px);
+  height: 100%;
+  cursor: pointer;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+app-page#admin_console .input_section button:hover {
+  background-color: #2f3136;
 }
 
 app-page#admin_console message-wrapper {
@@ -107,8 +119,10 @@ app-page#admin_console message-wrapper::-webkit-scrollbar-thumb {
 }
 
 app-page#admin_console message-wrapper message-box {
-  display: block;
-  padding: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 10px 10;
   position: relative;
 }
 
@@ -116,38 +130,229 @@ app-page#admin_console message-wrapper message-box:hover {
   background-color: #2f3136;
 }
 
-app-page#admin_console message-wrapper message-box author {
-  display: inline-block;
+app-page#admin_console message-wrapper message-box avatar {
+  display: block;
+  height: 50px;
+  width: 50px;
+  overflow: hidden;
+  border-radius: 25px;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+app-page#admin_console message-wrapper message-box avatar img {
+  height: 50px;
+  width: 50px;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper {
+  padding-left: 15px;
+  overflow: hidden;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper author {
+  display: block;
   margin-right: 10px;
 }
 
-app-page#admin_console message-wrapper message-box message-content {
-  display: inline;
-  color: #868c9c;
+app-page#admin_console message-wrapper message-box content-wrapper message-content {
+  display: inline-block;
+  color: #bcc4da;
   word-wrap: break-word;
+  margin: 2px 0;
 }
 
-app-page#admin_console message-wrapper message-box object-embed {
+app-page#admin_console message-wrapper message-box content-wrapper message-content a:link {
+  color: #13ade9;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper message-content a:visited {
+  color: #13ade9;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed {
   color: white;
-  display: inline;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   font-size: 14px;
-  padding: 5 10;
+  margin: 2 0;
   border-radius: 10px;
   background-color: #202225;
+  max-width: 500px;
+  overflow: hidden;
 }
 
-app-page#admin_console message-wrapper message-box sticker {
-  font-size: 14px;
-  padding: 5 10;
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-color {
+  width: 6px;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main {
+  padding: 10px;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block embed-author {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 5 0;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block embed-author author-avatar {
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+  overflow: hidden;
+  border-radius: 25px;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  margin-right: 10px;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block embed-author author-avatar img {
+  height: 25px;
+  width: 25px;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block embed-author a {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block embed-author a:link {
+  color: white;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block embed-author a:visited {
+  color: white;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block #embed_title {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 5 0;
+  font-weight: 900;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block #embed_title:link {
+  color: #75acff;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block #embed_title:visited {
+  color: #ebf3ff;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block description {
+  display: block;
+  margin: 5 0;
+  color: #bac2cc;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block fields-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  margin: 5 0;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block fields-wrapper field field-name {
+  display: block;
+  font-weight: 900;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section thumbnail {
+  height: 80px;
+  width: 80px;
+  overflow: hidden;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  margin-top: 5px;
+  margin-left: 10px;
   border-radius: 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
   background-color: #202225;
+  position: relative;
 }
 
-app-page#admin_console message-wrapper message-box attachments {
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section thumbnail img {
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  width: 80px;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-lower-section {
   display: block;
 }
 
-app-page#admin_console message-wrapper message-box attachments attachment {
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-lower-section embed-image {
+  display: block;
+  overflow: hidden;
+  border-radius: 10px;
+  margin: 5 0;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-lower-section embed-image img {
+  max-width: 100%;
+  max-height: 400px;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-lower-section embed-footer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 10;
+  font-size: 12px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-lower-section embed-footer footer-image {
+  height: 20px;
+  margin-right: 5px;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-lower-section embed-footer footer-image img {
+  height: 20px;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-lower-section embed-footer dot {
+  margin: 0 5px;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper sticker {
+  font-size: 14px;
+  padding: 5 10;
+  border-radius: 10px;
+  background-color: #202225;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper attachments {
+  display: block;
+}
+
+app-page#admin_console message-wrapper message-box content-wrapper attachments attachment {
   font-size: 14px;
   padding: 5 10;
   border-radius: 10px;
@@ -158,7 +363,7 @@ app-page#admin_console message-wrapper message-box attachments attachment {
   cursor: pointer;
 }
 
-app-page#admin_console message-wrapper message-box attachments attachment:hover {
+app-page#admin_console message-wrapper message-box content-wrapper attachments attachment:hover {
   color: white;
 }
 
@@ -167,9 +372,7 @@ app-page#admin_console message-wrapper message-box reply-button {
   font-size: 14px;
   z-index: 1;
   right: 5px;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
+  top: 5px;
   padding: 5px 10px;
   border: 1px solid grey;
   border-radius: 10px;
@@ -181,7 +384,7 @@ app-page#admin_console .reply_section {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  margin: 10 0;
+  padding: 10 10;
 }
 
 app-page#admin_console .reply_section span {

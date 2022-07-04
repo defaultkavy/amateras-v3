@@ -1,11 +1,9 @@
 import { BasePageElement } from "./BasePageElement.js";
-import { _MessageEmbed } from "./_MessageEmbed.js";
 export class _MessageBox extends BasePageElement {
     constructor(client, page, node, data) {
         super(client, page, node);
         this.page = page;
         this.data = data;
-        this.embeds = new Map;
         this.author = document.createElement('author');
         this.content = document.createElement('message-content');
         this.sticker = document.createElement('sticker');
@@ -16,19 +14,14 @@ export class _MessageBox extends BasePageElement {
     init() {
         this.author.innerText = this.data.author.name;
         this.content.innerText = this.data.content;
-        this.avatar.src = this.data.author.avatar;
-        const avatarWrapper = document.createElement('avatar');
-        avatarWrapper.appendChild(this.avatar);
-        const contentWrapper = document.createElement('content-wrapper');
-        this.node.appendChild(avatarWrapper);
-        this.node.appendChild(contentWrapper);
-        contentWrapper.appendChild(this.author);
+        this.avatar.src = this.data.avatar;
+        this.node.appendChild(this.author);
         if (this.data.sticker) {
             this.sticker.innerText = this.data.sticker;
-            contentWrapper.appendChild(this.sticker);
+            this.node.appendChild(this.sticker);
         }
         else {
-            contentWrapper.appendChild(this.content);
+            this.node.appendChild(this.content);
         }
         for (const attachment of this.data.attachments) {
             const attachmentBox = document.createElement('attachment');
@@ -39,12 +32,11 @@ export class _MessageBox extends BasePageElement {
             this.attachments.appendChild(attachmentBox);
         }
         for (const embed of this.data.embeds) {
-            const embedBox = new _MessageEmbed(this.client, this, embed, document.createElement('object-embed'));
-            this.embeds.set(+new Date, embedBox);
-            contentWrapper.appendChild(embedBox.node);
+            const embedBox = document.createElement('object-embed');
+            embedBox.innerText = 'object/embed';
+            this.node.appendChild(embedBox);
         }
-        contentWrapper.appendChild(this.attachments);
-        this.replaceLink();
+        this.node.appendChild(this.attachments);
         this.eventHandler();
     }
     eventHandler() {
@@ -60,15 +52,6 @@ export class _MessageBox extends BasePageElement {
                 replyButton.remove();
             });
         });
-    }
-    replaceLink() {
-        const regex = /https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}/;
-        const matches = this.data.content.match(regex);
-        if (matches) {
-            for (const url of matches) {
-                this.content.innerHTML = this.data.content.replace(url, `<a target="_Blank" href="${url}">${url}</a>`);
-            }
-        }
     }
 }
 //# sourceMappingURL=_MessageBox.js.map

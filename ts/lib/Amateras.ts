@@ -178,6 +178,7 @@ export class Amateras {
                         url: attachment.url
                     })
                 }
+                if (!message.author) continue
                 const member = _guild.origin.members.cache.get(message.author.id)
                 const sticker = message.stickers.first()
                 // mention replace
@@ -204,7 +205,8 @@ export class Amateras {
                     content: message.content,
                     author: {
                         name: member ? member.nickname ? member.displayName : message.author.username : message.author.username,
-                        id: message.author.id
+                        id: message.author.id,
+                        avatar: member ? member.displayAvatarURL({format: 'png', size: 128}) : message.author.displayAvatarURL({format: 'png', size: 128})
                     },
                     timestamps: message.createdTimestamp,
                     url: message.url,

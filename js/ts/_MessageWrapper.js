@@ -14,14 +14,8 @@ export class _MessageWrapper extends BasePageElement {
         super(client, page, node);
         this.page = page;
         this.lastMessageId = '';
-        this.cache = new Map;
-        this.idle = true;
-        this.init();
     }
     init() {
-        this.eventHandler();
-    }
-    contentInit() {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield this.channelMessages(this.page.guildId, this.page.channelId);
             // clear reply link when change channel
@@ -29,26 +23,17 @@ export class _MessageWrapper extends BasePageElement {
             // sort messages
             data.messages.sort((a, b) => a.timestamps - b.timestamps);
             // check last message before update
+            if (this.lastMessageId === data.messages[data.messages.length - 1].id)
+                return;
             this.lastMessageId = data.messages[data.messages.length - 1].id;
             // clear
             this.clearChild();
-            this.cache.clear();
             for (const message of data.messages) {
                 const messageBox = new _MessageBox(this.client, this.page, document.createElement('message-box'), message);
-                this.cache.set(message.id, messageBox);
                 this.node.appendChild(messageBox.node);
             }
-            if (this.idle)
-                this.node.scrollTop = this.node.scrollHeight;
+            this.node.scrollTop = this.node.scrollHeight;
         });
-    }
-    eventHandler() {
-        this.node.addEventListener('scroll', (ev) => {
-            if (this.node.scrollTop - (this.node.scrollHeight - this.node.clientHeight) > -5)
-                this.idle = true;
-            else
-                this.idle = false;
-        }, { passive: true });
     }
     channelMessages(guildId, channelId) {
         return __awaiter(this, void 0, void 0, function* () {

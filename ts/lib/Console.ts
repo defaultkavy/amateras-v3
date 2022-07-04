@@ -72,7 +72,7 @@ export interface ConsoleData {
 export interface ConsoleMessageOption {
     id: string,
     content: string,
-    author: { name: string, id: string},
+    author: { name: string, id: string, avatar: string},
     timestamps: number,
     url: string,
     sticker: string | undefined,

@@ -25,7 +25,7 @@ export class AdminPage extends Page {
         this.input = document.createElement('textarea')
         this.clearButton = this.client.createTitle('Clear')
         this.sendButton = document.createElement('button')
-        this.sendButton.innerText = 'Send'
+        this.sendButton.innerText = '>'
         this.statusText = document.createElement('span')
         this.statusText.id = 'status'
     }
@@ -43,7 +43,7 @@ export class AdminPage extends Page {
         this.client.server.connect('/stream')
         this.client.server.onmessage((data) => {
             if (data.type === 'update') {
-                this.messages.init()
+                this.messages.contentInit()
             }
         })
     }
@@ -51,7 +51,10 @@ export class AdminPage extends Page {
     async eventHandler() {
         this.guildSelector.node.addEventListener('change', async () => this.categoryInit(await this.discordData()))
         this.categorySelector.node.addEventListener('change', async () => this.channelInit(await this.discordData()))
-        this.channelSelector.node.addEventListener('change', async () => this.messages.init())
+        this.channelSelector.node.addEventListener('change', async () => {
+            this.messages.idle = true
+            this.messages.contentInit()
+        })
         this.clearButton.addEventListener('click', (ev) => { this.reply.clear() })
         this.sendButton.addEventListener('click', (ev) => { this.send() })
         
@@ -69,11 +72,17 @@ export class AdminPage extends Page {
             virtualKeyboard = true
         }
 
-        this.input.addEventListener('keyup', (ev) => {
-
+        this.input.addEventListener('keydown', (ev) => {
             if (!virtualKeyboard && ev.key === 'Enter') {
-                if (!ev.shiftKey) this.send()
+                if (!ev.shiftKey) {
+                    ev.preventDefault()
+                    this.send()
+                }
             }
+        })
+
+        this.input.addEventListener('input', (ev) => {
+            this.resizeInput()
         })
     }
 
@@ -116,13 +125,14 @@ export class AdminPage extends Page {
             this.channelSelector.addOption(channel.name, channel.id)
         }
 
-        this.messages.init()
+        this.messages.contentInit()
     }
 
     async send() {
         // cache content before clear
         const content = this.input.value
         this.input.value = ''
+        this.resizeInput()
         //
         const status = await this.client.server.post(this.client.origin + '/console', {
             guild: this.guildSelector.node.value,
@@ -135,6 +145,11 @@ export class AdminPage extends Page {
         setTimeout(() => {
             this.statusText.innerText = ''
         }, 2000);
+    }
+
+    resizeInput() {
+        this.input.style.height = '20px'
+        this.input.style.height = `${this.input.scrollHeight + 3}px`
     }
 
     private layout() {

@@ -5,11 +5,9 @@ app-page#admin_console {
     align-items: stretch;
     height: 100vh;
     width: 100%;
-    padding: 10;
     box-sizing: border-box;
     font-family: Microsoft Yahei;
     font-size: 18px;
-    overflow-x: hidden;
     
     .selector_section {
         display: flex;
@@ -42,38 +40,48 @@ app-page#admin_console {
         }
     }
 
-    button {
-        display: inline-block;
-        margin: 10 0 10;
-        background-color: transparent;
-        border: 1px solid grey;
-        padding: 10px;
-        border-radius: 25px;
-        color: white;
-        width: 100px;
-        cursor: pointer;
-
-        &:hover {
-            background-color: #2f3136;
-        }
-    }
-
     #status {
         color: lime;
         font-size: 12px;
-        display: inline-block;
+        display: none;
         margin: 0 10
     }
 
-    textarea {
+    .input_section {
+        display: flex;
         width: 100%;
-        height: 100px;
-        resize: vertical;
-        padding: 10px;
-        font-size: 16px;
-        color: white;
-        background-color: #40444b;
-        display: block;
+        padding: 10;
+        box-sizing: border-box;
+
+        textarea {
+            width: 100%;
+            height: calc(1em + 18px);
+            resize: none;
+            padding: 5 10px;
+            font-size: 16px;
+            font-family: Microsoft Yahei;
+            color: white;
+            background-color: #40444b;
+            display: block;
+            border-radius: 16px;
+        }
+
+        button {
+            display: inline-block;
+            margin-left: 10;
+            background-color: transparent;
+            border: 1px solid grey;
+            border-radius: 25px;
+            color: white;
+            width: calc(1em + 20px);
+            height: 100%;
+            cursor: pointer;
+            flex-shrink: 0;
+    
+            &:hover {
+                background-color: #2f3136;
+            }
+        }
     }
 
     message-wrapper {
@@ -95,57 +103,80 @@ app-page#admin_console {
         }
 
         message-box {
-            display: block;
-            padding: 10px;
+            display: flex;
+            padding: 10px 10;
             position: relative;
 
             &:hover {
                 background-color: #2f3136;
             }
 
-            author {
-                display: inline-block;
-                margin-right: 10px;
-            }
-
-            message-content {
-                display: inline;
-                color: #868c9c;
-                word-wrap: break-word;
-            }
-
-            object-embed {
-                color: white;
-                display: inline;
-                font-size: 14px;
-                padding: 5 10;
-                border-radius: 10px;
-                background-color: #202225;
-
-            }
-
-            sticker {
-                font-size: 14px;
-                padding: 5 10;
-                border-radius: 10px;
-                background-color: #202225;
-            }
-
-            attachments {
+            avatar {
                 display: block;
+                height: 50px;
+                width: 50px;
+                overflow: hidden;
+                border-radius: 25px;
+                flex-shrink: 0;
 
-                attachment {
+                img {
+                    height: 50px;
+                    width: 50px;
+                }
+            }
+
+            content-wrapper {
+                padding-left: 15px;
+                overflow: hidden;
+
+                author {
+                    display: block;
+                    margin-right: 10px;
+                }
+    
+                message-content {
+                    display: inline-block;
+                    color: #bcc4da;
+                    word-wrap: break-word;
+                    margin: 2px 0;
+
+                    a {
+
+                        &:link {
+                            color: #13ade9
+                        }
+
+                        &:visited {
+                            color: #13ade9
+                        }
+                    }
+                }
+    
+                @import './console.embed';
+    
+                sticker {
                     font-size: 14px;
                     padding: 5 10;
                     border-radius: 10px;
-                    border: 1px solid grey;
-                    margin: 5px 5px 0;
-                    display: inline-block;
-                    color: #868c9c;
-                    cursor: pointer;
-
-                    &:hover {
-                        color: white;
+                    background-color: #202225;
+                }
+    
+                attachments {
+                    display: block;
+    
+                    attachment {
+                        font-size: 14px;
+                        padding: 5 10;
+                        border-radius: 10px;
+                        border: 1px solid grey;
+                        margin: 5px 5px 0;
+                        display: inline-block;
+                        color: #868c9c;
+                        cursor: pointer;
+    
+                        &:hover {
+                            color: white;
+                        }
                     }
                 }
             }
@@ -155,8 +186,7 @@ app-page#admin_console {
                 font-size: 14px;
                 z-index: 1;
                 right: 5px;
-                top: 50%;
-                transform: translateY(-50%);
+                top: 5px;
                 padding: 5px 10px;
                 border: 1px solid grey;
                 border-radius: 10px;
@@ -169,7 +199,7 @@ app-page#admin_console {
 
     .reply_section {
         display: flex;
-        margin: 10 0;
+        padding: 10 10;
 
         span {
             font-size: 12px;
