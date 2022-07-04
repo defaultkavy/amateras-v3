@@ -262,6 +262,7 @@ app-page#admin_console message-wrapper message-box content-wrapper object-embed 
   display: block;
   margin: 5 0;
   color: #bac2cc;
+  word-break: break-all;
 }
 
 app-page#admin_console message-wrapper message-box content-wrapper object-embed embed-main embed-upper-section embed-text-block fields-wrapper {
