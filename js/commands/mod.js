@@ -35,7 +35,7 @@ function mod(interact, amateras) {
                             else if (subcmd2.name === 'message')
                                 obj.message = subcmd2.value;
                         }
-                        const channel = yield amateras.system.youtube.fetchChannel(obj.channelId);
+                        const channel = yield amateras.system.youtube.fetchChannel(obj.id);
                         if (!channel)
                             return interact.origin.followUp({ content: 'Channel not exist.', ephemeral: true });
                         yield interact._guild.notifiers.add(obj);

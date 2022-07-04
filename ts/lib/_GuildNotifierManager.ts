@@ -39,7 +39,7 @@ export class _GuildNotifierManager extends _BaseGuildManagerDB<_GuildNotifier, _
         }
 
         function check(data: _GuildNotifierOptions | _GuildNotifierDB): data is _GuildNotifierDB {
-            return 'videoSent' in data
+            return 'videosSent' in data
         }
     }
 }

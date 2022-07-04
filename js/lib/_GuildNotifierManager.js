@@ -60,7 +60,7 @@ class _GuildNotifierManager extends _BaseGuildManagerDB_1._BaseGuildManagerDB {
         return __awaiter(this, void 0, void 0, function* () {
             return Object.assign(Object.assign({}, data), { _channel: _channel, videosSent: check(data) ? data.videosSent : [] });
             function check(data) {
-                return 'videoSent' in data;
+                return 'videosSent' in data;
             }
         });
     }

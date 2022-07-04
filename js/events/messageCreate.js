@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const request_1 = __importDefault(require("request"));
+const request_promise_1 = __importDefault(require("request-promise"));
 module.exports = {
     name: 'messageCreate',
     once: false,
@@ -28,7 +28,7 @@ module.exports = {
                     return;
                 _message._channel.hint.send();
             }
-            (0, request_1.default)('http://localhost:5500/console-update');
+            (0, request_promise_1.default)('http://localhost:5500/console-update').catch(() => { });
         });
     }
 };

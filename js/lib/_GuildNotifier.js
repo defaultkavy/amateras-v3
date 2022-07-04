@@ -54,7 +54,7 @@ class _GuildNotifier extends _BaseGuildObjDB_1._BaseGuildObjDB {
                 author: {
                     name: videoInfo.channelTitle ? videoInfo.channelTitle : undefined,
                     iconURL: videoInfo.channelThumbnailURL,
-                    url: videoInfo.channelId ? `https://youtube.com/c/${videoInfo.channelId}` : undefined
+                    url: videoInfo.channelId ? `https://youtube.com/channel/${videoInfo.channelId}` : undefined
                 },
                 thumbnail: {
                     url: videoInfo.channelThumbnailURL
@@ -123,6 +123,7 @@ class _GuildNotifier extends _BaseGuildObjDB_1._BaseGuildObjDB {
         return row;
     }
     presave() {
+        console.debug(Array.from(this.videosSent.keys()));
         return {
             videosSent: Array.from(this.videosSent.keys())
         };

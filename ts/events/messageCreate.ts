@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import request from "request";
+import request from "request-promise";
 import { Amateras } from "../lib/Amateras";
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
             _message._channel.hint.send()
         }
 
-        request('http://localhost:5500/console-update')
+        request('http://localhost:5500/console-update').catch(() => {})
     }
 
 }
