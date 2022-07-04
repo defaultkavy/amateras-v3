@@ -17,7 +17,6 @@ export class Client {
 
     async init() {
         const session = await this.server.post(this.origin + '/session', {})
-        console.debug(session)
         if (session === 'false') {
             this.pages.load(this.pages.loginPage)
         }

@@ -21,7 +21,6 @@ export class Client {
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             const session = yield this.server.post(this.origin + '/session', {});
-            console.debug(session);
             if (session === 'false') {
                 this.pages.load(this.pages.loginPage);
             }

@@ -109,7 +109,6 @@ export class _GuildNotifier extends _BaseGuildObjDB {
     }
 
     presave() {
-        console.debug(Array.from(this.videosSent.keys()))
         return {
             videosSent: Array.from(this.videosSent.keys())
         }

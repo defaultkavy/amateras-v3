@@ -123,7 +123,6 @@ class _GuildNotifier extends _BaseGuildObjDB_1._BaseGuildObjDB {
         return row;
     }
     presave() {
-        console.debug(Array.from(this.videosSent.keys()));
         return {
             videosSent: Array.from(this.videosSent.keys())
         };
