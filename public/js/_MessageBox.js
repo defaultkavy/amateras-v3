@@ -65,8 +65,9 @@ export class _MessageBox extends BasePageElement {
         const regex = /https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}/;
         const matches = this.data.content.match(regex);
         if (matches) {
+            const text = this.data.content.replace(/\n/g, '<br>');
             for (const url of matches) {
-                this.content.innerHTML = this.data.content.replace(url, `<a target="_Blank" href="${url}">${url}</a>`);
+                this.content.innerHTML = text.replace(url, `<a target="_Blank" href="${url}">${url}</a>`);
             }
         }
     }
