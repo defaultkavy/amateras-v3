@@ -147,7 +147,9 @@ export class MessageBox extends BasePageElement {
         for (const emojiElement of emojiElements) {
             const img = document.createElement('img')
             img.src = `https://cdn.discordapp.com/emojis/${emojiElement.dataset.id}.png`
-            if (this.content.textContent && !this.content.textContent.match(/[^ ]/g)) emojiElement.classList.add('big_emoji')
+            if (!this.content.textContent) emojiElement.classList.add('big_emoji')
+            else if (!this.content.textContent.match(/[^ ]/g)) emojiElement.classList.add('big_emoji')
+            
             emojiElement.appendChild(img)
         }
     }
