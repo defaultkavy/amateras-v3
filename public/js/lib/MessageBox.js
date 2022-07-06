@@ -7,7 +7,7 @@ export class MessageBox extends BasePageElement {
         this.data = data;
         this.guild = guild;
         this.channel = messageChannel;
-        this.embeds = new Map;
+        this.embeds = [];
         this.author = document.createElement('author');
         this.content = document.createElement('message-content');
         this.sticker = document.createElement('sticker');
@@ -36,10 +36,6 @@ export class MessageBox extends BasePageElement {
             });
             this.attachments.appendChild(attachmentBox);
         }
-        for (const embed of this.data.embeds) {
-            const embedBox = new _MessageEmbed(this.client, this, embed, document.createElement('object-embed'));
-            this.embeds.set(+new Date, embedBox);
-        }
         let text = this.data.content;
         // replace
         text = text.replace(/\n/g, '<br>');
@@ -49,6 +45,11 @@ export class MessageBox extends BasePageElement {
         text = this.replaceMember(text);
         text = this.replaceRole(text);
         this.content.innerHTML = text;
+        for (const embed of this.data.embeds) {
+            const embedBox = new _MessageEmbed(this.client, this, embed, document.createElement('object-embed'));
+            this.embeds.push(embedBox);
+        }
+        console.debug(this.embeds);
         this.emojiInit();
         this.eventHandler();
         this.layout();
@@ -124,10 +125,8 @@ export class MessageBox extends BasePageElement {
         }
     }
     replaceLink(text) {
-        const regex = /https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}/;
-        const matches = this.data.content.match(regex);
-        if (matches) {
-            for (const url of matches) {
+        if (this.links) {
+            for (const url of this.links) {
                 text = text.replace(url, `<a target="_Blank" href="${url}">${url}</a>`);
             }
         }
@@ -163,7 +162,6 @@ export class MessageBox extends BasePageElement {
         if (memberMentions) {
             for (const memberMention of memberMentions) {
                 const member = this.guild.members.find(member => member.id === memberMention.slice(2, memberMention.length - 1));
-                console.debug(this.guild);
                 if (!member)
                     continue;
                 text = text.replace(memberMention, `<member>@${member.name}</member>`);
@@ -182,6 +180,10 @@ export class MessageBox extends BasePageElement {
             }
         }
         return text;
+    }
+    get links() {
+        const regex = /https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}/g;
+        return this.data.content.match(regex);
     }
 }
 //# sourceMappingURL=MessageBox.js.map

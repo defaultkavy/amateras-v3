@@ -394,6 +394,20 @@ app-page#admin_console message-channel-manager message-channel message-box conte
   margin: 0 5px;
 }
 
+app-page#admin_console message-channel-manager message-channel message-box content-wrapper object-embed.image_link {
+  background-color: transparent;
+}
+
+app-page#admin_console message-channel-manager message-channel message-box content-wrapper object-embed.image_link img {
+  max-width: 420px;
+}
+
+@media only screen and (max-width: 500px) {
+  app-page#admin_console message-channel-manager message-channel message-box content-wrapper object-embed.image_link img {
+    max-width: 100%;
+  }
+}
+
 app-page#admin_console message-channel-manager message-channel message-box content-wrapper sticker {
   font-size: 14px;
   padding: 5 10;

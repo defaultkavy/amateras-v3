@@ -111,6 +111,15 @@ export class _MessageEmbed extends Base {
     }
 
     layout() {
+        if (this.data.thumbnail && !this.data.author && !this.data.color && !this.data.description) {
+            if (this.message.links && this.message.links.length === 1) {
+                if (this.message.content.textContent === this.message.links[0]) this.message.content.innerHTML = ''
+            }
+            this.node.appendChild(this.thumbnail)
+            this.node.classList.add('image_link')
+            return
+        }
+
         const hexColor = this.data.color ? '#' + this.data.color.toString(16) : '#2c2f33'
         const color = document.createElement('embed-color')
         color.style.backgroundColor = hexColor

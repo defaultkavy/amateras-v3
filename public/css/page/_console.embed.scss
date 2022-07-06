@@ -163,4 +163,16 @@ object-embed {
             }
         }
     }
+
+    &.image_link {
+        background-color: transparent;
+
+        img {
+            max-width: 420px;
+
+            @media only screen and (max-width: $mobileScreen)  {
+                max-width: 100%;
+            }
+        }
+    }
 }
