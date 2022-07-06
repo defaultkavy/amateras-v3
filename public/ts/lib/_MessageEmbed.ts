@@ -1,10 +1,10 @@
-import { APIEmbed } from "../../node_modules/discord-api-types/v9.js";
+import { APIEmbed } from "../../../node_modules/discord-api-types/v9.js";
 import { Base } from "./Base.js";
 import { Client } from "./Client.js";
-import { _MessageBox } from "./_MessageBox.js";
+import { MessageBox } from "./MessageBox.js";
 
 export class _MessageEmbed extends Base {
-    message: _MessageBox;
+    message: MessageBox;
     data: APIEmbed;
     node: HTMLElement;
     authorAvatar: HTMLImageElement;
@@ -17,7 +17,7 @@ export class _MessageEmbed extends Base {
     footerText: HTMLElement;
     footerImage: HTMLImageElement;
     timestamp: HTMLElement;
-    constructor(client: Client, message: _MessageBox, embedOptions: APIEmbed, node: HTMLElement) {
+    constructor(client: Client, message: MessageBox, embedOptions: APIEmbed, node: HTMLElement) {
         super(client)
         this.node = node
         this.message = message

@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { BasePageElement } from "./BasePageElement.js";
-import { _MessageBox } from "./_MessageBox.js";
+import { MessageBox } from "./MessageBox.js";
 export class _MessageWrapper extends BasePageElement {
     constructor(client, page, node) {
         super(client, page, node);
@@ -21,7 +21,7 @@ export class _MessageWrapper extends BasePageElement {
     init() {
         this.eventHandler();
     }
-    contentInit() {
+    contentInit(refresh = false) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield this.channelMessages(this.page.guildId, this.page.channelId);
             // clear reply link when change channel
@@ -34,11 +34,11 @@ export class _MessageWrapper extends BasePageElement {
             this.clearChild();
             this.cache.clear();
             for (const message of data.messages) {
-                const messageBox = new _MessageBox(this.client, this.page, document.createElement('message-box'), message);
+                const messageBox = new MessageBox(this.client, this.page, document.createElement('message-box'), message);
                 this.cache.set(message.id, messageBox);
                 this.node.appendChild(messageBox.node);
             }
-            if (this.idle)
+            if (this.idle || refresh === true)
                 this.node.scrollTop = this.node.scrollHeight;
         });
     }

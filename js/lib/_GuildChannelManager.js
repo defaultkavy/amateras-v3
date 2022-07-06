@@ -94,8 +94,8 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
         }
         return hints;
     }
-    get textChannels() {
-        const text = [];
+    consoleTextChannels(list = [], role) {
+        const texts = [];
         for (const _channel of this.cache.values()) {
             if (!_channel.isTextBased())
                 continue;
@@ -103,13 +103,14 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
                 id: _channel.id,
                 name: _channel.name,
                 parent: _channel.origin.parentId,
-                position: _channel.isText() ? _channel.origin.position : undefined
+                position: _channel.isText() ? _channel.origin.position : undefined,
+                access: role === 'admin' ? true : list.includes(_channel.id) ? true : false
             };
-            text.push(data);
+            texts.push(data);
         }
-        return text;
+        return texts;
     }
-    get categories() {
+    consoleCategories() {
         const categories = [];
         for (const _channel of this.cache.values()) {
             if (!_channel.isCategory())
@@ -122,37 +123,6 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
             categories.push(data);
         }
         return categories;
-    }
-    listCategories(list) {
-        const categories = [];
-        for (const id of list) {
-            const _channel = this.cache.get(id);
-            if (!_channel || !_channel.isCategory())
-                continue;
-            const data = {
-                id: _channel.id,
-                name: _channel.name,
-                position: _channel.origin.position
-            };
-            categories.push(data);
-        }
-        return categories;
-    }
-    listTextChannels(list) {
-        const channels = [];
-        for (const id of list) {
-            const _channel = this.cache.get(id);
-            if (!_channel || !_channel.isTextBased())
-                continue;
-            const data = {
-                id: _channel.id,
-                name: _channel.name,
-                parent: _channel.origin.parentId,
-                position: _channel.isText() ? _channel.origin.position : undefined
-            };
-            channels.push(data);
-        }
-        return channels;
     }
 }
 exports._GuildChannelManager = _GuildChannelManager;

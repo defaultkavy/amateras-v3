@@ -42,6 +42,7 @@ export class LoginPage extends Page {
         const result = await this.client.server.post(this.client.origin + '/login', data) as string
         this.loginButton.innerText = result
         if (result === 'Login successful') {
+            this.client.guilds.init((await this.client.discordData()).guilds)
             this.client.pages.load(this.client.pages.adminPage)
         } else
         setTimeout(() => {this.loginButton.innerText = 'Login'}, 2000)

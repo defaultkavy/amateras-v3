@@ -1,6 +1,6 @@
 import { BasePageElement } from "./BasePageElement.js";
 import { _MessageEmbed } from "./_MessageEmbed.js";
-export class _MessageBox extends BasePageElement {
+export class MessageBox extends BasePageElement {
     constructor(client, page, node, data) {
         super(client, page, node);
         this.page = page;
@@ -15,24 +15,21 @@ export class _MessageBox extends BasePageElement {
     }
     init() {
         this.author.innerText = this.data.author.name;
-        this.content.innerText = this.data.content;
         this.avatar.src = this.data.author.avatar;
-        const avatarWrapper = document.createElement('avatar');
-        avatarWrapper.appendChild(this.avatar);
-        const contentWrapper = document.createElement('content-wrapper');
-        this.node.appendChild(avatarWrapper);
-        this.node.appendChild(contentWrapper);
-        contentWrapper.appendChild(this.author);
-        if (this.data.sticker) {
+        if (this.data.sticker)
             this.sticker.innerText = this.data.sticker;
-            contentWrapper.appendChild(this.sticker);
-        }
-        else {
-            contentWrapper.appendChild(this.content);
-        }
         for (const attachment of this.data.attachments) {
             const attachmentBox = document.createElement('attachment');
-            attachmentBox.innerText = attachment.type ? attachment.type : 'Unknown File';
+            if (checkImage(attachment.type)) {
+                const img = document.createElement('img');
+                img.src = attachment.url;
+                attachmentBox.classList.add('image');
+                attachmentBox.appendChild(img);
+            }
+            else {
+                attachmentBox.classList.add('unknown');
+                attachmentBox.innerText = attachment.type ? attachment.type : 'Unknown File';
+            }
             attachmentBox.addEventListener('click', (ev) => {
                 window.open(attachment.url, '_Blank');
             });
@@ -41,11 +38,60 @@ export class _MessageBox extends BasePageElement {
         for (const embed of this.data.embeds) {
             const embedBox = new _MessageEmbed(this.client, this, embed, document.createElement('object-embed'));
             this.embeds.set(+new Date, embedBox);
-            contentWrapper.appendChild(embedBox.node);
+        }
+        let text = this.data.content;
+        // replace new line
+        text = text.replace(/\n/g, '<br>');
+        text = this.replaceLink(text);
+        text = this.replaceEmoji(text);
+        this.content.innerHTML = text;
+        this.emojiInit();
+        this.eventHandler();
+        this.layout();
+        function checkImage(type) {
+            if (type === 'image/jpeg' || type === 'image/png')
+                return true;
+            return false;
+        }
+    }
+    layout() {
+        const avatarWrapper = document.createElement('avatar');
+        avatarWrapper.appendChild(this.avatar);
+        const contentWrapper = document.createElement('content-wrapper');
+        const lastMessage = Array.from(this.page.messages.cache.values()).pop();
+        if (lastMessage) {
+            if (this.data.author.id !== lastMessage.data.author.id) {
+                addUpper.call(this);
+            }
+            else {
+                if (this.data.timestamps - lastMessage.data.timestamps > 1000 * 60 * 10) {
+                    addUpper.call(this);
+                }
+                else {
+                    const span = document.createElement('span');
+                    span.classList.add('timestamp');
+                    this.node.appendChild(span);
+                }
+            }
+        }
+        function addUpper() {
+            const upperWrapper = document.createElement('upper-wrapper');
+            upperWrapper.appendChild(this.author);
+            this.node.appendChild(avatarWrapper);
+            contentWrapper.appendChild(upperWrapper);
+            this.node.classList.add('first');
+        }
+        if (this.data.sticker) {
+            contentWrapper.appendChild(this.sticker);
+        }
+        else {
+            contentWrapper.appendChild(this.content);
+        }
+        for (const embedBox of this.embeds.values()) {
+            contentWrapper.append(embedBox.node);
         }
         contentWrapper.appendChild(this.attachments);
-        this.replaceLink();
-        this.eventHandler();
+        this.node.appendChild(contentWrapper);
     }
     eventHandler() {
         this.node.addEventListener('mouseenter', (ev) => {
@@ -61,15 +107,35 @@ export class _MessageBox extends BasePageElement {
             });
         });
     }
-    replaceLink() {
+    emojiInit() {
+        const emojis = document.querySelectorAll('.emoji');
+        for (const emoji of emojis) {
+            const img = document.createElement('img');
+            img.src = this.page;
+        }
+    }
+    replaceLink(text) {
         const regex = /https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}/;
         const matches = this.data.content.match(regex);
         if (matches) {
-            const text = this.data.content.replace(/\n/g, '<br>');
             for (const url of matches) {
-                this.content.innerHTML = text.replace(url, `<a target="_Blank" href="${url}">${url}</a>`);
+                text = text.replace(url, `<a target="_Blank" href="${url}">${url}</a>`);
             }
         }
+        return text;
+    }
+    replaceEmoji(text) {
+        const regex = /<:[\d\w]+:[0-9]+>/;
+        const matches = this.data.content.match(regex);
+        if (matches) {
+            for (const match of matches) {
+                const id = match.match(/\d+(?=>)/);
+                if (!id)
+                    continue;
+                text = text.replace(match, `<span class="emoji" data-id="${id}"></span>`);
+            }
+        }
+        return text;
     }
 }
 //# sourceMappingURL=_MessageBox.js.map

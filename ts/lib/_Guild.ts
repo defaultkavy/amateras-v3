@@ -24,6 +24,9 @@ export class _Guild extends _BaseObj {
 
     async init() {
         console.log(cmd.Green, `Initializing Guild: ${this.name}`)
+        console.time('| Member Fetched')
+        await this.origin.members.fetch()
+        console.timeEnd('| Member Fetched')
         await this.commands.init()
         console.time('| Channels Initialized')
         await this.channels.init()

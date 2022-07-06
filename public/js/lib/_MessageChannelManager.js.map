@@ -1,0 +1,1 @@
+{"version":3,"file":"_MessageChannelManager.js","sourceRoot":"","sources":["../../ts/lib/_MessageChannelManager.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,sBAAsB,CAAC;AAIvD,MAAM,OAAO,qBAAsB,SAAQ,eAAe;IACtD,YAAY,MAAc,EAAE,IAAU,EAAE,IAAiB;QACrD,KAAK,CAAC,MAAM,EAAE,IAAI,EAAE,IAAI,CAAC,CAAA;IAC7B,CAAC;CACJ"}

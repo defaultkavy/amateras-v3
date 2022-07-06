@@ -31,11 +31,7 @@ export class AdminPage extends Page {
             this.layout();
             this.eventHandler();
             this.load();
-            const data = yield this.discordData();
-            for (const guild of data.guilds) {
-                this.guildSelector.addOption(guild.name, guild.id);
-            }
-            yield this.categoryInit(data);
+            yield this.guildInit(yield this.discordData());
             this.client.server.connect('/stream');
             this.client.server.onmessage((data) => {
                 if (data.type === 'update') {
@@ -49,8 +45,7 @@ export class AdminPage extends Page {
             this.guildSelector.node.addEventListener('change', () => __awaiter(this, void 0, void 0, function* () { return this.categoryInit(yield this.discordData()); }));
             this.categorySelector.node.addEventListener('change', () => __awaiter(this, void 0, void 0, function* () { return this.channelInit(yield this.discordData()); }));
             this.channelSelector.node.addEventListener('change', () => __awaiter(this, void 0, void 0, function* () {
-                this.messages.idle = true;
-                this.messages.contentInit();
+                this.messages.contentInit(true);
             }));
             this.clearButton.addEventListener('click', (ev) => { this.reply.clear(); });
             this.sendButton.addEventListener('click', (ev) => { this.send(); });
@@ -78,6 +73,16 @@ export class AdminPage extends Page {
             });
         });
     }
+    guildInit(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            for (const guild of data.guilds) {
+                if (!guild.access)
+                    continue;
+                this.guildSelector.addOption(guild.name, guild.id);
+            }
+            yield this.categoryInit(data);
+        });
+    }
     categoryInit(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const guild = data.guilds.find(guild => guild.id === this.guildId);
@@ -85,12 +90,14 @@ export class AdminPage extends Page {
                 return;
             // clean options
             this.categorySelector.clearOptions();
+            // filter accessable
+            const categories = guild.categories.filter(category => guild.channels.find(channel => channel.parent === category.id && channel.access));
             // sort categories
-            guild.categories.sort((a, b) => a.position - b.position);
+            categories.sort((a, b) => a.position - b.position);
             //
             if (guild.channels.find(channel => !channel.parent))
                 this.categorySelector.addOption('Uncategory', 'none');
-            for (const category of guild.categories) {
+            for (const category of categories) {
                 this.categorySelector.addOption(category.name, category.id);
             }
             yield this.channelInit(data);
@@ -121,9 +128,11 @@ export class AdminPage extends Page {
             // clean options
             this.channelSelector.clearOptions();
             for (const channel of channels) {
+                if (!channel.access)
+                    continue;
                 this.channelSelector.addOption(channel.name, channel.id);
             }
-            this.messages.contentInit();
+            this.messages.contentInit(true);
         });
     }
     send() {
@@ -183,7 +192,7 @@ export class AdminPage extends Page {
     }
     discordData() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield (yield fetch(this.client.origin + '/console-data')).json();
+            return yield (yield fetch(this.client.origin + '/console')).json();
         });
     }
     get channelId() {

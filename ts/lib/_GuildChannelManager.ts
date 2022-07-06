@@ -9,6 +9,7 @@ import { _HintDB, _HintInfo } from "./_Hint";
 import { _Message } from "./_Message";
 import { _TextChannel } from "./_TextChannel";
 import { _ThreadChannel } from "./_ThreadChannel";
+import { ConsoleChannelData, ConsoleRole } from "./Console.js";
 
 export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
     #hints: string[];
@@ -73,25 +74,23 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
         return hints
     }
 
-    get textChannels() {
-        const text: {
-            id: string;
-            name: string;
-        }[] = []
+    consoleTextChannels(list: string[] = [], role: ConsoleRole) {
+        const texts: ConsoleChannelData[] = []
         for (const _channel of this.cache.values()) {
             if (!_channel.isTextBased()) continue
-            const data = {
+            const data: ConsoleChannelData = {
                 id: _channel.id,
                 name: _channel.name,
                 parent: _channel.origin.parentId,
-                position: _channel.isText() ? _channel.origin.position : undefined
+                position: _channel.isText() ? _channel.origin.position : undefined,
+                access: role === 'admin' ? true : list.includes(_channel.id) ? true : false
             }
-            text.push(data)
+            texts.push(data)
         }
-        return text
+        return texts
     }
 
-    get categories() {
+    consoleCategories() {
         const categories = []
         for (const _channel of this.cache.values()) {
             if (!_channel.isCategory()) continue
@@ -103,37 +102,6 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
             categories.push(data)
         }
         return categories
-    }
-
-    listCategories(list: string[]) {
-        const categories = []
-        for (const id of list) {
-            const _channel = this.cache.get(id)
-            if (!_channel || !_channel.isCategory()) continue
-            const data = {
-                id: _channel.id,
-                name: _channel.name,
-                position: _channel.origin.position
-            }
-            categories.push(data)
-        }
-        return categories
-    }
-
-    listTextChannels(list: string[]) {
-        const channels = []
-        for (const id of list) {
-            const _channel = this.cache.get(id)
-            if (!_channel || !_channel.isTextBased()) continue
-            const data = {
-                id: _channel.id,
-                name: _channel.name,
-                parent: _channel.origin.parentId,
-                position: _channel.isText() ? _channel.origin.position : undefined
-            }
-            channels.push(data)
-        }
-        return channels
     }
 
 }

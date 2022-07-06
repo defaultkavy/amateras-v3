@@ -30,6 +30,9 @@ class _Guild extends _BaseObj_1._BaseObj {
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(cmd_1.default.Green, `Initializing Guild: ${this.name}`);
+            console.time('| Member Fetched');
+            yield this.origin.members.fetch();
+            console.timeEnd('| Member Fetched');
             yield this.commands.init();
             console.time('| Channels Initialized');
             yield this.channels.init();

@@ -1,12 +1,12 @@
 import { Client } from "./Client.js";
 import { Page } from "./Page.js";
-import { _MessageWrapper } from "./_MessageWrapper.js";
 import { _ReplyInput } from "./_ReplyInput.js";
 import { _Selector } from "./_Selector.js";
+import { _GuildManager } from "./_GuildManager.js";
+import { MessageChannelManager } from "./MessageChannelManager.js";
 
 
 export class AdminPage extends Page {
-    messages: _MessageWrapper;
     reply: _ReplyInput;
     guildSelector: _Selector;
     categorySelector: _Selector;
@@ -15,9 +15,10 @@ export class AdminPage extends Page {
     sendButton: HTMLButtonElement;
     statusText: HTMLSpanElement;
     clearButton: HTMLSpanElement;
+    channels: MessageChannelManager;
     constructor(client: Client, id: string) {
         super(client, id)
-        this.messages = new _MessageWrapper(client, this, document.createElement('message-wrapper'))
+        this.channels = new MessageChannelManager(client, this, document.createElement('message-channel-manager'))
         this.reply = new _ReplyInput(client, this, document.createElement('input'))
         this.guildSelector = new _Selector(client, this, document.createElement('select'), 'guild_selector')
         this.categorySelector = new _Selector(client, this, document.createElement('select'), 'category_selector')
@@ -34,26 +35,23 @@ export class AdminPage extends Page {
         this.layout()
         this.eventHandler()
         this.load()
-
-        const data = await this.discordData()
-        for (const guild of data.guilds) {
-            this.guildSelector.addOption(guild.name, guild.id)
-        }
-        await this.categoryInit(data)
+        await this.guildInit()
+        this.channels.load()
         this.client.server.connect('/stream')
         this.client.server.onmessage((data) => {
             if (data.type === 'update') {
-                this.messages.contentInit()
+                if (this.channels.channel) {
+                    this.channels.load()
+                }
             }
         })
     }
 
     async eventHandler() {
-        this.guildSelector.node.addEventListener('change', async () => this.categoryInit(await this.discordData()))
-        this.categorySelector.node.addEventListener('change', async () => this.channelInit(await this.discordData()))
+        this.guildSelector.node.addEventListener('change', async () => this.categoryInit())
+        this.categorySelector.node.addEventListener('change', async () => this.channelInit())
         this.channelSelector.node.addEventListener('change', async () => {
-            this.messages.idle = true
-            this.messages.contentInit()
+            this.channels.load()
         })
         this.clearButton.addEventListener('click', (ev) => { this.reply.clear() })
         this.sendButton.addEventListener('click', (ev) => { this.send() })
@@ -86,24 +84,34 @@ export class AdminPage extends Page {
         })
     }
 
-    async categoryInit(data: DiscordData) {
-        const guild = data.guilds.find(guild => guild.id === this.guildId)
+    async guildInit() {
+        for (const guild of this.client.guilds.array) {
+            if (!guild.access) continue
+            this.guildSelector.addOption(guild.name, guild.id)
+        }
+        await this.categoryInit()
+    }
+
+    async categoryInit() {
+        const guild = this.client.guilds.array.find(guild => guild.id === this.guildId)
         if (!guild) return
         // clean options
         this.categorySelector.clearOptions()
+        // filter accessable
+        const categories = guild.categories.filter(category => guild.channels.find(channel => channel.parent === category.id && channel.access))
         // sort categories
-        guild.categories.sort((a, b) => a.position - b.position)
+        categories.sort((a, b) => a.position - b.position)
         //
         if (guild.channels.find(channel => !channel.parent)) this.categorySelector.addOption('Uncategory', 'none')
-        for (const category of guild.categories) {
+        for (const category of categories) {
             this.categorySelector.addOption(category.name, category.id)
         }
 
-        await this.channelInit(data)
+        await this.channelInit()
     }
 
-    async channelInit(data: DiscordData) {
-        const guild = data.guilds.find(guild => guild.id === this.guildId)
+    async channelInit() {
+        const guild = this.client.guilds.array.find(guild => guild.id === this.guildId)
         if (!guild) return
         // filter category
         const channels = guild.channels.filter(channel => {
@@ -122,10 +130,11 @@ export class AdminPage extends Page {
         // clean options
         this.channelSelector.clearOptions()
         for (const channel of channels) {
+            if (!channel.access) continue
             this.channelSelector.addOption(channel.name, channel.id)
         }
 
-        this.messages.contentInit()
+        this.channels.load()
     }
 
     async send() {
@@ -171,7 +180,7 @@ export class AdminPage extends Page {
         thirdBlock.appendChild(this.client.createTitle('Channel'))
         thirdBlock.appendChild(this.channelSelector.node)
         // 
-        this.node.appendChild(this.messages.node)
+        this.node.appendChild(this.channels.node)
         //
         const reply_section = this.client.createDiv('reply_section')
         this.node.appendChild(reply_section)
@@ -185,10 +194,6 @@ export class AdminPage extends Page {
         input_section.appendChild(this.statusText)
     }
 
-    async discordData() {
-        return await (await fetch(this.client.origin + '/console-data')).json() as DiscordData
-    }
-
     get channelId() {
         return this.channelSelector.node.selectedOptions[0].value
     }
@@ -200,26 +205,4 @@ export class AdminPage extends Page {
     get categoryId() {
         return this.categorySelector.node.selectedOptions[0].value
     }
-}
-
-export interface DiscordData {
-    guilds: DiscordGuild[]
-}
-
-export interface DiscordGuild {
-    id: string,
-    name: string,
-    channels: DiscordChannel[],
-    categories: {
-        id: string,
-        name: string,
-        position: number
-    }[]
-}
-
-export interface DiscordChannel {
-    id: string,
-    name: string,
-    parent: string | null
-    position: number | undefined
 }

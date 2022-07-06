@@ -1,26 +1,31 @@
-import { DiscordChannelMessages } from "./@types/console.js";
+import { DiscordChannelMessages } from "../@types/console.js";
 import { AdminPage } from "./AdminPage.js";
 import { BasePageElement } from "./BasePageElement.js";
 import { Client } from "./Client.js";
-import { _MessageBox } from "./_MessageBox.js";
+import { MessageBox } from "./MessageBox.js";
+import { _Guild } from "./_Guild.js";
 
 
-export class _MessageWrapper extends BasePageElement {
+export class MessageChannel extends BasePageElement {
     page: AdminPage
     lastMessageId: string;
-    cache: Map<string, _MessageBox>;
+    cache: Map<string, MessageBox>;
     idle: boolean;
-    constructor(client: Client, page: AdminPage, node: HTMLElement) {
+    id: string;
+    guild: _Guild;
+    constructor(client: Client, page: AdminPage, guild: _Guild, channel: string, node: HTMLElement) {
         super(client, page, node)
+        this.guild = guild
+        this.id = channel
         this.page = page
         this.lastMessageId = ''
         this.cache = new Map
         this.idle = true
-        this.init()
     }
 
-    init() {
+    async init() {
         this.eventHandler()
+        await this.contentInit()
     }
 
     async contentInit() {
@@ -35,11 +40,17 @@ export class _MessageWrapper extends BasePageElement {
         this.clearChild()
         this.cache.clear()
         for (const message of data.messages) {
-            const messageBox = new _MessageBox(this.client, this.page, document.createElement('message-box'), message)
+            const messageBox = new MessageBox(this.client, this.page, document.createElement('message-box'), this.guild, this, message)
+            messageBox.init()
             this.cache.set(message.id, messageBox)
             this.node.appendChild(messageBox.node)
         }
-        if (this.idle) this.node.scrollTop = this.node.scrollHeight
+    }
+
+    scrollBottom(force = false) {
+        if (this.idle || force === true) {
+            this.node.scrollTop = this.node.scrollHeight
+        }
     }
 
     eventHandler() {
