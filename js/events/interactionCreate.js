@@ -23,11 +23,11 @@ module.exports = {
     execute(interact, amateras) {
         return __awaiter(this, void 0, void 0, function* () {
             const _user = yield amateras.users.fetch(interact.user.id);
-            console.debug(_user);
             if (!_user)
                 return;
             // Command interaction
             if (interact.isCommand()) {
+                this.system.log(`${interact.commandName} - ${_user.name}`);
                 const _validInteract = new _CommandInteraction_1._CommandInteraction(amateras, interact, _user);
                 if (!_validInteract.isValid())
                     return console.error('_CommandInteraction is not valid');
@@ -38,7 +38,6 @@ module.exports = {
                     !_guildCommand.limitedChannels.includes(_validInteract._channel.id))
                     return interact.reply({ content: '无法在此频道中使用', ephemeral: true });
                 //
-                console.debug(1);
                 executeCommand(`commands/${interact.commandName}`, _validInteract);
             }
             // Button interaction

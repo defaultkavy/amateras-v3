@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.System = void 0;
 const Console_js_1 = require("./Console.js");
 const _Base_1 = require("./_Base");
 const _Youtube_1 = require("./_Youtube");
+const fs_1 = __importDefault(require("fs"));
 class System extends _Base_1._Base {
     constructor(amateras) {
         super(amateras);
@@ -23,6 +27,12 @@ class System extends _Base_1._Base {
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             this.console.init();
+        });
+    }
+    log(string) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const time = new Date();
+            fs_1.default.appendFileSync(`${global.path}/bot.log`, `\n${time} | ${string}`);
         });
     }
 }

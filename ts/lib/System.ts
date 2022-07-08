@@ -3,6 +3,7 @@ import { Amateras } from "./Amateras";
 import { Console } from "./Console.js";
 import { _Base } from "./_Base";
 import { _Youtube } from "./_Youtube";
+import fs from 'fs'
 
 export class System extends _Base {
     cert: {private_key: string, client_email: string};
@@ -17,5 +18,10 @@ export class System extends _Base {
 
     async init() {
         this.console.init()
+    }
+
+    async log(string: string) {
+        const time = new Date()
+        fs.appendFileSync(`${global.path}/bot.log`, `\n${time} | ${string}`)
     }
 }

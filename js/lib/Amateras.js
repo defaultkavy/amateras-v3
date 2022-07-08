@@ -57,6 +57,7 @@ class Amateras {
             this.ready = true;
             yield this.onready();
             console.log(cmd_1.default.Yellow, 'Amateras Ready.');
+            this.system.log('Amateras start.');
             (0, test_1.default)(this);
         });
     }

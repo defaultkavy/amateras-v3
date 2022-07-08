@@ -57,7 +57,7 @@ export class Amateras {
         this.ready = true
         await this.onready()
         console.log(cmd.Yellow, 'Amateras Ready.')
-        
+        this.system.log('Amateras start.')
         test(this)
     }
 
