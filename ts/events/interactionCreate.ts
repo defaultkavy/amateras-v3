@@ -16,7 +16,7 @@ module.exports = {
         // Command interaction
         if (interact.isCommand()) {
             const _validInteract = new _CommandInteraction(amateras, interact, _user)
-            if (!_validInteract.isValid()) return
+            if (!_validInteract.isValid()) return console.error('_CommandInteraction is not valid')
             // Check limited channel list
             const _guildCommand = _validInteract._guild.commands.cache.get(interact.commandId)
             if (_guildCommand && 
@@ -24,6 +24,7 @@ module.exports = {
                 !_guildCommand.limitedChannels.includes(_validInteract._channel.id)) 
                 return interact.reply({content: '无法在此频道中使用', ephemeral: true})
             //
+            console.debug(1)
             executeCommand(`commands/${interact.commandName}`, _validInteract)
         }
 

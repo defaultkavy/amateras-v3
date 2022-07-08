@@ -11,8 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 function default_1(interact, amateras) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.debug(2);
         //await interact.origin.deferReply({ephemeral: false})
         for (const subcmd0 of interact.origin.options.data) {
+            console.debug(subcmd0);
             if (subcmd0.name === 'register') {
                 if (interact._channel.id !== '972403680844333086' && interact._channel.id !== '804531119394783276')
                     return interact.origin.reply({ content: '请在指定的频道中使用指令', ephemeral: true });
