@@ -15,7 +15,7 @@ module.exports = {
         if (!_user) return
         // Command interaction
         if (interact.isCommand()) {
-            this.system.log(`${interact.commandName} - ${_user.name}`)
+            amateras.system.log(`${interact.commandName} - ${_user.name}`)
 
             const _validInteract = new _CommandInteraction(amateras, interact, _user)
             if (!_validInteract.isValid()) return console.error('_CommandInteraction is not valid')
