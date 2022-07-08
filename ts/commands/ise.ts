@@ -23,7 +23,7 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
             }
         } else if (subcmd0.name === 'card') {
             const data = await amateras.events.ise.getStudent(interact._user.id)
-            if (!data) return
+            if (!data) return interact.origin.reply({content: '尚未登记', ephemeral: true})
             interact.origin.reply({embeds: [await amateras.events.ise.characterCardEmbed(data)]})
         }
     }

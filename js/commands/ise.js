@@ -38,7 +38,7 @@ function default_1(interact, amateras) {
             else if (subcmd0.name === 'card') {
                 const data = yield amateras.events.ise.getStudent(interact._user.id);
                 if (!data)
-                    return;
+                    return interact.origin.reply({ content: '尚未登记', ephemeral: true });
                 interact.origin.reply({ embeds: [yield amateras.events.ise.characterCardEmbed(data)] });
             }
         }
