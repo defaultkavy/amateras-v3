@@ -27,7 +27,7 @@ function default_1(interact, amateras) {
                         if (subcmd1.attachment.contentType !== 'image/png' && subcmd1.attachment.contentType !== 'image/jpeg')
                             return interact.origin.reply({ content: '上传内容必须是 JPG / PNG 格式', ephemeral: true });
                         const reg = yield amateras.events.ise.register(interact._user.origin, subcmd1.attachment.url);
-                        if (reg === 'No Record' || !reg)
+                        if (reg !== 'Success')
                             return interact.origin.reply({ content: reg, ephemeral: true });
                         interact.origin.reply({ content: subcmd1.attachment.url, ephemeral: false });
                     }
