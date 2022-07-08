@@ -12,6 +12,7 @@ module.exports = {
     once: false,
     async execute(interact: Interaction, amateras: Amateras) {
         const _user = await amateras.users.fetch(interact.user.id)
+        console.debug(_user)
         if (!_user) return
         // Command interaction
         if (interact.isCommand()) {

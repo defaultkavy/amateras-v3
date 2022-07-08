@@ -23,6 +23,7 @@ module.exports = {
     execute(interact, amateras) {
         return __awaiter(this, void 0, void 0, function* () {
             const _user = yield amateras.users.fetch(interact.user.id);
+            console.debug(_user);
             if (!_user)
                 return;
             // Command interaction
