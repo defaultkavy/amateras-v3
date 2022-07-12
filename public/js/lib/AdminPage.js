@@ -193,6 +193,11 @@ export class AdminPage extends Page {
     }
     send() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this.client.role === 'ise') {
+                this.input.style.borderColor = '#f97583';
+                this.log('NPC not seleted', 'ERROR');
+                return;
+            }
             // cache content before clear
             const content = this.input.value;
             this.input.value = '';
@@ -205,11 +210,19 @@ export class AdminPage extends Page {
                 content: content,
                 reply: this.reply.trigger ? this.reply.node.value : undefined
             });
-            this.statusText.innerText = status;
-            setTimeout(() => {
-                this.statusText.innerText = '';
-            }, 2000);
         });
+    }
+    log(string, type) {
+        if (type === 'ERROR')
+            this.statusText.style.color = '#f97583';
+        else if (type === 'SUCCESS')
+            this.statusText.style.color = '#00ff00';
+        else if (type === 'LOG')
+            this.statusText.style.color = '#ffffff';
+        this.statusText.innerText = string;
+        setTimeout(() => {
+            this.statusText.innerText = '';
+        }, 2000);
     }
     resizeInput() {
         this.input.style.height = '20px';
@@ -263,7 +276,7 @@ export class AdminPage extends Page {
         this.node.appendChild(input_section);
         input_section.appendChild(this.input);
         input_section.appendChild(this.sendButton);
-        input_section.appendChild(this.statusText);
+        this.node.appendChild(this.statusText);
     }
 }
 //# sourceMappingURL=AdminPage.js.map

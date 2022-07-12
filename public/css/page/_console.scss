@@ -42,13 +42,6 @@ app-page#admin_console {
         }
     }
 
-    #status {
-        color: lime;
-        font-size: 12px;
-        display: none;
-        margin: 0 10
-    }
-
     .input_section {
         display: flex;
         width: 100%;
@@ -66,6 +59,10 @@ app-page#admin_console {
             background-color: #40444b;
             display: block;
             border-radius: 16px;
+            
+            &:focus {
+                outline: none;
+            }
         }
 
         button {
@@ -85,6 +82,14 @@ app-page#admin_console {
             }
         }
     }
+        
+    #status {
+        color: lime;
+        font-size: 12px;
+        display: block;
+        padding: 0 10px 10px;
+    }
+
     message-channel-manager {
         display: block;
         color: white;
@@ -311,6 +316,10 @@ app-page#admin_console {
             width: 100%;
             color: white;
             border-radius: 10px;
+            
+            &:focus {
+                outline: none;
+            }
         }
     }
 }

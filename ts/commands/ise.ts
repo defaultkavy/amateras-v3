@@ -69,6 +69,20 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
                     const result = await npc.delete()
                     interact.origin.reply({content: result, ephemeral: true})
                 }
+
+                else if (subcmd1.name === 'card') {
+                    // const data = {id: ''}
+                    // if (!subcmd1.options) return
+                    // for (const subcmd2 of subcmd1.options) {
+                    //     if (subcmd2.name === 'id') {
+                    //         data.id = subcmd2.value as string
+                    //     }
+                    // }
+                    // const npc = amateras.events.ise.npc.cache.get(data.id)
+                    // if (!npc) return interact.origin.reply({content: 'NPC 不存在', ephemeral: true})
+                    // const result = await npc.delete()
+                    // interact.origin.reply({content: result, ephemeral: true})
+                }
             }
         }
     }

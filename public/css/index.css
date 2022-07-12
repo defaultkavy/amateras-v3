@@ -51,13 +51,6 @@ app-page#admin_console .selector_section .selector_block select option {
   background-color: #2f3136;
 }
 
-app-page#admin_console #status {
-  color: lime;
-  font-size: 12px;
-  display: none;
-  margin: 0 10;
-}
-
 app-page#admin_console .input_section {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -81,6 +74,10 @@ app-page#admin_console .input_section textarea {
   border-radius: 16px;
 }
 
+app-page#admin_console .input_section textarea:focus {
+  outline: none;
+}
+
 app-page#admin_console .input_section button {
   display: inline-block;
   margin-left: 10;
@@ -97,6 +94,13 @@ app-page#admin_console .input_section button {
 
 app-page#admin_console .input_section button:hover {
   background-color: #2f3136;
+}
+
+app-page#admin_console #status {
+  color: lime;
+  font-size: 12px;
+  display: block;
+  padding: 0 10px 10px;
 }
 
 app-page#admin_console message-channel-manager {
@@ -521,6 +525,10 @@ app-page#admin_console .reply_section input {
   width: 100%;
   color: white;
   border-radius: 10px;
+}
+
+app-page#admin_console .reply_section input:focus {
+  outline: none;
 }
 
 app-page#console_login {
