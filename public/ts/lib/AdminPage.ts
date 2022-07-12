@@ -250,17 +250,17 @@ export class AdminPage extends Page {
             thirdBlock.appendChild(this.client.createTitle('Channel'))
             thirdBlock.appendChild(this.channelSelector.node)
         }
-        if (this.npcSelector.node.options.length > 0) {
-            const forthBlock = this.client.createDiv('selector_block')
-            selectorSection.appendChild(forthBlock)
-            forthBlock.appendChild(this.client.createTitle('NPC'))
-            forthBlock.appendChild(this.npcSelector.node)
-        }
         if (this.threadSelector.node.options.length > 0) {
             const block = this.client.createDiv('selector_block')
             selectorSection.appendChild(block)
             block.appendChild(this.client.createTitle('Thread'))
             block.appendChild(this.threadSelector.node)
+        }
+        if (this.npcSelector.node.options.length > 0) {
+            const forthBlock = this.client.createDiv('selector_block')
+            selectorSection.appendChild(forthBlock)
+            forthBlock.appendChild(this.client.createTitle('NPC'))
+            forthBlock.appendChild(this.npcSelector.node)
         }
         // 
         this.node.appendChild(this.channels.node)

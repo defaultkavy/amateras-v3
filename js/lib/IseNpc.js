@@ -78,11 +78,11 @@ class IseNpc extends _BaseObj_js_1._BaseObj {
                 const webhook = this.webhooks.has(parentChannel.id) ? this.webhooks.get(parentChannel.id) : yield this.createWebhook(parentChannel);
                 if (!webhook)
                     return this.amateras.system.log('Webhook is undefined');
-                console.debug(yield (0, request_promise_1.default)(`https://discord.com/api/webhooks/${webhook.id}/${webhook.token}?thread_id=${_channel.id}`, {
+                yield (0, request_promise_1.default)(`https://discord.com/api/webhooks/${webhook.id}/${webhook.token}?thread_id=${_channel.id}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(options)
-                }));
+                }).catch(err => this.amateras.system.log(err));
                 return;
             }
             else {
@@ -115,6 +115,7 @@ class IseNpc extends _BaseObj_js_1._BaseObj {
             }
             this.active = false;
             this.save();
+            this.amateras.events.ise.npc.cache.delete(this.id);
             return 'NPC Leave';
         });
     }
