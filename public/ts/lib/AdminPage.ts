@@ -192,7 +192,7 @@ export class AdminPage extends Page {
     }
 
     async send() {
-        if (this.client.role === 'ise') {
+        if (this.client.role === 'ise' && !this.npcSelector.node.value) {
             this.input.style.borderColor = '#f97583'
             this.log('NPC not seleted', 'ERROR')
             return
