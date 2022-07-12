@@ -26,7 +26,7 @@ export class LoginPage extends Page {
     }
     eventHandler() {
         this.passwordInput.addEventListener('keyup', (ev) => {
-            if (ev.key === 'enter') {
+            if (ev.key === 'Enter') {
                 this.login();
             }
         });
@@ -36,14 +36,15 @@ export class LoginPage extends Page {
     }
     login() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = {
+            const acc = {
                 username: this.usernameInput.value,
                 password: this.passwordInput.value
             };
-            const result = yield this.client.server.post(this.client.origin + '/login', data);
+            const result = yield this.client.server.post(this.client.origin + '/login', acc);
             this.loginButton.innerText = result;
             if (result === 'Login successful') {
-                this.client.guilds.init((yield this.client.discordData()).guilds);
+                const data = yield this.client.discordData();
+                this.client.role = data.role;
                 this.client.pages.load(this.client.pages.adminPage);
             }
             else

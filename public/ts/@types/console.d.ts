@@ -7,7 +7,8 @@ export interface DiscordMessageOptions {
     url: string,
     sticker: string | undefined,
     attachments: { type: string | null, url: string }[],
-    embeds: []
+    embeds: [],
+    thread: string | undefined
 }
 
 export interface DiscordChannelMessages {

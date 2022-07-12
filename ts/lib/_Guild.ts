@@ -36,7 +36,7 @@ export class _Guild extends _BaseObj {
         console.timeEnd('| Notifiers Initialized')
     }
 
-    presave() {
+    async presave() {
         return {
             notifiers: this.notifiers.list,
             hints: this.channels.hintChannels

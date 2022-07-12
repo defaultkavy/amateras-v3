@@ -135,6 +135,46 @@
                     "name": "card",
                     "description": "显示你的角色卡",
                     "type": 1
+                },
+                {
+                    "name": "npc",
+                    "description": "NPC 管理",
+                    "type": 2,
+                    "options": [
+                        {
+                            "name": "add",
+                            "description": "添加 NPC",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "name",
+                                    "description": "NPC 姓名",
+                                    "type": 3,
+                                    "required": true
+                                },
+                                {
+                                    "name": "avatar",
+                                    "description": "NPC 头像",
+                                    "type": 11,
+                                    "required": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "leave",
+                            "description": "删除 NPC",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "id",
+                                    "description": "NPC ID",
+                                    "type": 3,
+                                    "required": true,
+                                    "autocomplete": true
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }

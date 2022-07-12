@@ -12,13 +12,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.IseGakuen = void 0;
 const _Base_1 = require("./_Base");
 const google_spreadsheet_1 = require("google-spreadsheet");
+const IseNpcManager_js_1 = require("./IseNpcManager.js");
 class IseGakuen extends _Base_1._Base {
     constructor(amateras) {
         super(amateras);
         this.grade = ['', '一年级', '二年级', '三年级'];
+        this.npc = new IseNpcManager_js_1.IseNpcManager(amateras);
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.npc.init();
             const spreadsheets = new google_spreadsheet_1.GoogleSpreadsheet('1zg2rL9zbiCYPdsVgnKrNzhGeK2nlKlM_EH-kw2QGWMk');
             yield spreadsheets.useServiceAccountAuth(this.amateras.system.cert);
             yield spreadsheets.loadInfo();

@@ -36,6 +36,7 @@
     "google-spreadsheet": "^3.3.0",
     "googleapis": "^102.0.0",
     "mongodb": "^4.7.0",
+    "nodejs-snowflake": "^2.0.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "xmlhttprequest": "^1.8.0"

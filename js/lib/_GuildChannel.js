@@ -20,6 +20,9 @@ class _GuildChannel extends _BaseGuildObj_1._BaseGuildObj {
             return false;
         return true;
     }
+    isThread() {
+        return this.origin.isThread();
+    }
     isCategory() {
         if (this.type === 'GUILD_CATEGORY')
             return true;

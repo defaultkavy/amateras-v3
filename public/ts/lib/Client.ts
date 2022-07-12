@@ -9,6 +9,8 @@ export class Client {
     server: Server;
     origin: string;
     guilds: _GuildManager;
+    role: ConsoleRole | undefined
+    npcs: Map<string, ConsoleNpcData>;
     constructor() {
         this.node = document.createElement('app')
         document.body.appendChild(this.node)
@@ -16,6 +18,7 @@ export class Client {
         this.server = new Server(this)
         this.origin = window.location.protocol + '//' +  window.location.host + '/v3'
         this.guilds = new _GuildManager(this)
+        this.npcs = new Map
         this.init()
     }
 
@@ -25,13 +28,21 @@ export class Client {
             this.pages.load(this.pages.loginPage)
         }
         else {
-            this.guilds.init((await this.discordData()).guilds)
+            const data = await this.discordData()
+            this.role = data.role
             this.pages.load(this.pages.adminPage)
         }
     }
 
     async discordData() {
-        return await (await fetch(this.origin + '/console')).json() as ConsoleData
+        const data = await (await fetch(this.origin + '/console')).json() as ConsoleData
+        this.guilds.init(data.guilds)
+        if (data.npcs) {
+            for (const npc of data.npcs) {
+                this.npcs.set(npc.id, npc)
+            }
+        }
+        return data
     }
 
     createTitle(title: string) {
@@ -49,5 +60,15 @@ export class Client {
 
 export interface ConsoleData {
     guilds: ConsoleGuildData[],
-    success: boolean
+    success: boolean,
+    role: ConsoleRole,
+    npcs?: ConsoleNpcData[]
+}
+
+export type ConsoleRole = 'admin' | 'user' | 'ise'
+
+export interface ConsoleNpcData {
+    id: string,
+    name: string,
+    avatar: string
 }

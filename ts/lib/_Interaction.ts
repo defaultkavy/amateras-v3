@@ -1,4 +1,4 @@
-import { Interaction } from "discord.js";
+import { GuildMember, Interaction } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _Base } from "./_Base";
 import { _Guild } from "./_Guild";
@@ -12,6 +12,7 @@ export class _Interaction extends _Base {
     _user: _User;
     _guild?: _Guild;
     _channel?: _TextBaseChannel;
+    member?: GuildMember;
     valid = false
     constructor(amateras: Amateras, interaction: Interaction, _user: _User) {
         super(amateras)
@@ -24,6 +25,8 @@ export class _Interaction extends _Base {
         const _guild = this.amateras.guilds.cache.get(this.origin.guild.id)
         if (!_guild) return false
         this._guild = _guild
+        this.member = this._guild.origin.members.cache.get(this._user.id)
+        if (!this.member) return false
         if (!this.origin.channel) return false
         const _channel = this._guild.channels.cache.get(this.origin.channel.id)
         if (!_channel || !_channel.isTextBased()) return false
@@ -35,5 +38,6 @@ export class _Interaction extends _Base {
 export interface _ValidInteraction extends _Interaction {
     _guild: _Guild;
     _channel: _TextBaseChannel;
+    member: GuildMember;
     valid: true
 }

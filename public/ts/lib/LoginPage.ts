@@ -22,7 +22,7 @@ export class LoginPage extends Page {
 
     eventHandler() {
         this.passwordInput.addEventListener('keyup', (ev) => {
-            if (ev.key === 'enter') {
+            if (ev.key === 'Enter') {
                 this.login()
             }
         })
@@ -34,15 +34,16 @@ export class LoginPage extends Page {
     }
 
     async login() {
-        const data = {
+        const acc = {
             username: this.usernameInput.value,
             password: this.passwordInput.value
         }
 
-        const result = await this.client.server.post(this.client.origin + '/login', data) as string
+        const result = await this.client.server.post(this.client.origin + '/login', acc) as string
         this.loginButton.innerText = result
         if (result === 'Login successful') {
-            this.client.guilds.init((await this.client.discordData()).guilds)
+            const data = await this.client.discordData()
+            this.client.role = data.role
             this.client.pages.load(this.client.pages.adminPage)
         } else
         setTimeout(() => {this.loginButton.innerText = 'Login'}, 2000)

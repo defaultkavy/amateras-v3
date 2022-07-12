@@ -1,4 +1,4 @@
-import { CommandInteraction } from "discord.js"
+import { CommandInteraction, GuildMember } from "discord.js"
 import { Amateras } from "./Amateras"
 import { _Guild } from "./_Guild"
 import { _Interaction } from "./_Interaction"
@@ -18,5 +18,6 @@ export class _CommandInteraction extends _Interaction {
 export interface _ValidCommandInteraction extends _CommandInteraction {
     _guild: _Guild;
     _channel: _TextBaseChannel;
+    member: GuildMember;
     valid: true
 }

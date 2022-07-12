@@ -18,6 +18,7 @@ export class Client {
         this.server = new Server(this);
         this.origin = window.location.protocol + '//' + window.location.host + '/v3';
         this.guilds = new _GuildManager(this);
+        this.npcs = new Map;
         this.init();
     }
     init() {
@@ -27,14 +28,22 @@ export class Client {
                 this.pages.load(this.pages.loginPage);
             }
             else {
-                this.guilds.init((yield this.discordData()).guilds);
+                const data = yield this.discordData();
+                this.role = data.role;
                 this.pages.load(this.pages.adminPage);
             }
         });
     }
     discordData() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield (yield fetch(this.origin + '/console')).json();
+            const data = yield (yield fetch(this.origin + '/console')).json();
+            this.guilds.init(data.guilds);
+            if (data.npcs) {
+                for (const npc of data.npcs) {
+                    this.npcs.set(npc.id, npc);
+                }
+            }
+            return data;
         });
     }
     createTitle(title) {

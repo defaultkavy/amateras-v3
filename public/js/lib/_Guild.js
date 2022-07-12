@@ -6,6 +6,7 @@ export class _Guild extends Base {
         this.name = data.name;
         this.channels = data.channels;
         this.categories = data.categories;
+        this.threads = data.threads;
         this.emojis = data.emojis;
         this.access = data.access;
         this.members = data.members;

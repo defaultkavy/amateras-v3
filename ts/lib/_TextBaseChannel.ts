@@ -1,4 +1,4 @@
-import { NewsChannel, TextChannel, ThreadChannel, ThreadChannelTypes } from "discord.js";
+import { MessageOptions, NewsChannel, TextChannel, ThreadChannel, ThreadChannelTypes } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _GuildChannel } from "./_GuildChannel";
 import { _Guild } from "./_Guild";
@@ -10,7 +10,6 @@ export class _TextBaseChannel extends _GuildChannel {
     constructor(amateras: Amateras, _guild: _Guild, channel: TextChannel | ThreadChannel | NewsChannel) {
         super(amateras, _guild, channel)
         this.origin = channel
-        this.init()
     }
 
     async init() {
@@ -30,5 +29,10 @@ export class _TextBaseChannel extends _GuildChannel {
         this.hint = undefined
         await this._guild.save()
         return 'Hint function turn off'
+    }
+
+    async send(messageOption: MessageOptions) {
+        const message = await this.origin.send(messageOption).catch(err => this.amateras.system.log(err))
+        return message
     }
 }

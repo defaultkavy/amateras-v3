@@ -36,11 +36,16 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.refresh();
+            setTimeout(() => {
+                this.refresh();
+            }, 5000);
         });
     }
     refresh() {
         return __awaiter(this, void 0, void 0, function* () {
-            for (const channel of this._guild.origin.channels.cache.values()) {
+            yield this._guild.origin.channels.fetchActiveThreads();
+            const channels = this._guild.origin.channels.cache.values();
+            for (const channel of channels) {
                 // filter existed channel
                 if (this.cache.has(channel.id))
                     continue;
@@ -60,20 +65,24 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
         });
     }
     add(channel) {
-        if (channel.type === 'GUILD_TEXT' || channel.type === 'GUILD_NEWS') {
-            if (!channel.isText())
-                return;
-            const _channel = new _TextChannel_1._TextChannel(this.amateras, this._guild, channel);
-            this.cache.set(_channel.id, _channel);
-        }
-        else if (channel.isThread()) {
-            const _channel = new _ThreadChannel_1._ThreadChannel(this.amateras, this._guild, channel);
-            this.cache.set(_channel.id, _channel);
-        }
-        else if (channel.type === 'GUILD_CATEGORY') {
-            const _channel = new _CategoryChannel_1._CategoryChannel(this.amateras, this._guild, channel);
-            this.cache.set(_channel.id, _channel);
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            if (channel.type === 'GUILD_TEXT' || channel.type === 'GUILD_NEWS') {
+                if (!channel.isText())
+                    return;
+                const _channel = new _TextChannel_1._TextChannel(this.amateras, this._guild, channel);
+                yield _channel.init();
+                this.cache.set(_channel.id, _channel);
+            }
+            else if (channel.isThread()) {
+                const _channel = new _ThreadChannel_1._ThreadChannel(this.amateras, this._guild, channel);
+                yield _channel.init();
+                this.cache.set(_channel.id, _channel);
+            }
+            else if (channel.type === 'GUILD_CATEGORY') {
+                const _channel = new _CategoryChannel_1._CategoryChannel(this.amateras, this._guild, channel);
+                this.cache.set(_channel.id, _channel);
+            }
+        });
     }
     get(id) {
         const cached = this.cache.get(id);
@@ -123,6 +132,21 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
             categories.push(data);
         }
         return categories;
+    }
+    consoleThreads() {
+        const threads = [];
+        for (const _channel of this.cache.values()) {
+            if (!_channel.isThread())
+                continue;
+            const data = {
+                id: _channel.id,
+                name: _channel.name,
+                parent: _channel.origin.parentId,
+                joined: _channel.origin.members.cache.has(this.amateras.me.id)
+            };
+            threads.push(data);
+        }
+        return threads;
     }
 }
 exports._GuildChannelManager = _GuildChannelManager;

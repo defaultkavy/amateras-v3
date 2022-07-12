@@ -17,12 +17,14 @@ const Console_js_1 = require("./Console.js");
 const _Base_1 = require("./_Base");
 const _Youtube_1 = require("./_Youtube");
 const fs_1 = __importDefault(require("fs"));
+const nodejs_snowflake_1 = require("nodejs-snowflake");
 class System extends _Base_1._Base {
     constructor(amateras) {
         super(amateras);
         this.youtube = new _Youtube_1._Youtube(this.amateras);
         this.cert = require('../../certificate.json');
         this.console = new Console_js_1.Console(this.amateras);
+        this.snowflake = new nodejs_snowflake_1.Snowflake({ instance_id: 0 });
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {

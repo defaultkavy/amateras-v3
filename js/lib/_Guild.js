@@ -43,10 +43,12 @@ class _Guild extends _BaseObj_1._BaseObj {
         });
     }
     presave() {
-        return {
-            notifiers: this.notifiers.list,
-            hints: this.channels.hintChannels
-        };
+        return __awaiter(this, void 0, void 0, function* () {
+            return {
+                notifiers: this.notifiers.list,
+                hints: this.channels.hintChannels
+            };
+        });
     }
 }
 exports._Guild = _Guild;

@@ -13,6 +13,7 @@ export class MessageBox extends BasePageElement {
         this.sticker = document.createElement('sticker');
         this.attachments = document.createElement('attachments');
         this.avatar = document.createElement('img');
+        this.thread = document.createElement('thread');
     }
     init() {
         this.author.innerText = this.data.author.name;
@@ -24,6 +25,7 @@ export class MessageBox extends BasePageElement {
             if (checkImage(attachment.type)) {
                 const img = document.createElement('img');
                 img.src = attachment.url;
+                img.loading = 'lazy';
                 attachmentBox.classList.add('image');
                 attachmentBox.appendChild(img);
             }
@@ -49,7 +51,12 @@ export class MessageBox extends BasePageElement {
             const embedBox = new _MessageEmbed(this.client, this, embed, document.createElement('object-embed'));
             this.embeds.push(embedBox);
         }
-        console.debug(this.embeds);
+        if (this.data.thread) {
+            const thread = this.guild.threads.find(thread => this.data.thread === thread.id);
+            if (thread) {
+                this.thread.innerText = thread.name;
+            }
+        }
         this.emojiInit();
         this.eventHandler();
         this.layout();
@@ -97,6 +104,14 @@ export class MessageBox extends BasePageElement {
         for (const embedBox of this.embeds.values()) {
             contentWrapper.append(embedBox.node);
         }
+        if (this.data.thread) {
+            const threadBox = document.createElement('thread-wrapper');
+            const span = document.createElement('span');
+            span.innerText = 'Thread >';
+            threadBox.append(span);
+            threadBox.append(this.thread);
+            contentWrapper.append(threadBox);
+        }
         contentWrapper.appendChild(this.attachments);
         this.node.appendChild(contentWrapper);
     }
@@ -112,6 +127,16 @@ export class MessageBox extends BasePageElement {
             this.node.addEventListener('mouseleave', (ev) => {
                 replyButton.remove();
             });
+        });
+        this.thread.addEventListener('click', (ev) => {
+            const thread = this.guild.threads.find(thread => thread.id === this.data.thread);
+            if (!thread)
+                return;
+            if (!Array.from(this.page.threadSelector.node.options).find(opt => opt.value === thread.id))
+                this.page.threadSelector.addOption(thread.name, thread.id);
+            this.page.threadSelector.node.value = thread.id;
+            this.page.channelId = thread.id;
+            this.page.channels.load();
         });
     }
     emojiInit() {

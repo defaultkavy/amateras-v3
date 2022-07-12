@@ -22,7 +22,7 @@ export class _Message extends _BaseObj {
         return this.type === 'NOTIFIER_PANEL'
     }
 
-    presave() {
+    async presave() {
         return {
             guildId: this._guild.id,
             channelId: this._channel.id

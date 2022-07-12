@@ -9,7 +9,7 @@ import { _HintDB, _HintInfo } from "./_Hint";
 import { _Message } from "./_Message";
 import { _TextChannel } from "./_TextChannel";
 import { _ThreadChannel } from "./_ThreadChannel";
-import { ConsoleChannelData, ConsoleRole } from "./Console.js";
+import { ConsoleChannelData, ConsoleRole, ConsoleThreadData } from "./Console.js";
 
 export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
     #hints: string[];
@@ -20,10 +20,15 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
 
     async init() {
         await this.refresh()
+        setTimeout(() => {
+            this.refresh()
+        }, 5000);
     }
 
     async refresh() {
-        for (const channel of this._guild.origin.channels.cache.values()) {
+        await this._guild.origin.channels.fetchActiveThreads()
+        const channels = this._guild.origin.channels.cache.values()
+        for (const channel of channels) {
             // filter existed channel
             if (this.cache.has(channel.id)) continue
             this.add(channel)
@@ -43,13 +48,15 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
         }
     }
 
-    add(channel: GuildBasedChannel | GuildChannel) {
+    async add(channel: GuildBasedChannel | GuildChannel) {
         if (channel.type === 'GUILD_TEXT' || channel.type === 'GUILD_NEWS') {
             if (!channel.isText()) return
             const _channel = new _TextChannel(this.amateras, this._guild, channel)
+            await _channel.init()
             this.cache.set(_channel.id, _channel)
         } else if (channel.isThread()) {
             const _channel = new _ThreadChannel(this.amateras, this._guild, channel)
+            await _channel.init()
             this.cache.set(_channel.id, _channel)
         } else if (channel.type === 'GUILD_CATEGORY') {
             const _channel = new _CategoryChannel(this.amateras, this._guild, channel as CategoryChannel)
@@ -102,6 +109,21 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
             categories.push(data)
         }
         return categories
+    }
+
+    consoleThreads() {
+        const threads: ConsoleThreadData[] = []
+        for (const _channel of this.cache.values()) {
+            if (!_channel.isThread()) continue
+            const data: ConsoleThreadData = {
+                id: _channel.id,
+                name: _channel.name,
+                parent: _channel.origin.parentId,
+                joined: _channel.origin.members.cache.has(this.amateras.me.id)
+            }
+            threads.push(data)
+        }
+        return threads
     }
 
 }

@@ -239,6 +239,38 @@ app-page#admin_console {
                             }
                         }
                     }
+
+                    thread-wrapper {
+                        display: block;
+                        padding: 5px 10px;
+                        background-color: #2f3136;
+                        border-radius: 5px;
+                        border: 1px solid #40444b;
+                        cursor: pointer;
+
+                        thread {
+                            color: #868c9c
+                        }
+
+                        span {
+                            margin-right: 10px;
+                            color: #13ade9;
+                            font-weight: 900;
+                        }
+
+                        &::after {
+                            width: 2rem;
+                            left: 1.9rem;
+                            top: 3rem;
+                            height: calc(100% - 70px);
+                            border-left: 3px solid #13ade9;
+                            border-bottom: 3px solid #13ade9;
+                            border-bottom-left-radius: 8px;
+                            bottom: 29px;
+                            content: "";
+                            position: absolute;
+                        }
+                    }
                 }
 
                 reply-button {

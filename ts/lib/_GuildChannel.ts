@@ -29,6 +29,10 @@ export class _GuildChannel extends _BaseGuildObj {
         return true
     }
     
+    isThread(): this is _ThreadChannel {
+        return this.origin.isThread()
+    }
+    
     isCategory(): this is _CategoryChannel {
         if (this.type === 'GUILD_CATEGORY') return true
         else return false

@@ -16,6 +16,9 @@ class _Interaction extends _Base_1._Base {
         if (!_guild)
             return false;
         this._guild = _guild;
+        this.member = this._guild.origin.members.cache.get(this._user.id);
+        if (!this.member)
+            return false;
         if (!this.origin.channel)
             return false;
         const _channel = this._guild.channels.cache.get(this.origin.channel.id);

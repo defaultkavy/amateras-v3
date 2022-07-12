@@ -35,7 +35,7 @@ class _BaseObj extends _Base_1._Base {
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = Object.assign(Object.assign({}, (0, tools_1.cloneObj)(this, __classPrivateFieldGet(this, __BaseObj_unsave, "f"))), this.presave());
+            const data = Object.assign(Object.assign({}, (0, tools_1.cloneObj)(this, __classPrivateFieldGet(this, __BaseObj_unsave, "f"))), yield this.presave());
             const find = yield __classPrivateFieldGet(this, __BaseObj_collection, "f").findOne({ id: this.id });
             if (find) {
                 yield __classPrivateFieldGet(this, __BaseObj_collection, "f").replaceOne({ id: this.id }, data);
@@ -46,7 +46,9 @@ class _BaseObj extends _Base_1._Base {
         });
     }
     presave() {
-        return {};
+        return __awaiter(this, void 0, void 0, function* () {
+            return {};
+        });
     }
 }
 exports._BaseObj = _BaseObj;

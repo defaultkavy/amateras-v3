@@ -2,16 +2,22 @@ import { Amateras } from "./Amateras";
 import { _Base } from "./_Base";
 import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from 'google-spreadsheet'
 import { MessageEmbedOptions, User } from "discord.js";
+import { IseNpc } from "./IseNpc.js";
+import { IseNpcManager } from "./IseNpcManager.js";
 
 export class IseGakuen extends _Base {
     sheet?: GoogleSpreadsheetWorksheet;
     grade: string[];
+    npc: IseNpcManager;
     constructor(amateras: Amateras) {
         super(amateras)
         this.grade = ['', '一年级', '二年级', '三年级']
+        this.npc = new IseNpcManager(amateras)
     }
 
     async init() {
+        await this.npc.init()
+
         const spreadsheets = new GoogleSpreadsheet('1zg2rL9zbiCYPdsVgnKrNzhGeK2nlKlM_EH-kw2QGWMk')
         await spreadsheets.useServiceAccountAuth(this.amateras.system.cert)
         await spreadsheets.loadInfo()

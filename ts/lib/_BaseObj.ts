@@ -15,7 +15,7 @@ export class _BaseObj extends _Base {
     }
 
     async save() {
-        const data = {...cloneObj(this, this.#unsave), ...this.presave()}
+        const data = {...cloneObj(this, this.#unsave), ...await this.presave()}
         const find = await this.#collection.findOne({id: this.id})
         if (find) {
             await this.#collection.replaceOne({id: this.id}, data)
@@ -24,7 +24,7 @@ export class _BaseObj extends _Base {
         }
     }
 
-    presave() {
+    async presave() {
         return {}
     }
 }

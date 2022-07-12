@@ -16,7 +16,6 @@ class _TextBaseChannel extends _GuildChannel_1._GuildChannel {
     constructor(amateras, _guild, channel) {
         super(amateras, _guild, channel);
         this.origin = channel;
-        this.init();
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -39,6 +38,12 @@ class _TextBaseChannel extends _GuildChannel_1._GuildChannel {
             this.hint = undefined;
             yield this._guild.save();
             return 'Hint function turn off';
+        });
+    }
+    send(messageOption) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const message = yield this.origin.send(messageOption).catch(err => this.amateras.system.log(err));
+            return message;
         });
     }
 }

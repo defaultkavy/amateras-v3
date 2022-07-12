@@ -16,6 +16,12 @@ export class AdminPage extends Page {
     statusText: HTMLSpanElement;
     clearButton: HTMLSpanElement;
     channels: MessageChannelManager;
+    guildId: string;
+    channelId: string;
+    categoryId: string;
+    npcSelector: _Selector;
+    threadSelector: _Selector;
+    threadId: string;
     constructor(client: Client, id: string) {
         super(client, id)
         this.channels = new MessageChannelManager(client, this, document.createElement('message-channel-manager'))
@@ -23,19 +29,27 @@ export class AdminPage extends Page {
         this.guildSelector = new _Selector(client, this, document.createElement('select'), 'guild_selector')
         this.categorySelector = new _Selector(client, this, document.createElement('select'), 'category_selector')
         this.channelSelector = new _Selector(client, this, document.createElement('select'), 'channel_selector')
+        this.threadSelector = new _Selector(client, this, document.createElement('select'), 'thread_selector')
+        this.npcSelector = new _Selector(client, this, document.createElement('select'), 'npc_selector')
         this.input = document.createElement('textarea')
         this.clearButton = this.client.createTitle('Clear')
         this.sendButton = document.createElement('button')
         this.sendButton.innerText = '>'
         this.statusText = document.createElement('span')
         this.statusText.id = 'status'
+
+        this.guildId = ''
+        this.channelId = ''
+        this.categoryId = ''
+        this.threadId = ''
     }
 
     async init() {
+        await this.guildInit()
+        this.npcInit()
         this.layout()
         this.eventHandler()
         this.load()
-        await this.guildInit()
         this.channels.load()
         this.client.server.connect('/stream')
         this.client.server.onmessage((data) => {
@@ -43,14 +57,28 @@ export class AdminPage extends Page {
                 if (this.channels.channel) {
                     this.channels.load()
                 }
+                this.client.discordData()
             }
         })
     }
 
     async eventHandler() {
-        this.guildSelector.node.addEventListener('change', async () => this.categoryInit())
-        this.categorySelector.node.addEventListener('change', async () => this.channelInit())
+        this.guildSelector.node.addEventListener('change', async () => {
+            this.guildId = this.guildSelector.node.value
+            this.categoryInit()
+        })
+        this.categorySelector.node.addEventListener('change', async () => {
+            this.categoryId = this.categorySelector.node.value
+            this.channelInit()
+        })
         this.channelSelector.node.addEventListener('change', async () => {
+            this.channelId = this.channelSelector.node.value
+            this.threadInit()
+            this.channels.load()
+        })
+        this.threadSelector.node.addEventListener('change', async () => {
+            if (this.threadSelector.node.value === 'none') this.channelId = this.channelSelector.node.value
+            else this.channelId = this.threadSelector.node.value
             this.channels.load()
         })
         this.clearButton.addEventListener('click', (ev) => { this.reply.clear() })
@@ -89,6 +117,7 @@ export class AdminPage extends Page {
             if (!guild.access) continue
             this.guildSelector.addOption(guild.name, guild.id)
         }
+        this.guildId = this.guildSelector.node.options[0].value
         await this.categoryInit()
     }
 
@@ -102,11 +131,12 @@ export class AdminPage extends Page {
         // sort categories
         categories.sort((a, b) => a.position - b.position)
         //
-        if (guild.channels.find(channel => !channel.parent)) this.categorySelector.addOption('Uncategory', 'none')
+        if (guild.channels.find(channel => !channel.parent && channel.access === true)) this.categorySelector.addOption('Uncategory', 'none')
         for (const category of categories) {
             this.categorySelector.addOption(category.name, category.id)
         }
 
+        this.categoryId = this.categorySelector.node.options[0].value
         await this.channelInit()
     }
 
@@ -133,8 +163,32 @@ export class AdminPage extends Page {
             if (!channel.access) continue
             this.channelSelector.addOption(channel.name, channel.id)
         }
+        this.channelId = this.channelSelector.node.options[0].value
+        this.threadInit()
+    }
 
+    async threadInit() {
+        const guild = this.client.guilds.array.find(guild => guild.id === this.guildId)
+        if (!guild) return
+        // filter category
+        const threads = guild.threads.filter(thread => {
+            return thread.parent === this.channelId && thread.joined
+        })
+
+        this.threadSelector.clearChild()
+        this.threadSelector.addOption('none', 'none')
+        for (const thread of threads) {
+            this.threadSelector.addOption(thread.name, thread.id)
+        }
+        this.threadSelector.node.style.display = this.threadSelector.node.options.length ? 'block' : 'none'
         this.channels.load()
+    }
+
+    async npcInit() {
+        if (this.client.role === 'admin') this.npcSelector.addOption('none', 'none')
+        for (const npc of this.client.npcs.values()) {
+            this.npcSelector.addOption(npc.name, npc.id)
+        }
     }
 
     async send() {
@@ -144,12 +198,12 @@ export class AdminPage extends Page {
         this.resizeInput()
         //
         const status = await this.client.server.post(this.client.origin + '/console', {
-            guild: this.guildSelector.node.value,
-            channel: this.channelSelector.node.value,
+            guild: this.guildId,
+            channel: this.channelId,
+            npc: this.npcSelector.node.value === 'none' ? undefined : this.npcSelector.node.value,
             content: content,
             reply: this.reply.trigger ? this.reply.node.value : undefined
         })
-
         this.statusText.innerText = status as string
         setTimeout(() => {
             this.statusText.innerText = ''
@@ -164,21 +218,39 @@ export class AdminPage extends Page {
     private layout() {
         const selectorSection = this.client.createDiv('selector_section')
         this.node.appendChild(selectorSection)
-        // first
-        const firstBlock = this.client.createDiv('selector_block')
-        selectorSection.appendChild(firstBlock)
-        firstBlock.appendChild(this.client.createTitle('Server'))
-        firstBlock.appendChild(this.guildSelector.node)
-        // first
-        const secondBlock = this.client.createDiv('selector_block')
-        selectorSection.appendChild(secondBlock)
-        secondBlock.appendChild(this.client.createTitle('Category'))
-        secondBlock.appendChild(this.categorySelector.node)
-        // first
-        const thirdBlock = this.client.createDiv('selector_block')
-        selectorSection.appendChild(thirdBlock)
-        thirdBlock.appendChild(this.client.createTitle('Channel'))
-        thirdBlock.appendChild(this.channelSelector.node)
+        if (this.guildSelector.node.options.length > 1) {
+            // first
+            const firstBlock = this.client.createDiv('selector_block')
+            selectorSection.appendChild(firstBlock)
+            firstBlock.appendChild(this.client.createTitle('Server'))
+            firstBlock.appendChild(this.guildSelector.node)
+        }
+        if (this.categorySelector.node.options.length > 1) {
+            // first
+            const secondBlock = this.client.createDiv('selector_block')
+            selectorSection.appendChild(secondBlock)
+            secondBlock.appendChild(this.client.createTitle('Category'))
+            secondBlock.appendChild(this.categorySelector.node)
+        }
+        if (this.channelSelector.node.options.length > 1) {
+            // first
+            const thirdBlock = this.client.createDiv('selector_block')
+            selectorSection.appendChild(thirdBlock)
+            thirdBlock.appendChild(this.client.createTitle('Channel'))
+            thirdBlock.appendChild(this.channelSelector.node)
+        }
+        if (this.npcSelector.node.options.length > 0) {
+            const forthBlock = this.client.createDiv('selector_block')
+            selectorSection.appendChild(forthBlock)
+            forthBlock.appendChild(this.client.createTitle('NPC'))
+            forthBlock.appendChild(this.npcSelector.node)
+        }
+        if (this.threadSelector.node.options.length > 0) {
+            const block = this.client.createDiv('selector_block')
+            selectorSection.appendChild(block)
+            block.appendChild(this.client.createTitle('Thread'))
+            block.appendChild(this.threadSelector.node)
+        }
         // 
         this.node.appendChild(this.channels.node)
         //
@@ -192,17 +264,5 @@ export class AdminPage extends Page {
         input_section.appendChild(this.input)
         input_section.appendChild(this.sendButton)
         input_section.appendChild(this.statusText)
-    }
-
-    get channelId() {
-        return this.channelSelector.node.selectedOptions[0].value
-    }
-
-    get guildId() {
-        return this.guildSelector.node.selectedOptions[0].value
-    }
-
-    get categoryId() {
-        return this.categorySelector.node.selectedOptions[0].value
     }
 }

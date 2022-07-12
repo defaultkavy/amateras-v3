@@ -8,7 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const request_promise_1 = __importDefault(require("request-promise"));
 module.exports = {
     name: 'channelCreate',
     once: false,
@@ -17,7 +21,8 @@ module.exports = {
             const _guild = amateras.guilds.cache.get(channel.guild.id);
             if (!_guild)
                 return;
-            _guild.channels.add(channel);
+            _guild.channels.refresh;
+            (0, request_promise_1.default)('http://localhost:5500/console-update').catch(() => { });
         });
     }
 };
