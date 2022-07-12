@@ -173,6 +173,20 @@
                                     "autocomplete": true
                                 }
                             ]
+                        },
+                        {
+                            "name": "card",
+                            "description": "展示 NPC 名片",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "id",
+                                    "description": "NPC ID",
+                                    "type": 3,
+                                    "required": true,
+                                    "autocomplete": true
+                                }
+                            ]
                         }
                     ]
                 }

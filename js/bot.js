@@ -60,8 +60,8 @@ const client = new discord_js_1.default.Client({
 console.log(cmd_1.default.Cyan, 'Connecting to Discord...');
 console.time('| Discord Connected');
 client.login(config.bot.token);
-console.timeEnd('| Discord Connected');
 client.on('ready', () => __awaiter(void 0, void 0, void 0, function* () {
+    console.timeEnd('| Discord Connected');
     new Amateras_1.Amateras({
         client: client,
         db: yield db,

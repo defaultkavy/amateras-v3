@@ -121,6 +121,22 @@ class IseNpc extends _BaseObj_js_1._BaseObj {
     }
     embed() {
         return __awaiter(this, void 0, void 0, function* () {
+            const data = yield this.getInfo();
+            if (!data) {
+                const embed = {
+                    author: {
+                        name: `${this.name}`
+                    },
+                    thumbnail: {
+                        url: this.avatar
+                    },
+                    image: {
+                        url: 'https://cdn.discordapp.com/attachments/804531119394783276/989579863910408202/white.png'
+                    }
+                };
+                this.amateras.system.log('IseNpc - data undefined');
+                return embed;
+            }
             const embed = {
                 author: {
                     name: `${this.name}`
@@ -128,6 +144,8 @@ class IseNpc extends _BaseObj_js_1._BaseObj {
                 thumbnail: {
                     url: this.avatar
                 },
+                description: data.description,
+                fields: this.fields(data),
                 image: {
                     url: 'https://cdn.discordapp.com/attachments/804531119394783276/989579863910408202/white.png'
                 }
@@ -135,7 +153,37 @@ class IseNpc extends _BaseObj_js_1._BaseObj {
             return embed;
         });
     }
+    getInfo() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.amateras.events.ise.getNpc(this.id);
+        });
+    }
+    fields(data) {
+        const skip = ['id', 'name', 'description'];
+        const fields = [];
+        for (const header in data) {
+            if (!data[header])
+                continue;
+            if (skip.includes(header))
+                continue;
+            fields.push({
+                name: headerFields[header],
+                value: data[header],
+                inline: header === 'characteristic' ? false : true
+            });
+        }
+        return fields;
+    }
 }
 exports.IseNpc = IseNpc;
 _IseNpc_webhooks = new WeakMap();
+var headerFields;
+(function (headerFields) {
+    headerFields["age"] = "\u5E74\u9F84";
+    headerFields["height"] = "\u8EAB\u9AD8";
+    headerFields["gender"] = "\u6027\u522B";
+    headerFields["country"] = "\u56FD\u7C4D";
+    headerFields["characteristic"] = "\u6027\u683C";
+    headerFields["role"] = "\u8EAB\u4EFD";
+})(headerFields || (headerFields = {}));
 //# sourceMappingURL=IseNpc.js.map

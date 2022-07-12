@@ -29,6 +29,7 @@ export class IseNpcManager extends _BaseManagerDB<IseNpc, IseNpcDB> {
         const npc = new IseNpc(this.amateras, data)
         this.cache.set(npc.id, npc)
         await npc.init()
+        await this.amateras.events.ise.registerTeacher(npc)
         await npc.save()
     }
 }

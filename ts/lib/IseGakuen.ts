@@ -6,9 +6,9 @@ import { IseNpc } from "./IseNpc.js";
 import { IseNpcManager } from "./IseNpcManager.js";
 
 export class IseGakuen extends _Base {
-    sheet?: GoogleSpreadsheetWorksheet;
     grade: string[];
     npc: IseNpcManager;
+    sheets?: { [title: string]: GoogleSpreadsheetWorksheet; };
     constructor(amateras: Amateras) {
         super(amateras)
         this.grade = ['', '一年级', '二年级', '三年级']
@@ -16,19 +16,18 @@ export class IseGakuen extends _Base {
     }
 
     async init() {
-        await this.npc.init()
-
-        const spreadsheets = new GoogleSpreadsheet('1zg2rL9zbiCYPdsVgnKrNzhGeK2nlKlM_EH-kw2QGWMk')
+        const spreadsheets = new GoogleSpreadsheet('14t3Fns8vhturMFmrelIkL5XGiTrfqFlSIMsKBDvFP-Y')
         await spreadsheets.useServiceAccountAuth(this.amateras.system.cert)
         await spreadsheets.loadInfo()
-        const sheets = spreadsheets.sheetsByTitle
-        this.sheet = sheets['Bot Data']
+        this.sheets = spreadsheets.sheetsByTitle
+        await this.npc.init()
     }
 
     async getStudent(id: string) {
-        if (!this.sheet) return
-        const rows = await this.sheet.getRows()
-        const headers = this.sheet.headerValues
+        if (!this.sheets) return
+        const sheet = this.sheets['Student Data']
+        const rows = await sheet.getRows()
+        const headers = sheet.headerValues
         const arr: ISE_STUDENT_DATA[] = []
         for (let i = 0; i < rows.length; i++) {
             const obj: {[key: string]: any} = {}
@@ -41,14 +40,41 @@ export class IseGakuen extends _Base {
         return playerData
     }
 
-    async register(user: User, image: string) {
-        if (!this.sheet) return 'Database not found'
-        const rows = await this.sheet.getRows()
+    async getNpc(id: string) {
+        if (!this.sheets) return
+        const sheet = this.sheets['NPC Data']
+        const rows = await sheet.getRows()
+        const headers = sheet.headerValues
+        const arr: ISE_TEACHER_DATA[] = []
+        for (let i = 0; i < rows.length; i++) {
+            const obj: {[key: string]: any} = {}
+            for (const header of headers) {
+                obj[header] = rows[i][header]
+            }
+            arr.push(obj as ISE_TEACHER_DATA)
+        }
+        const data = arr.find((value) => value.id === id)
+        return data
+    }
+
+    async registerStudent(user: User, image: string) {
+        if (!this.sheets) return 'Database not found'
+        const rows = await this.sheets['Student Data'].getRows()
         const row = rows.find((row) => row.tag === user.tag)
         if (!row) return 'No Record'
         row.id = user.id
         row.characterCard = image
         await row.save()
+        return 'Success'
+    }
+    
+    async registerTeacher(npc: IseNpc) {
+        if (!this.sheets) return 'Database not found'
+        const sheet = this.sheets['Teacher Data']
+        const rows = await sheet.getRows()
+        if (rows.find(row => row.id === npc.id)) return
+        console.debug(npc)
+        await sheet.addRow({id: npc.id, name: npc.name})
         return 'Success'
     }
 
@@ -97,4 +123,16 @@ export interface ISE_STUDENT_DATA {
     grade: string,
     characterCard: string,
     class: string
+}
+
+export interface ISE_TEACHER_DATA {
+    [keys: string]: any,
+    id: string,
+    name: string,
+    age: string,
+    height: string,
+    gender: string,
+    country: string,
+    description: string,
+    characteristic: string
 }

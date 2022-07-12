@@ -31,8 +31,8 @@ const client = new discord.Client({
 console.log(cmd.Cyan, 'Connecting to Discord...')
 console.time('| Discord Connected')
 client.login(config.bot.token)
-console.timeEnd('| Discord Connected');
 client.on('ready', async () => {
+    console.timeEnd('| Discord Connected');
     new Amateras({
         client: client,
         db: await db,

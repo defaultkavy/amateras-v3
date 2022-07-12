@@ -37,6 +37,7 @@ class IseNpcManager extends _BaseManagerDB_js_1._BaseManagerDB {
             const npc = new IseNpc_js_1.IseNpc(this.amateras, data);
             this.cache.set(npc.id, npc);
             yield npc.init();
+            yield this.amateras.events.ise.registerTeacher(npc);
             yield npc.save();
         });
     }

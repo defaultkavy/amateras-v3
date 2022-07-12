@@ -1,6 +1,7 @@
-import { MessageEmbedOptions, MessageOptions, TextChannel, Webhook } from "discord.js";
+import { EmbedFieldData, MessageEmbedOptions, MessageOptions, TextChannel, Webhook } from "discord.js";
 import requestPromise from "request-promise";
 import { Amateras } from "./Amateras.js";
+import { ISE_TEACHER_DATA } from "./IseGakuen.js";
 import { _Base } from "./_Base.js";
 import { _BaseObj } from "./_BaseObj.js";
 import { _Guild } from "./_Guild.js";
@@ -90,6 +91,22 @@ export class IseNpc extends _BaseObj {
     }
 
     async embed() {
+        const data = await this.getInfo()
+        if (!data) {
+            const embed: MessageEmbedOptions = {
+                author: {
+                    name: `${this.name}`
+                },
+                thumbnail: {
+                    url: this.avatar
+                },
+                image: {
+                    url: 'https://cdn.discordapp.com/attachments/804531119394783276/989579863910408202/white.png'
+                }
+            }
+            this.amateras.system.log('IseNpc - data undefined')
+            return embed
+        }
         const embed: MessageEmbedOptions = {
             author: {
                 name: `${this.name}`
@@ -97,12 +114,44 @@ export class IseNpc extends _BaseObj {
             thumbnail: {
                 url: this.avatar
             },
+            description: data.description,
+            fields: this.fields(data),
             image: {
                 url: 'https://cdn.discordapp.com/attachments/804531119394783276/989579863910408202/white.png'
             }
         }
         return embed
     }
+
+    async getInfo() {
+        return await this.amateras.events.ise.getNpc(this.id)
+    }
+
+    private fields(data: ISE_TEACHER_DATA) {
+        const skip = ['id', 'name', 'description']
+        const fields: EmbedFieldData[] = []
+        for (const header in data) {
+            if (!data[header]) continue
+            if (skip.includes(header)) continue
+            fields.push({
+                name: headerFields[header as fieldProperty],
+                value: data[header],
+                inline: header === 'characteristic' ? false : true
+            })
+        }
+        return fields
+    }
+}
+
+type fieldProperty = 'age' | 'height' | 'gender' | 'country' | 'characteristic'
+
+enum headerFields {
+    'age' = '年龄',
+    'height' = '身高',
+    'gender' = '性别',
+    'country' = '国籍',
+    'characteristic' = '性格',
+    'role' = '身份'
 }
 
 export interface IseNpcOptions {

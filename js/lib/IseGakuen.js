@@ -21,20 +21,20 @@ class IseGakuen extends _Base_1._Base {
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.npc.init();
-            const spreadsheets = new google_spreadsheet_1.GoogleSpreadsheet('1zg2rL9zbiCYPdsVgnKrNzhGeK2nlKlM_EH-kw2QGWMk');
+            const spreadsheets = new google_spreadsheet_1.GoogleSpreadsheet('14t3Fns8vhturMFmrelIkL5XGiTrfqFlSIMsKBDvFP-Y');
             yield spreadsheets.useServiceAccountAuth(this.amateras.system.cert);
             yield spreadsheets.loadInfo();
-            const sheets = spreadsheets.sheetsByTitle;
-            this.sheet = sheets['Bot Data'];
+            this.sheets = spreadsheets.sheetsByTitle;
+            yield this.npc.init();
         });
     }
     getStudent(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.sheet)
+            if (!this.sheets)
                 return;
-            const rows = yield this.sheet.getRows();
-            const headers = this.sheet.headerValues;
+            const sheet = this.sheets['Student Data'];
+            const rows = yield sheet.getRows();
+            const headers = sheet.headerValues;
             const arr = [];
             for (let i = 0; i < rows.length; i++) {
                 const obj = {};
@@ -47,17 +47,49 @@ class IseGakuen extends _Base_1._Base {
             return playerData;
         });
     }
-    register(user, image) {
+    getNpc(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.sheet)
+            if (!this.sheets)
+                return;
+            const sheet = this.sheets['NPC Data'];
+            const rows = yield sheet.getRows();
+            const headers = sheet.headerValues;
+            const arr = [];
+            for (let i = 0; i < rows.length; i++) {
+                const obj = {};
+                for (const header of headers) {
+                    obj[header] = rows[i][header];
+                }
+                arr.push(obj);
+            }
+            const data = arr.find((value) => value.id === id);
+            return data;
+        });
+    }
+    registerStudent(user, image) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.sheets)
                 return 'Database not found';
-            const rows = yield this.sheet.getRows();
+            const rows = yield this.sheets['Student Data'].getRows();
             const row = rows.find((row) => row.tag === user.tag);
             if (!row)
                 return 'No Record';
             row.id = user.id;
             row.characterCard = image;
             yield row.save();
+            return 'Success';
+        });
+    }
+    registerTeacher(npc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.sheets)
+                return 'Database not found';
+            const sheet = this.sheets['Teacher Data'];
+            const rows = yield sheet.getRows();
+            if (rows.find(row => row.id === npc.id))
+                return;
+            console.debug(npc);
+            yield sheet.addRow({ id: npc.id, name: npc.name });
             return 'Success';
         });
     }

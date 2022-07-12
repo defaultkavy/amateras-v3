@@ -1,3 +1,4 @@
+import { ModalOptions } from "discord.js";
 import { Amateras } from "../lib/Amateras";
 import { _ValidAutoCompleteInteraction } from "../lib/_AutoCompleteInteraction.js";
 import { _ValidCommandInteraction } from "../lib/_CommandInteraction";
@@ -14,7 +15,7 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
                     if (!subcmd1.attachment) return
                     if (subcmd1.attachment.contentType !== 'image/png' && subcmd1.attachment.contentType !== 'image/jpeg') return interact.origin.reply({content: '上传内容必须是 JPG / PNG 格式', ephemeral: true})
 
-                    const reg = await amateras.events.ise.register(interact._user.origin, subcmd1.attachment.url)
+                    const reg = await amateras.events.ise.registerStudent(interact._user.origin, subcmd1.attachment.url)
                     if (reg !== 'Success') return interact.origin.reply({content: reg, ephemeral: true})
                     interact.origin.reply({content: subcmd1.attachment.url, ephemeral: false})
                 }
@@ -71,17 +72,16 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
                 }
 
                 else if (subcmd1.name === 'card') {
-                    // const data = {id: ''}
-                    // if (!subcmd1.options) return
-                    // for (const subcmd2 of subcmd1.options) {
-                    //     if (subcmd2.name === 'id') {
-                    //         data.id = subcmd2.value as string
-                    //     }
-                    // }
-                    // const npc = amateras.events.ise.npc.cache.get(data.id)
-                    // if (!npc) return interact.origin.reply({content: 'NPC 不存在', ephemeral: true})
-                    // const result = await npc.delete()
-                    // interact.origin.reply({content: result, ephemeral: true})
+                    const data = {id: ''}
+                    if (!subcmd1.options) return
+                    for (const subcmd2 of subcmd1.options) {
+                        if (subcmd2.name === 'id') {
+                            data.id = subcmd2.value as string
+                        }
+                    }
+                    const npc = amateras.events.ise.npc.cache.get(data.id)
+                    if (!npc) return interact.origin.reply({content: 'NPC 不存在', ephemeral: true})
+                    interact.origin.reply({embeds: [await npc.embed()]})
                 }
             }
         }
@@ -93,7 +93,7 @@ export async function autocomplete(interact: _ValidAutoCompleteInteraction, amat
         if (subcmd0.name === 'npc') {
             if (!subcmd0.options) return
             for (const subcmd1 of subcmd0.options) {
-                if (subcmd1.name === 'leave') {
+                if (subcmd1.name === 'leave' || subcmd1.name === 'card') {
                     if (!subcmd1.options) return
                     for (const subcmd2 of subcmd1.options) {
                         if (subcmd2.name === 'id') {
