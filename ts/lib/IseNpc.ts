@@ -151,7 +151,8 @@ enum headerFields {
     'gender' = '性别',
     'country' = '国籍',
     'characteristic' = '性格',
-    'role' = '身份'
+    'role' = '身份',
+    'race' = '种族'
 }
 
 export interface IseNpcOptions {

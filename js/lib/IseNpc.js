@@ -185,5 +185,6 @@ var headerFields;
     headerFields["country"] = "\u56FD\u7C4D";
     headerFields["characteristic"] = "\u6027\u683C";
     headerFields["role"] = "\u8EAB\u4EFD";
+    headerFields["race"] = "\u79CD\u65CF";
 })(headerFields || (headerFields = {}));
 //# sourceMappingURL=IseNpc.js.map
