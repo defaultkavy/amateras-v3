@@ -230,26 +230,22 @@ export class AdminPage extends Page {
         const selectorSection = this.client.createDiv('selector_section')
         this.node.appendChild(selectorSection)
         if (this.guildSelector.node.options.length > 1) {
-            // first
             const firstBlock = this.client.createDiv('selector_block')
             selectorSection.appendChild(firstBlock)
             firstBlock.appendChild(this.client.createTitle('Server'))
             firstBlock.appendChild(this.guildSelector.node)
         }
         if (this.categorySelector.node.options.length > 1) {
-            // first
             const secondBlock = this.client.createDiv('selector_block')
             selectorSection.appendChild(secondBlock)
             secondBlock.appendChild(this.client.createTitle('Category'))
             secondBlock.appendChild(this.categorySelector.node)
         }
-        if (this.channelSelector.node.options.length > 1) {
-            // first
-            const thirdBlock = this.client.createDiv('selector_block')
-            selectorSection.appendChild(thirdBlock)
-            thirdBlock.appendChild(this.client.createTitle('Channel'))
-            thirdBlock.appendChild(this.channelSelector.node)
-        }
+        const thirdBlock = this.client.createDiv('selector_block')
+        selectorSection.appendChild(thirdBlock)
+        thirdBlock.appendChild(this.client.createTitle('Channel'))
+        thirdBlock.appendChild(this.channelSelector.node)
+
         if (this.threadSelector.node.options.length > 0) {
             const block = this.client.createDiv('selector_block')
             selectorSection.appendChild(block)
