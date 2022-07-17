@@ -16,7 +16,7 @@ const request_promise_1 = __importDefault(require("request-promise"));
 module.exports = {
     name: 'threadDelete',
     once: false,
-    execute(channel, amateras) {
+    execute(thread, amateras) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, request_promise_1.default)('http://localhost:5500/console-update').catch(() => { });
         });

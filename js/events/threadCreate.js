@@ -16,9 +16,9 @@ const request_promise_1 = __importDefault(require("request-promise"));
 module.exports = {
     name: 'threadCreate',
     once: false,
-    execute(channel, amateras) {
+    execute(thread, newlyCreated, amateras) {
         return __awaiter(this, void 0, void 0, function* () {
-            const _guild = amateras.guilds.cache.get(channel.guild.id);
+            const _guild = amateras.guilds.cache.get(thread.guild.id);
             if (!_guild)
                 return;
             _guild.channels.refresh();
