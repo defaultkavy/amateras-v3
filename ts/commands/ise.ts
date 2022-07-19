@@ -14,11 +14,25 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
                     if (subcmd1.type !== ApplicationCommandOptionType.Attachment) return
                     if (!subcmd1.attachment) return
                     if (subcmd1.attachment.contentType !== 'image/png' && subcmd1.attachment.contentType !== 'image/jpeg') return interact.origin.reply({content: '上传内容必须是 JPG / PNG 格式', ephemeral: true})
-
-                    const reg = await amateras.events.ise.registerStudent(interact._user.origin, subcmd1.attachment.url)
+                    const reg = await amateras.events.ise.registerStudent(interact._user.origin)
                     if (reg !== 'Success') return interact.origin.reply({content: reg, ephemeral: true})
-
-                    interact.origin.reply({files: [{attachment: subcmd1.attachment.url}], ephemeral: false})
+                    await interact.origin.deferReply()
+                    const buffer = await amateras.download.buffer(subcmd1.attachment.url)
+                    await interact.origin.followUp({
+                        files: [
+                            {
+                                attachment: buffer,
+                                name: subcmd1.attachment.name ? subcmd1.attachment.name : undefined,
+                                description: 'ISE Academy Character Card'
+                            }
+                        ], 
+                        ephemeral: false
+                    })
+                    const fetch = await interact.origin.fetchReply()
+                    const attachment = fetch.attachments.first()
+                    if (!attachment) return amateras.system.log('Ise Student Register Error: Attachment not found')
+                    const regImage = await amateras.events.ise.registerStudentImage(interact._user.origin, attachment.url)
+                    if (regImage !== 'Success') return fetch.delete().catch()
                 }
                 
             }

@@ -10,6 +10,7 @@ import { _MessageManager } from "./_MessageManager";
 import test from '../etc/test'
 import { EventManager } from "./_EventManager";
 import { _Server } from "./_Server.js";
+import { _DownloadManager } from "./_DownloadManager.js";
 
 export class Amateras {
     client: Client<true>;
@@ -24,12 +25,14 @@ export class Amateras {
     ready: boolean;
     events: EventManager;
     server: _Server;
+    download: _DownloadManager;
     constructor(conf: AmaterasConfig) {
         this.ready = false
         this.client = conf.client
         this.db = conf.db
         this.config = conf.config
         this.system = new System(this)
+        this.download = new _DownloadManager(this)
         this.me = this.client.user
         this.users = new _UserManager(this)
         this.guilds = new _GuildManager(this)

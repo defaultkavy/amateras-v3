@@ -23,6 +23,7 @@ const _MessageManager_1 = require("./_MessageManager");
 const test_1 = __importDefault(require("../etc/test"));
 const _EventManager_1 = require("./_EventManager");
 const _Server_js_1 = require("./_Server.js");
+const _DownloadManager_js_1 = require("./_DownloadManager.js");
 class Amateras {
     constructor(conf) {
         this.ready = false;
@@ -30,6 +31,7 @@ class Amateras {
         this.db = conf.db;
         this.config = conf.config;
         this.system = new System_1.System(this);
+        this.download = new _DownloadManager_js_1._DownloadManager(this);
         this.me = this.client.user;
         this.users = new _UserManager_1._UserManager(this);
         this.guilds = new _GuildManager_1._GuildManager(this);

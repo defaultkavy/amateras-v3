@@ -28,10 +28,28 @@ function default_1(interact, amateras) {
                             return;
                         if (subcmd1.attachment.contentType !== 'image/png' && subcmd1.attachment.contentType !== 'image/jpeg')
                             return interact.origin.reply({ content: '上传内容必须是 JPG / PNG 格式', ephemeral: true });
-                        const reg = yield amateras.events.ise.registerStudent(interact._user.origin, subcmd1.attachment.url);
+                        const reg = yield amateras.events.ise.registerStudent(interact._user.origin);
                         if (reg !== 'Success')
                             return interact.origin.reply({ content: reg, ephemeral: true });
-                        interact.origin.reply({ files: [{ attachment: subcmd1.attachment.url }], ephemeral: false });
+                        yield interact.origin.deferReply();
+                        const buffer = yield amateras.download.buffer(subcmd1.attachment.url);
+                        yield interact.origin.followUp({
+                            files: [
+                                {
+                                    attachment: buffer,
+                                    name: subcmd1.attachment.name ? subcmd1.attachment.name : undefined,
+                                    description: 'ISE Academy Character Card'
+                                }
+                            ],
+                            ephemeral: false
+                        });
+                        const fetch = yield interact.origin.fetchReply();
+                        const attachment = fetch.attachments.first();
+                        if (!attachment)
+                            return amateras.system.log('Ise Student Register Error: Attachment not found');
+                        const regImage = yield amateras.events.ise.registerStudentImage(interact._user.origin, attachment.url);
+                        if (regImage !== 'Success')
+                            return fetch.delete().catch();
                     }
                 }
             }

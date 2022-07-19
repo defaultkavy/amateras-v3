@@ -66,7 +66,7 @@ class IseGakuen extends _Base_1._Base {
             return data;
         });
     }
-    registerStudent(user, image) {
+    registerStudent(user) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.sheets)
                 return 'Database not found';
@@ -75,6 +75,18 @@ class IseGakuen extends _Base_1._Base {
             if (!row)
                 return 'No Record';
             row.id = user.id;
+            yield row.save();
+            return 'Success';
+        });
+    }
+    registerStudentImage(user, image) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.sheets)
+                throw new Error('Database not found');
+            const rows = yield this.sheets['Student Data'].getRows();
+            const row = rows.find((row) => row.id === user.id);
+            if (!row)
+                throw new Error('No Record');
             row.characterCard = image;
             yield row.save();
             return 'Success';

@@ -57,12 +57,21 @@ export class IseGakuen extends _Base {
         return data
     }
 
-    async registerStudent(user: User, image: string) {
+    async registerStudent(user: User) {
         if (!this.sheets) return 'Database not found'
         const rows = await this.sheets['Student Data'].getRows()
         const row = rows.find((row) => row.tag === user.tag)
         if (!row) return 'No Record'
         row.id = user.id
+        await row.save()
+        return 'Success'
+    }
+
+    async registerStudentImage(user: User, image: string) {
+        if (!this.sheets) throw new Error('Database not found')
+        const rows = await this.sheets['Student Data'].getRows()
+        const row = rows.find((row) => row.id === user.id)
+        if (!row) throw new Error('No Record')
         row.characterCard = image
         await row.save()
         return 'Success'
