@@ -112,6 +112,28 @@ function mod(interact, amateras) {
                     }
                 }
             }
+            else if (subcmd0.name === 'msg') {
+                if (!subcmd0.options)
+                    return;
+                for (const subcmd1 of subcmd0.options) {
+                    if (subcmd1.name === 'delete') {
+                        if (!subcmd1.options)
+                            return;
+                        const data = { amount: 0 };
+                        for (const subcmd2 of subcmd1.options) {
+                            if (subcmd2.name === 'amount') {
+                                data.amount = subcmd2.value;
+                            }
+                        }
+                        if (data.amount < 1 || data.amount > 100)
+                            return interact.origin.reply('Bulk delete amount must between 1 - 100');
+                        yield interact.origin.deferReply({ ephemeral: true });
+                        yield interact._channel.origin.bulkDelete(data.amount)
+                            .catch(err => amateras.system.log(err));
+                        interact.origin.followUp('Messages deleted');
+                    }
+                }
+            }
             else if (subcmd0.name === 'cmd') {
                 if (!subcmd0.options)
                     return;
