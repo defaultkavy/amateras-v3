@@ -3,6 +3,7 @@ import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from "google-spreadshee
 import { Amateras, Session } from "./Amateras.js";
 import { _Base } from "./_Base.js";
 import { Express } from 'express'
+import { ImageFormat } from "discord.js";
 
 export class Console extends _Base {
     sheets: GoogleSpreadsheet["sheetsByTitle"] | undefined;
@@ -230,9 +231,15 @@ export class Console extends _Base {
                     id: message.id,
                     content: message.content,
                     author: {
-                        name: member ? member.nickname ? member.displayName : message.author.username : message.author.username,
+                        name: member 
+                        ? member.nickname 
+                        ? member.displayName 
+                        : message.author.username 
+                        : message.author.username,
                         id: message.author.id,
-                        avatar: member ? member.displayAvatarURL({format: 'png', size: 128}) : message.author.displayAvatarURL({format: 'png', size: 128})
+                        avatar: member 
+                        ? member.displayAvatarURL({extension: ImageFormat.PNG, size: 128}) 
+                        : message.author.displayAvatarURL({extension: ImageFormat.PNG, size: 128})
                     },
                     timestamps: message.createdTimestamp,
                     url: message.url,

@@ -1,4 +1,4 @@
-import { ModalOptions } from "discord.js";
+import { ApplicationCommandOptionType, Attachment, AttachmentBuilder } from "discord.js";
 import { Amateras } from "../lib/Amateras";
 import { _ValidAutoCompleteInteraction } from "../lib/_AutoCompleteInteraction.js";
 import { _ValidCommandInteraction } from "../lib/_CommandInteraction";
@@ -11,13 +11,14 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
             if (!subcmd0.options) return
             for (const subcmd1 of subcmd0.options) {
                 if (subcmd1.name === 'image') {
-                    if (subcmd1.type !== 'ATTACHMENT') return
+                    if (subcmd1.type !== ApplicationCommandOptionType.Attachment) return
                     if (!subcmd1.attachment) return
                     if (subcmd1.attachment.contentType !== 'image/png' && subcmd1.attachment.contentType !== 'image/jpeg') return interact.origin.reply({content: '上传内容必须是 JPG / PNG 格式', ephemeral: true})
 
                     const reg = await amateras.events.ise.registerStudent(interact._user.origin, subcmd1.attachment.url)
                     if (reg !== 'Success') return interact.origin.reply({content: reg, ephemeral: true})
-                    interact.origin.reply({content: subcmd1.attachment.url, ephemeral: false})
+
+                    interact.origin.reply({files: [{attachment: subcmd1.attachment.url}], ephemeral: false})
                 }
                 
             }

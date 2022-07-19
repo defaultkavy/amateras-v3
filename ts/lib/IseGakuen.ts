@@ -1,7 +1,7 @@
 import { Amateras } from "./Amateras";
 import { _Base } from "./_Base";
 import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from 'google-spreadsheet'
-import { MessageEmbedOptions, User } from "discord.js";
+import { APIEmbed, User } from "discord.js";
 import { IseNpc } from "./IseNpc.js";
 import { IseNpcManager } from "./IseNpcManager.js";
 
@@ -79,7 +79,7 @@ export class IseGakuen extends _Base {
     }
 
     async characterCardEmbed(data: ISE_STUDENT_DATA) {
-        const embed: MessageEmbedOptions = {
+        const embed: APIEmbed = {
             author: {
                 name: `${data.name}`
             },

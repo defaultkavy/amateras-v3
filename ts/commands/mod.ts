@@ -1,4 +1,4 @@
-import { ApplicationCommandChoicesOption, ApplicationCommandOptionChoiceData, ModalOptions } from "discord.js";
+import { ComponentType, ModalComponentData, TextInputStyle } from "discord.js";
 import { Amateras } from "../lib/Amateras";
 import { _ValidAutoCompleteInteraction } from "../lib/_AutoCompleteInteraction";
 import { _ValidCommandInteraction } from "../lib/_CommandInteraction";
@@ -55,18 +55,18 @@ export default async function mod(interact: _ValidCommandInteraction, amateras: 
             for (const subcmd1 of subcmd0.options) {
                 if (subcmd1.name === 'on') {
                     if (!interact._channel.isText()) return interact.origin.reply({content: 'Must be Text Channel', ephemeral: true})
-                    const modal: ModalOptions = {
+                    const modal: ModalComponentData = {
                         title: "Channel hint form",
                         customId: "hintModal",
                         components: [
                             {
-                                type: 'ACTION_ROW',
+                                type: ComponentType.ActionRow,
                                 components: [
                                     {
-                                        type: 'TEXT_INPUT',
+                                        type: ComponentType.TextInput,
                                         customId: "title",
-                                        label: "Title",
-                                        style: 'SHORT',
+                                        label: 'Title',
+                                        style: TextInputStyle.Short,
                                         minLength: 1,
                                         maxLength: 4000,
                                         placeholder: "Title"
@@ -74,13 +74,13 @@ export default async function mod(interact: _ValidCommandInteraction, amateras: 
                                 ]
                             },
                             {
-                                type: 'ACTION_ROW',
+                                type: ComponentType.ActionRow,
                                 components: [
                                     {
-                                        type: 'TEXT_INPUT',
+                                        type: ComponentType.TextInput,
                                         customId: "description",
                                         label: "Description",
-                                        style: 'PARAGRAPH',
+                                        style: TextInputStyle.Paragraph,
                                         minLength: 1,
                                         maxLength: 4000,
                                         placeholder: "Description"

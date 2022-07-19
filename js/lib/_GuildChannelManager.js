@@ -22,6 +22,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var __GuildChannelManager_hints;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._GuildChannelManager = void 0;
+const discord_js_1 = require("discord.js");
 const _BaseGuildManager_1 = require("./_BaseGuildManager");
 const _CategoryChannel_1 = require("./_CategoryChannel");
 const _Message_1 = require("./_Message");
@@ -66,9 +67,7 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
     }
     add(channel) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (channel.type === 'GUILD_TEXT' || channel.type === 'GUILD_NEWS') {
-                if (!channel.isText())
-                    return;
+            if (channel.type === discord_js_1.ChannelType.GuildText || channel.type === discord_js_1.ChannelType.GuildNews) {
                 const _channel = new _TextChannel_1._TextChannel(this.amateras, this._guild, channel);
                 yield _channel.init();
                 this.cache.set(_channel.id, _channel);
@@ -78,7 +77,7 @@ class _GuildChannelManager extends _BaseGuildManager_1._BaseGuildManager {
                 yield _channel.init();
                 this.cache.set(_channel.id, _channel);
             }
-            else if (channel.type === 'GUILD_CATEGORY') {
+            else if (channel.type === discord_js_1.ChannelType.GuildCategory) {
                 const _channel = new _CategoryChannel_1._CategoryChannel(this.amateras, this._guild, channel);
                 this.cache.set(_channel.id, _channel);
             }

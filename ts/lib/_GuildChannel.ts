@@ -1,4 +1,4 @@
-import { GuildBasedChannel, ThreadChannelTypes } from "discord.js";
+import { ChannelType, GuildBasedChannel } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _BaseGuildObj } from "./_BaseGuildObj";
 import { _CategoryChannel } from "./_CategoryChannel";
@@ -10,7 +10,7 @@ export class _GuildChannel extends _BaseGuildObj {
     name: string;
     origin: GuildBasedChannel;
     id: string;
-    type: "GUILD_CATEGORY" | "GUILD_NEWS" | "GUILD_STAGE_VOICE" | "GUILD_STORE" | "GUILD_TEXT" | ThreadChannelTypes | "GUILD_VOICE";
+    type: Omit<ChannelType, ChannelType.DM | ChannelType.GroupDM>;
     constructor(amateras: Amateras, _guild: _Guild, origin: GuildBasedChannel) {
         super(amateras, _guild)
         this.id = origin.id
@@ -20,12 +20,12 @@ export class _GuildChannel extends _BaseGuildObj {
     }
 
     isTextBased(): this is _TextChannel | _ThreadChannel {
-        if (this.type !== 'GUILD_TEXT' && this.type !== 'GUILD_PUBLIC_THREAD') return false
+        if (!this.origin.isTextBased()) return false
         return true
     }
 
     isText(): this is _TextChannel {
-        if (this.type !== 'GUILD_TEXT') return false
+        if (this.type !== ChannelType.GuildText) return false
         return true
     }
     
@@ -34,7 +34,7 @@ export class _GuildChannel extends _BaseGuildObj {
     }
     
     isCategory(): this is _CategoryChannel {
-        if (this.type === 'GUILD_CATEGORY') return true
+        if (this.type === ChannelType.GuildCategory) return true
         else return false
     }
 }

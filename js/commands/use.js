@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const discord_js_1 = require("discord.js");
 function default_1(interact, amateras) {
     return __awaiter(this, void 0, void 0, function* () {
         yield interact.origin.deferReply({ ephemeral: false });
@@ -33,7 +34,7 @@ function default_1(interact, amateras) {
             result = true;
         const embed = {
             title: result ? '成功' : '失败',
-            color: result ? 'GREEN' : 'DARKER_GREY',
+            color: result ? discord_js_1.Colors.Green : discord_js_1.Colors.Grey,
             description: `${user_A.origin}${obj.use}`
         };
         interact.origin.followUp({ embeds: [embed] });

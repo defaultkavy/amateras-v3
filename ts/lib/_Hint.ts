@@ -1,4 +1,4 @@
-import { MessageEmbedOptions } from "discord.js";
+import { APIEmbed, Colors, Embed, EmbedData } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _BaseGuildObjDB } from "./_BaseGuildObjDB";
 import { _Guild } from "./_Guild";
@@ -50,10 +50,10 @@ export class _Hint extends _BaseGuildObjDB {
     }
 
     get hintEmbed() {
-        const embed: MessageEmbedOptions = {
+        const embed: APIEmbed = {
             title: this.title,
             description: this.description,
-            color: "YELLOW"
+            color: Colors.Yellow
         }
 
         return embed

@@ -1,4 +1,4 @@
-import { CommandInteraction, ContextMenuInteraction, GuildEmoji, Interaction, MessageEmbed, MessageEmbedOptions } from 'discord.js'
+import { CommandInteraction } from 'discord.js'
 const { XMLHttpRequest } = require('xmlhttprequest')
 
 

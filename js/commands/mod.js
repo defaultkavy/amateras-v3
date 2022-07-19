@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.autocomplete = void 0;
+const discord_js_1 = require("discord.js");
 function mod(interact, amateras) {
     return __awaiter(this, void 0, void 0, function* () {
         for (const subcmd0 of interact.origin.options.data) {
@@ -73,13 +74,13 @@ function mod(interact, amateras) {
                             customId: "hintModal",
                             components: [
                                 {
-                                    type: 'ACTION_ROW',
+                                    type: discord_js_1.ComponentType.ActionRow,
                                     components: [
                                         {
-                                            type: 'TEXT_INPUT',
+                                            type: discord_js_1.ComponentType.TextInput,
                                             customId: "title",
-                                            label: "Title",
-                                            style: 'SHORT',
+                                            label: 'Title',
+                                            style: discord_js_1.TextInputStyle.Short,
                                             minLength: 1,
                                             maxLength: 4000,
                                             placeholder: "Title"
@@ -87,13 +88,13 @@ function mod(interact, amateras) {
                                     ]
                                 },
                                 {
-                                    type: 'ACTION_ROW',
+                                    type: discord_js_1.ComponentType.ActionRow,
                                     components: [
                                         {
-                                            type: 'TEXT_INPUT',
+                                            type: discord_js_1.ComponentType.TextInput,
                                             customId: "description",
                                             label: "Description",
-                                            style: 'PARAGRAPH',
+                                            style: discord_js_1.TextInputStyle.Paragraph,
                                             minLength: 1,
                                             maxLength: 4000,
                                             placeholder: "Description"

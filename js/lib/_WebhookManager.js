@@ -26,7 +26,8 @@ class _WebhookManager extends _BaseGuildManager_js_1._BaseGuildManager {
     }
     create(name, avatar, reason) {
         return __awaiter(this, void 0, void 0, function* () {
-            const webhook = yield this._channel.origin.createWebhook(name, {
+            const webhook = yield this._channel.origin.createWebhook({
+                name: name,
                 avatar: avatar,
                 reason: reason
             });

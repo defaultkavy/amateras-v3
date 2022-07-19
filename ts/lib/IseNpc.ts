@@ -1,4 +1,4 @@
-import { EmbedFieldData, MessageEmbedOptions, MessageOptions, TextChannel, Webhook } from "discord.js";
+import { APIEmbed, APIEmbedField, MessageOptions, TextChannel, Webhook } from "discord.js";
 import requestPromise from "request-promise";
 import { Amateras } from "./Amateras.js";
 import { ISE_TEACHER_DATA } from "./IseGakuen.js";
@@ -93,7 +93,7 @@ export class IseNpc extends _BaseObj {
     async embed() {
         const data = await this.getInfo()
         if (!data) {
-            const embed: MessageEmbedOptions = {
+            const embed: APIEmbed = {
                 author: {
                     name: `${this.name}`
                 },
@@ -107,7 +107,7 @@ export class IseNpc extends _BaseObj {
             this.amateras.system.log('IseNpc - data undefined')
             return embed
         }
-        const embed: MessageEmbedOptions = {
+        const embed: APIEmbed = {
             author: {
                 name: `${this.name}`
             },
@@ -129,7 +129,7 @@ export class IseNpc extends _BaseObj {
 
     private fields(data: ISE_TEACHER_DATA) {
         const skip = ['id', 'name', 'description']
-        const fields: EmbedFieldData[] = []
+        const fields: APIEmbedField[] = []
         for (const header in data) {
             if (!data[header]) continue
             if (skip.includes(header)) continue

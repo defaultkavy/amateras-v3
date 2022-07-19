@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.autocomplete = void 0;
+const discord_js_1 = require("discord.js");
 function default_1(interact, amateras) {
     return __awaiter(this, void 0, void 0, function* () {
         //await interact.origin.deferReply({ephemeral: false})
@@ -21,7 +22,7 @@ function default_1(interact, amateras) {
                     return;
                 for (const subcmd1 of subcmd0.options) {
                     if (subcmd1.name === 'image') {
-                        if (subcmd1.type !== 'ATTACHMENT')
+                        if (subcmd1.type !== discord_js_1.ApplicationCommandOptionType.Attachment)
                             return;
                         if (!subcmd1.attachment)
                             return;
@@ -30,7 +31,7 @@ function default_1(interact, amateras) {
                         const reg = yield amateras.events.ise.registerStudent(interact._user.origin, subcmd1.attachment.url);
                         if (reg !== 'Success')
                             return interact.origin.reply({ content: reg, ephemeral: true });
-                        interact.origin.reply({ content: subcmd1.attachment.url, ephemeral: false });
+                        interact.origin.reply({ files: [{ attachment: subcmd1.attachment.url }], ephemeral: false });
                     }
                 }
             }

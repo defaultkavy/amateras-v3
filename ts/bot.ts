@@ -20,12 +20,25 @@ async function dbconnect() {
     return mongo.db('amateras-v3')
 }
 
-import discord, { Intents } from 'discord.js'
+import { Client, GatewayIntentBits, Partials } from 'discord.js'
 import { Amateras } from './lib/Amateras'
 
-const client = new discord.Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES],
-    partials: ['MESSAGE', 'REACTION', 'CHANNEL', 'GUILD_MEMBER']
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.DirectMessages, 
+        GatewayIntentBits.GuildMessages, 
+        GatewayIntentBits.GuildIntegrations, 
+        GatewayIntentBits.GuildMessageReactions, 
+        GatewayIntentBits.GuildMembers, 
+        GatewayIntentBits.GuildVoiceStates
+    ],
+    partials: [
+        Partials.Message, 
+        Partials.Reaction,
+        Partials.Channel, 
+        Partials.GuildMember
+    ]
 })
 
 console.log(cmd.Cyan, 'Connecting to Discord...')

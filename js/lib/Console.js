@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Console = void 0;
 const google_spreadsheet_1 = require("google-spreadsheet");
 const _Base_js_1 = require("./_Base.js");
+const discord_js_1 = require("discord.js");
 class Console extends _Base_js_1._Base {
     constructor(amateras) {
         super(amateras);
@@ -259,9 +260,15 @@ class Console extends _Base_js_1._Base {
                         id: message.id,
                         content: message.content,
                         author: {
-                            name: member ? member.nickname ? member.displayName : message.author.username : message.author.username,
+                            name: member
+                                ? member.nickname
+                                    ? member.displayName
+                                    : message.author.username
+                                : message.author.username,
                             id: message.author.id,
-                            avatar: member ? member.displayAvatarURL({ format: 'png', size: 128 }) : message.author.displayAvatarURL({ format: 'png', size: 128 })
+                            avatar: member
+                                ? member.displayAvatarURL({ extension: discord_js_1.ImageFormat.PNG, size: 128 })
+                                : message.author.displayAvatarURL({ extension: discord_js_1.ImageFormat.PNG, size: 128 })
                         },
                         timestamps: message.createdTimestamp,
                         url: message.url,

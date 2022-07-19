@@ -1,4 +1,4 @@
-import { Client, MessageEmbed, User } from "discord.js";
+import { Client, User } from "discord.js";
 import { Db } from "mongodb";
 import cmd from "../plugins/cmd";
 import { _GuildManager } from "./_GuildManager";

@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember } from "discord.js"
+import { ChatInputCommandInteraction, GuildMember } from "discord.js"
 import { Amateras } from "./Amateras"
 import { _Guild } from "./_Guild"
 import { _Interaction } from "./_Interaction"
@@ -8,8 +8,8 @@ import { _ThreadChannel } from "./_ThreadChannel"
 import { _User } from "./_User"
 
 export class _CommandInteraction extends _Interaction {
-    origin: CommandInteraction
-    constructor(amateras: Amateras, interaction: CommandInteraction, _user: _User) {
+    origin: ChatInputCommandInteraction<'cached'>
+    constructor(amateras: Amateras, interaction: ChatInputCommandInteraction<'cached'>, _user: _User) {
         super(amateras, interaction, _user)
         this.origin = interaction
     }

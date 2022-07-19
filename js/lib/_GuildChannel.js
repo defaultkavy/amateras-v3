@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._GuildChannel = void 0;
+const discord_js_1 = require("discord.js");
 const _BaseGuildObj_1 = require("./_BaseGuildObj");
 class _GuildChannel extends _BaseGuildObj_1._BaseGuildObj {
     constructor(amateras, _guild, origin) {
@@ -11,12 +12,12 @@ class _GuildChannel extends _BaseGuildObj_1._BaseGuildObj {
         this.type = origin.type;
     }
     isTextBased() {
-        if (this.type !== 'GUILD_TEXT' && this.type !== 'GUILD_PUBLIC_THREAD')
+        if (!this.origin.isTextBased())
             return false;
         return true;
     }
     isText() {
-        if (this.type !== 'GUILD_TEXT')
+        if (this.type !== discord_js_1.ChannelType.GuildText)
             return false;
         return true;
     }
@@ -24,7 +25,7 @@ class _GuildChannel extends _BaseGuildObj_1._BaseGuildObj {
         return this.origin.isThread();
     }
     isCategory() {
-        if (this.type === 'GUILD_CATEGORY')
+        if (this.type === discord_js_1.ChannelType.GuildCategory)
             return true;
         else
             return false;

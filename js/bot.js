@@ -1,23 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -51,11 +32,24 @@ function dbconnect() {
         return mongo.db('amateras-v3');
     });
 }
-const discord_js_1 = __importStar(require("discord.js"));
+const discord_js_1 = require("discord.js");
 const Amateras_1 = require("./lib/Amateras");
-const client = new discord_js_1.default.Client({
-    intents: [discord_js_1.Intents.FLAGS.GUILDS, discord_js_1.Intents.FLAGS.DIRECT_MESSAGES, discord_js_1.Intents.FLAGS.GUILD_MESSAGES, discord_js_1.Intents.FLAGS.GUILD_INTEGRATIONS, discord_js_1.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, discord_js_1.Intents.FLAGS.GUILD_MEMBERS, discord_js_1.Intents.FLAGS.GUILD_VOICE_STATES],
-    partials: ['MESSAGE', 'REACTION', 'CHANNEL', 'GUILD_MEMBER']
+const client = new discord_js_1.Client({
+    intents: [
+        discord_js_1.GatewayIntentBits.Guilds,
+        discord_js_1.GatewayIntentBits.DirectMessages,
+        discord_js_1.GatewayIntentBits.GuildMessages,
+        discord_js_1.GatewayIntentBits.GuildIntegrations,
+        discord_js_1.GatewayIntentBits.GuildMessageReactions,
+        discord_js_1.GatewayIntentBits.GuildMembers,
+        discord_js_1.GatewayIntentBits.GuildVoiceStates
+    ],
+    partials: [
+        discord_js_1.Partials.Message,
+        discord_js_1.Partials.Reaction,
+        discord_js_1.Partials.Channel,
+        discord_js_1.Partials.GuildMember
+    ]
 });
 console.log(cmd_1.default.Cyan, 'Connecting to Discord...');
 console.time('| Discord Connected');

@@ -1,4 +1,4 @@
-import { Interaction } from "discord.js";
+import { AutocompleteInteraction, BaseInteraction, InteractionType, ModalSubmitInteraction } from "discord.js";
 import { Amateras } from "../lib/Amateras";
 import fs from 'fs'
 import { _CommandInteraction } from "../lib/_CommandInteraction";
@@ -10,11 +10,12 @@ import { _AutoCompleteInteraction } from "../lib/_AutoCompleteInteraction";
 module.exports = {
     name: 'interactionCreate',
     once: false,
-    async execute(interact: Interaction, amateras: Amateras) {
+    async execute(interact: BaseInteraction, amateras: Amateras) {
         const _user = await amateras.users.fetch(interact.user.id)
         if (!_user) return
+        if (!interact.inCachedGuild()) return
         // Command interaction
-        if (interact.isCommand()) {
+        if (interact.isChatInputCommand()) {
             let cmdName = interact.commandName
             for (const subcmd0 of interact.options.data) {
                 cmdName += ` ${subcmd0.name}`
@@ -23,7 +24,7 @@ module.exports = {
                 }
             }
             amateras.system.log(`${cmdName} - ${_user.name}`)
-
+            
             const _validInteract = new _CommandInteraction(amateras, interact, _user)
             if (!_validInteract.isValid()) return console.error('_CommandInteraction is not valid')
             // Check limited channel list
@@ -45,17 +46,20 @@ module.exports = {
         }
 
         // Modal interaction
-        if (interact.isModalSubmit()) {
-            const _validInteract = new _ModalInteraction(amateras, interact, _user)
+        if (interact.type === InteractionType.ModalSubmit) {
+            const irt = interact as ModalSubmitInteraction<'cached'>
+            const _validInteract = new _ModalInteraction(amateras, irt, _user)
             if (!_validInteract.isValid()) return
-            executeCommand(`reacts/${interact.customId}`, _validInteract)
+
+            executeCommand(`reacts/${irt.customId}`, _validInteract)
         }
 
         // AutoComplete Interaction
-        if (interact.isAutocomplete()) {
-            const _validInteract = new _AutoCompleteInteraction(amateras, interact, _user)
+        if (interact.type === InteractionType.ApplicationCommandAutocomplete) {
+            const irt = interact as AutocompleteInteraction<'cached'>
+            const _validInteract = new _AutoCompleteInteraction(amateras, irt, _user)
             if (!_validInteract.isValid()) return
-                executeCommand(`commands/${interact.commandName}`, _validInteract, true)
+                executeCommand(`commands/${irt.commandName}`, _validInteract, true)
         }
         
         function executeCommand(path: string, _interact: _ValidInteraction, autocomplete?: boolean) {

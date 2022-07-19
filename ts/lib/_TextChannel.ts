@@ -1,4 +1,4 @@
-import { NewsChannel, TextChannel, ThreadChannelTypes } from "discord.js";
+import { ChannelType, NewsChannel, TextChannel, ThreadChannelType } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _Guild } from "./_Guild";
 import { _Hint, _HintInfo } from "./_Hint";
@@ -6,7 +6,7 @@ import { _TextBaseChannel } from "./_TextBaseChannel";
 import { _WebhookManager } from "./_WebhookManager.js";
 
 export class _TextChannel extends _TextBaseChannel {
-    type: "GUILD_TEXT" | "GUILD_NEWS";
+    type: ChannelType.GuildText | ChannelType.GuildNews | ThreadChannelType;
     origin: TextChannel | NewsChannel;
     hint?: _Hint;
     webhooks: _WebhookManager;

@@ -8,20 +8,19 @@ import { _ThreadChannel } from "./_ThreadChannel";
 import { _User } from "./_User";
 
 export class _Interaction extends _Base {
-    origin: Interaction;
+    origin: Interaction<'cached'>;
     _user: _User;
     _guild?: _Guild;
     _channel?: _TextBaseChannel;
     member?: GuildMember;
     valid = false
-    constructor(amateras: Amateras, interaction: Interaction, _user: _User) {
+    constructor(amateras: Amateras, interaction: Interaction<'cached'>, _user: _User) {
         super(amateras)
         this.origin = interaction
         this._user = _user
     }
 
     isValid(): this is _ValidInteraction {
-        if (!this.origin.guild) return false
         const _guild = this.amateras.guilds.cache.get(this.origin.guild.id)
         if (!_guild) return false
         this._guild = _guild

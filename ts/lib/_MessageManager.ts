@@ -1,4 +1,4 @@
-import { Message, MessageOptions, NewsChannel, TextChannel, ThreadChannel } from "discord.js";
+import { ChannelType, Message, MessageOptions, NewsChannel, TextChannel, ThreadChannel } from "discord.js";
 import { Amateras } from "./Amateras";
 import { _BaseManagerDB } from "./_BaseManagerDB";
 import { _Message, _MessageDB, _MessageInfo, _MessageOptions, _MessageType } from "./_Message";
@@ -47,7 +47,7 @@ export class _MessageManager extends _BaseManagerDB<_Message, _MessageDB> {
     }
 
     build(message: Message) {
-        if (!message.channel.isText()) return
+        if (message.channel.type !== ChannelType.GuildText) return
         if (!message.guild) return
         const _guild = this.amateras.guilds.cache.get(message.guild.id)
         if (!_guild) return

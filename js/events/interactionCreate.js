@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const discord_js_1 = require("discord.js");
 const fs_1 = __importDefault(require("fs"));
 const _CommandInteraction_1 = require("../lib/_CommandInteraction");
 const _ButtonInteraction_1 = require("../lib/_ButtonInteraction");
@@ -25,8 +26,10 @@ module.exports = {
             const _user = yield amateras.users.fetch(interact.user.id);
             if (!_user)
                 return;
+            if (!interact.inCachedGuild())
+                return;
             // Command interaction
-            if (interact.isCommand()) {
+            if (interact.isChatInputCommand()) {
                 let cmdName = interact.commandName;
                 for (const subcmd0 of interact.options.data) {
                     cmdName += ` ${subcmd0.name}`;
@@ -56,18 +59,20 @@ module.exports = {
                 executeCommand(`reacts/${interact.customId}`, _validInteract);
             }
             // Modal interaction
-            if (interact.isModalSubmit()) {
-                const _validInteract = new _ModalInteraction_1._ModalInteraction(amateras, interact, _user);
+            if (interact.type === discord_js_1.InteractionType.ModalSubmit) {
+                const irt = interact;
+                const _validInteract = new _ModalInteraction_1._ModalInteraction(amateras, irt, _user);
                 if (!_validInteract.isValid())
                     return;
-                executeCommand(`reacts/${interact.customId}`, _validInteract);
+                executeCommand(`reacts/${irt.customId}`, _validInteract);
             }
             // AutoComplete Interaction
-            if (interact.isAutocomplete()) {
-                const _validInteract = new _AutoCompleteInteraction_1._AutoCompleteInteraction(amateras, interact, _user);
+            if (interact.type === discord_js_1.InteractionType.ApplicationCommandAutocomplete) {
+                const irt = interact;
+                const _validInteract = new _AutoCompleteInteraction_1._AutoCompleteInteraction(amateras, irt, _user);
                 if (!_validInteract.isValid())
                     return;
-                executeCommand(`commands/${interact.commandName}`, _validInteract, true);
+                executeCommand(`commands/${irt.commandName}`, _validInteract, true);
             }
             function executeCommand(path, _interact, autocomplete) {
                 // Check command file exist

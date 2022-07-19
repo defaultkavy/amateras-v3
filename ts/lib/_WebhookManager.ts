@@ -19,7 +19,8 @@ export class _WebhookManager extends _BaseGuildManager<Webhook> {
     }
 
     async create(name: string, avatar: string, reason: string) {
-        const webhook = await this._channel.origin.createWebhook(name, {
+        const webhook = await this._channel.origin.createWebhook({
+            name: name,
             avatar: avatar,
             reason: reason
         })

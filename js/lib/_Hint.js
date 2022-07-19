@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._Hint = void 0;
+const discord_js_1 = require("discord.js");
 const _BaseGuildObjDB_1 = require("./_BaseGuildObjDB");
 class _Hint extends _BaseGuildObjDB_1._BaseGuildObjDB {
     constructor(amateras, _guild, _channel, info) {
@@ -55,7 +56,7 @@ class _Hint extends _BaseGuildObjDB_1._BaseGuildObjDB {
         const embed = {
             title: this.title,
             description: this.description,
-            color: "YELLOW"
+            color: discord_js_1.Colors.Yellow
         };
         return embed;
     }

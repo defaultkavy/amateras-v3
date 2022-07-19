@@ -1,4 +1,4 @@
-import { CategoryChannel, GuildBasedChannel, GuildChannel, TextChannel } from "discord.js";
+import { CategoryChannel, ChannelType, GuildBasedChannel, GuildChannel, TextChannel } from "discord.js";
 import { WithId } from "mongodb";
 import { Amateras } from "./Amateras";
 import { _GuildChannel } from "./_GuildChannel";
@@ -48,9 +48,8 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
         }
     }
 
-    async add(channel: GuildBasedChannel | GuildChannel) {
-        if (channel.type === 'GUILD_TEXT' || channel.type === 'GUILD_NEWS') {
-            if (!channel.isText()) return
+    async add(channel: GuildBasedChannel) {
+        if (channel.type === ChannelType.GuildText || channel.type === ChannelType.GuildNews) {
             const _channel = new _TextChannel(this.amateras, this._guild, channel)
             await _channel.init()
             this.cache.set(_channel.id, _channel)
@@ -58,8 +57,8 @@ export class _GuildChannelManager extends _BaseGuildManager<_GuildChannel> {
             const _channel = new _ThreadChannel(this.amateras, this._guild, channel)
             await _channel.init()
             this.cache.set(_channel.id, _channel)
-        } else if (channel.type === 'GUILD_CATEGORY') {
-            const _channel = new _CategoryChannel(this.amateras, this._guild, channel as CategoryChannel)
+        } else if (channel.type === ChannelType.GuildCategory) {
+            const _channel = new _CategoryChannel(this.amateras, this._guild, channel)
             this.cache.set(_channel.id, _channel)
         }
     }

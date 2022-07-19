@@ -1,6 +1,6 @@
 import { Amateras } from "./Amateras";
 import { _TextChannel } from "./_TextChannel";
-import { MessageActionRow, MessageEmbedOptions, Role } from "discord.js";
+import { ActionRow, ActionRowData, APIEmbed, ButtonComponentData, ButtonStyle, Colors, ComponentType, Embed, Role } from "discord.js";
 import { wordCounter } from "../plugins/tools";
 import { _BaseGuildObjDB } from "./_BaseGuildObjDB";
 import { _Guild } from "./_Guild";
@@ -35,25 +35,25 @@ export class _GuildNotifier extends _BaseGuildObjDB {
     async send(videoInfo: youtubeInfo) {
         if (this.videosSent.has(videoInfo.id)) return
         const time = new Date(videoInfo.startTime)
-        const embed: MessageEmbedOptions = {
+        const embed: APIEmbed = {
             title: videoInfo.title ? videoInfo.title : undefined,
             url: `https://youtube.com/v/${videoInfo.id}`,
             author: {
-                name: videoInfo.channelTitle ? videoInfo.channelTitle : undefined,
-                iconURL: videoInfo.channelThumbnailURL,
+                name: videoInfo.channelTitle ? videoInfo.channelTitle : '',
+                icon_url: videoInfo.channelThumbnailURL,
                 url: videoInfo.channelId ? `https://youtube.com/channel/${videoInfo.channelId}` : undefined
             },
             thumbnail: {
                 url: videoInfo.channelThumbnailURL
             },
-            color: 'RED',
+            color: Colors.Red,
             image: {
-                url: videoInfo.thumbnails ? videoInfo.thumbnails.maxres ? videoInfo.thumbnails.maxres.url! : undefined : undefined,
+                url: videoInfo.thumbnails ? videoInfo.thumbnails.maxres ? videoInfo.thumbnails.maxres.url! : '' : '',
             },
             description: videoInfo.description ? wordCounter(videoInfo.description, 100, 1) : undefined,
             footer: {
                 text: 'YouTube',
-                iconURL: 'https://www.youtube.com/s/desktop/a14aba22/img/favicon_32x32.png'
+                icon_url: 'https://www.youtube.com/s/desktop/a14aba22/img/favicon_32x32.png'
             },
             fields: [
                 {
@@ -72,7 +72,7 @@ export class _GuildNotifier extends _BaseGuildObjDB {
         this.save()
     }
 
-    async embed(): Promise<MessageEmbedOptions | void> {
+    async embed(): Promise<APIEmbed | void> {
         const _notifier = this.amateras.notifiers.cache.get(this.id)
         if (!_notifier) return
         const channelInfo = await this.amateras.system.youtube.fetchChannel(this.id)
@@ -85,27 +85,30 @@ export class _GuildNotifier extends _BaseGuildObjDB {
             description: wordCounter(channelInfo[0].snippet!.description!, 200),
             footer: {
                 text: 'YouTube',
-                iconURL: 'https://www.youtube.com/s/desktop/a14aba22/img/favicon_32x32.png'
+                icon_url: 'https://www.youtube.com/s/desktop/a14aba22/img/favicon_32x32.png'
             },
-            color: 'RED',
+            color: Colors.Red,
         }
     }
 
-    get components(): MessageActionRow {
-        const row = new MessageActionRow
-        row.addComponents({
-                customId: 'subscribeButton',
-                style: 'PRIMARY',
-                label: '打开通知',
-                type: 'BUTTON'
-        })
-        row.addComponents({
-                customId: 'unsubscribeButton',
-                style: 'DANGER',
-                label: '关闭通知',
-                type: 'BUTTON'
-            })
-        return row
+    get components(): ActionRowData<ButtonComponentData> {
+        return {
+            type: ComponentType.ActionRow,
+            components: [
+                {
+                    type: ComponentType.Button,
+                    customId: 'subscribeButton',
+                    style: ButtonStyle.Primary,
+                    label: '打开通知',
+                },
+                {
+                    type: ComponentType.Button,
+                    customId: 'unsubscribeButton',
+                    style: ButtonStyle.Danger,
+                    label: '关闭通知',
+                }
+            ]
+        }
     }
 
     presave() {

@@ -7,8 +7,8 @@ import { _TextChannel } from "./_TextChannel"
 import { _User } from "./_User"
 
 export class _ModalInteraction extends _Interaction {
-    origin: ModalSubmitInteraction
-    constructor(amateras: Amateras, interaction: ModalSubmitInteraction, _user: _User) {
+    origin: ModalSubmitInteraction<'cached'>
+    constructor(amateras: Amateras, interaction: ModalSubmitInteraction<'cached'>, _user: _User) {
         super(amateras, interaction, _user)
         this.origin = interaction
     }

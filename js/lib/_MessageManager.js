@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._MessageManager = void 0;
+const discord_js_1 = require("discord.js");
 const _BaseManagerDB_1 = require("./_BaseManagerDB");
 const _Message_1 = require("./_Message");
 const _Notifier_Message_1 = require("./_Notifier_Message");
@@ -62,7 +63,7 @@ class _MessageManager extends _BaseManagerDB_1._BaseManagerDB {
         });
     }
     build(message) {
-        if (!message.channel.isText())
+        if (message.channel.type !== discord_js_1.ChannelType.GuildText)
             return;
         if (!message.guild)
             return;

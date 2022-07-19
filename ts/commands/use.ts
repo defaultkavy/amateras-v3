@@ -1,4 +1,4 @@
-import { MessageEmbedOptions } from "discord.js";
+import { APIEmbed, Colors } from "discord.js";
 import { Amateras } from "../lib/Amateras";
 import { _ValidCommandInteraction } from "../lib/_CommandInteraction";
 
@@ -28,9 +28,9 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
     let result = false
     if (Math.random() > 0.3) result = true
 
-    const embed: MessageEmbedOptions = {
+    const embed: APIEmbed = {
         title: result ? '成功' : '失败',
-        color: result ? 'GREEN' : 'DARKER_GREY',
+        color: result ? Colors.Green : Colors.Grey,
         description: `${user_A.origin}${obj.use}`
     }
 

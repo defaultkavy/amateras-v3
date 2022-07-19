@@ -10,8 +10,6 @@ class _Interaction extends _Base_1._Base {
         this._user = _user;
     }
     isValid() {
-        if (!this.origin.guild)
-            return false;
         const _guild = this.amateras.guilds.cache.get(this.origin.guild.id);
         if (!_guild)
             return false;

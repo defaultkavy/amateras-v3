@@ -8,8 +8,8 @@ import { _ThreadChannel } from "./_ThreadChannel"
 import { _User } from "./_User"
 
 export class _AutoCompleteInteraction extends _Interaction {
-    origin: AutocompleteInteraction
-    constructor(amateras: Amateras, interaction: AutocompleteInteraction, _user: _User) {
+    origin: AutocompleteInteraction<'cached'>
+    constructor(amateras: Amateras, interaction: AutocompleteInteraction<'cached'>, _user: _User) {
         super(amateras, interaction, _user)
         this.origin = interaction
     }
