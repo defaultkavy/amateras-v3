@@ -119,18 +119,47 @@ function mod(interact, amateras) {
                     if (subcmd1.name === 'delete') {
                         if (!subcmd1.options)
                             return;
-                        const data = { amount: 0 };
+                        const data = { amount: 0, after: '' };
                         for (const subcmd2 of subcmd1.options) {
                             if (subcmd2.name === 'amount') {
                                 data.amount = subcmd2.value;
                             }
+                            else if (subcmd2.name === 'after') {
+                                data.after = subcmd2.value;
+                            }
                         }
-                        if (data.amount < 1 || data.amount > 100)
-                            return interact.origin.reply('Bulk delete amount must between 1 - 100');
-                        yield interact.origin.deferReply({ ephemeral: true });
-                        yield interact._channel.origin.bulkDelete(data.amount)
-                            .catch(err => amateras.system.log(err));
-                        interact.origin.followUp('Messages deleted');
+                        if (data.after === '') {
+                            if (data.amount < 1 || data.amount > 100)
+                                return interact.origin.reply({ content: 'Bulk delete amount must between 1 - 100', ephemeral: true });
+                            yield interact.origin.deferReply({ ephemeral: true });
+                            const messages = yield interact._channel.origin.messages.fetch({ limit: data.amount, cache: false });
+                            msgDelete(messages);
+                        }
+                        else if (data.after !== '') {
+                            const message = interact._channel.origin.messages.fetch(data.after).catch(() => undefined);
+                            if (!message)
+                                return interact.origin.reply({ content: 'Message fetch failed', ephemeral: true });
+                            yield interact.origin.deferReply({ ephemeral: true });
+                            const messages = yield interact._channel.origin.messages.fetch({ limit: data.amount, after: data.after, cache: false });
+                            console.debug(messages);
+                            msgDelete(messages);
+                        }
+                        // await interact._channel.origin.bulkDelete(data.amount)
+                        //     .catch(err => amateras.system.log(err))
+                        function msgDelete(messages) {
+                            return __awaiter(this, void 0, void 0, function* () {
+                                for (const message of messages.values()) {
+                                    try {
+                                        yield message.delete();
+                                    }
+                                    catch (err) {
+                                    }
+                                    if (message === messages.last()) {
+                                        interact.origin.followUp('Messages deleted');
+                                    }
+                                }
+                            });
+                        }
                     }
                 }
             }

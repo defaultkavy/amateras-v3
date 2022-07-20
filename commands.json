@@ -114,7 +114,13 @@
                                     "name": "amount",
                                     "description": "Messages amount, up to 100",
                                     "type": "4",
-                                    "required": true
+                                    "required": false
+                                },
+                                {
+                                    "name": "after",
+                                    "description": "Delete after this message, input message id. Deletion Not include this message.",
+                                    "type": "3",
+                                    "required": false
                                 }
                             ]
                         }

@@ -1,4 +1,4 @@
-import { ComponentType, ModalComponentData, TextInputStyle } from "discord.js";
+import { Collection, ComponentType, Message, ModalComponentData, TextInputStyle } from "discord.js";
 import { Amateras } from "../lib/Amateras";
 import { _ValidAutoCompleteInteraction } from "../lib/_AutoCompleteInteraction";
 import { _ValidCommandInteraction } from "../lib/_CommandInteraction";
@@ -102,20 +102,55 @@ export default async function mod(interact: _ValidCommandInteraction, amateras: 
                 if (subcmd1.name === 'delete') {
 
                     if (!subcmd1.options) return
-                    const data = {amount: 0}
+                    const data = {amount: 0, after: ''}
                     for (const subcmd2 of subcmd1.options) {
                         if (subcmd2.name === 'amount') {
                             data.amount = subcmd2.value as number
                         }
+                        else if (subcmd2.name === 'after') {
+                            data.after = subcmd2.value as string
+                        }
+                    }
+                    
+                    if (data.after === '') {
+                        if (data.amount < 1 || data.amount > 100)
+                            return interact.origin.reply({content: 'Bulk delete amount must between 1 - 100', ephemeral: true})
+
+                        await interact.origin.deferReply({ephemeral: true})
+
+                        const messages = await interact._channel.origin.messages.fetch({limit: data.amount, cache: false})
+                        msgDelete(messages)
+
+                    } else if (data.after !== '') {
+                        const message = interact._channel.origin.messages.fetch(data.after)    .catch(() => undefined)
+                        if (!message) return interact.origin.reply({content: 'Message fetch failed', ephemeral: true})
+
+                        await interact.origin.deferReply({ephemeral: true})
+
+                        const messages = await interact._channel.origin.messages.fetch({limit: data.amount, after: data.after, cache: false})
+                        console.debug(messages)
+                        msgDelete(messages)
+                        
                     }
 
-                    if (data.amount < 1 || data.amount > 100)
-                        return interact.origin.reply('Bulk delete amount must between 1 - 100')
+                    // await interact._channel.origin.bulkDelete(data.amount)
+                    //     .catch(err => amateras.system.log(err))
+
+                    async function msgDelete(messages: Collection<string, Message>) {
+                        
+                        for (const message of messages.values()) {
+                            try {
+                                await message.delete()
+                            } catch(err) {
+                                
+                            }
+                            if (message === messages.last()) {
+                                interact.origin.followUp('Messages deleted')
+                            
+                            }
+                        }
+                    }
                     
-                    await interact.origin.deferReply({ephemeral: true})
-                    await interact._channel.origin.bulkDelete(data.amount)
-                        .catch(err => amateras.system.log(err))
-                    interact.origin.followUp('Messages deleted')
                 }
             }
         } else if (subcmd0.name === 'cmd') {
