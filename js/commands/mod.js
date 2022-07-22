@@ -141,11 +141,8 @@ function mod(interact, amateras) {
                                 return interact.origin.reply({ content: 'Message fetch failed', ephemeral: true });
                             yield interact.origin.deferReply({ ephemeral: true });
                             const messages = yield interact._channel.origin.messages.fetch({ limit: data.amount, after: data.after, cache: false });
-                            console.debug(messages);
                             msgDelete(messages);
                         }
-                        // await interact._channel.origin.bulkDelete(data.amount)
-                        //     .catch(err => amateras.system.log(err))
                         function msgDelete(messages) {
                             return __awaiter(this, void 0, void 0, function* () {
                                 for (const message of messages.values()) {

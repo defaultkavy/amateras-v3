@@ -128,13 +128,9 @@ export default async function mod(interact: _ValidCommandInteraction, amateras: 
                         await interact.origin.deferReply({ephemeral: true})
 
                         const messages = await interact._channel.origin.messages.fetch({limit: data.amount, after: data.after, cache: false})
-                        console.debug(messages)
                         msgDelete(messages)
                         
                     }
-
-                    // await interact._channel.origin.bulkDelete(data.amount)
-                    //     .catch(err => amateras.system.log(err))
 
                     async function msgDelete(messages: Collection<string, Message>) {
                         
@@ -142,7 +138,7 @@ export default async function mod(interact: _ValidCommandInteraction, amateras: 
                             try {
                                 await message.delete()
                             } catch(err) {
-                                
+
                             }
                             if (message === messages.last()) {
                                 interact.origin.followUp('Messages deleted')

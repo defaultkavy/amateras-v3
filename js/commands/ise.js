@@ -45,11 +45,15 @@ function default_1(interact, amateras) {
                         });
                         const fetch = yield interact.origin.fetchReply();
                         const attachment = fetch.attachments.first();
-                        if (!attachment)
-                            return amateras.system.log('Ise Student Register Error: Attachment not found');
-                        const regImage = yield amateras.events.ise.registerStudentImage(interact._user.origin, attachment.url);
-                        if (regImage !== 'Success')
+                        if (!attachment) {
+                            amateras.error('Ise Student Register Error: Attachment not found');
                             return fetch.delete().catch();
+                        }
+                        const regImage = yield amateras.events.ise.registerStudentImage(interact._user.origin, attachment.url);
+                        if (regImage !== 'Success') {
+                            amateras.error('Ise Student Register Error: Attachment not found');
+                            return fetch.delete().catch();
+                        }
                     }
                 }
             }

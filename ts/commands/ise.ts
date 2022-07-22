@@ -30,9 +30,18 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
                     })
                     const fetch = await interact.origin.fetchReply()
                     const attachment = fetch.attachments.first()
-                    if (!attachment) return amateras.system.log('Ise Student Register Error: Attachment not found')
+
+                    if (!attachment) {
+                        amateras.error('Ise Student Register Error: Attachment not found')
+                        return fetch.delete().catch()
+                    }
+                    
                     const regImage = await amateras.events.ise.registerStudentImage(interact._user.origin, attachment.url)
-                    if (regImage !== 'Success') return fetch.delete().catch()
+
+                    if (regImage !== 'Success') {
+                        amateras.error('Ise Student Register Error: Attachment not found')
+                        return fetch.delete().catch()
+                    }
                 }
                 
             }

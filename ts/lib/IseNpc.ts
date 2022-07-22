@@ -52,16 +52,16 @@ export class IseNpc extends _BaseObj {
             const parentChannel = _guild.channels.cache.get(_channel.origin.parentId)
             if (!(parentChannel instanceof _TextChannel)) return
             const webhook = this.webhooks.has(parentChannel.id) ? this.webhooks.get(parentChannel.id) : await this.createWebhook(parentChannel)
-            if (!webhook) return this.amateras.system.log('Webhook is undefined')
+            if (!webhook) return
             await requestPromise(`https://discord.com/api/webhooks/${webhook.id}/${webhook.token}?thread_id=${_channel.id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(options)
-            }).catch(err => this.amateras.system.log(err))
+            }).catch(err => this.amateras.error(err))
             return
         } else {
             const webhook = this.webhooks.has(_channel.id) ? this.webhooks.get(_channel.id) : await this.createWebhook(_channel)
-            if (!webhook) return this.amateras.system.log('Webhook is undefined')
+            if (!webhook) return
             return await webhook.send(options)
         }
     }
@@ -82,7 +82,7 @@ export class IseNpc extends _BaseObj {
 
     async delete() {
         for (const webhook of this.webhooks.values()) {
-            webhook.delete().catch(err => this.amateras.system.log(err))
+            webhook.delete().catch(err => undefined)
         }
         this.active = false
         this.save()
@@ -104,7 +104,7 @@ export class IseNpc extends _BaseObj {
                     url: 'https://cdn.discordapp.com/attachments/804531119394783276/989579863910408202/white.png'
                 }
             }
-            this.amateras.system.log('IseNpc - data undefined')
+            this.amateras.log('IseNpc - data undefined')
             return embed
         }
         const embed: APIEmbed = {

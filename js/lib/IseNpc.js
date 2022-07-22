@@ -77,18 +77,18 @@ class IseNpc extends _BaseObj_js_1._BaseObj {
                     return;
                 const webhook = this.webhooks.has(parentChannel.id) ? this.webhooks.get(parentChannel.id) : yield this.createWebhook(parentChannel);
                 if (!webhook)
-                    return this.amateras.system.log('Webhook is undefined');
+                    return;
                 yield (0, request_promise_1.default)(`https://discord.com/api/webhooks/${webhook.id}/${webhook.token}?thread_id=${_channel.id}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(options)
-                }).catch(err => this.amateras.system.log(err));
+                }).catch(err => this.amateras.error(err));
                 return;
             }
             else {
                 const webhook = this.webhooks.has(_channel.id) ? this.webhooks.get(_channel.id) : yield this.createWebhook(_channel);
                 if (!webhook)
-                    return this.amateras.system.log('Webhook is undefined');
+                    return;
                 return yield webhook.send(options);
             }
         });
@@ -111,7 +111,7 @@ class IseNpc extends _BaseObj_js_1._BaseObj {
     delete() {
         return __awaiter(this, void 0, void 0, function* () {
             for (const webhook of this.webhooks.values()) {
-                webhook.delete().catch(err => this.amateras.system.log(err));
+                webhook.delete().catch(err => undefined);
             }
             this.active = false;
             this.save();
@@ -134,7 +134,7 @@ class IseNpc extends _BaseObj_js_1._BaseObj {
                         url: 'https://cdn.discordapp.com/attachments/804531119394783276/989579863910408202/white.png'
                     }
                 };
-                this.amateras.system.log('IseNpc - data undefined');
+                this.amateras.log('IseNpc - data undefined');
                 return embed;
             }
             const embed = {

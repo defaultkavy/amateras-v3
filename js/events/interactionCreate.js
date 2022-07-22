@@ -38,7 +38,7 @@ module.exports = {
                             cmdName += ` ${subcmd1.name}`;
                         }
                 }
-                amateras.system.log(`${cmdName} - ${_user.name}`);
+                amateras.log(`${cmdName} - ${_user.name}`);
                 const _validInteract = new _CommandInteraction_1._CommandInteraction(amateras, interact, _user);
                 if (!_validInteract.isValid())
                     return console.error('_CommandInteraction is not valid');

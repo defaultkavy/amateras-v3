@@ -49,9 +49,13 @@ class IseGakuen extends _Base_1._Base {
     }
     getNpc(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.sheets)
-                return;
+            if (!this.sheets) {
+                return this.amateras.error('ISE: Database not found');
+            }
             const sheet = this.sheets['NPC Data'];
+            if (!sheet) {
+                return this.amateras.error('ISE: NPC sheet not found');
+            }
             const rows = yield sheet.getRows();
             const headers = sheet.headerValues;
             const arr = [];
@@ -68,12 +72,16 @@ class IseGakuen extends _Base_1._Base {
     }
     registerStudent(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.sheets)
+            if (!this.sheets) {
+                this.amateras.error('ISE: Database not found');
                 return 'Database not found';
+            }
             const rows = yield this.sheets['Student Data'].getRows();
             const row = rows.find((row) => row.tag === user.tag);
-            if (!row)
+            if (!row) {
+                this.amateras.error('ISE: No record in sheet');
                 return 'No Record';
+            }
             row.id = user.id;
             yield row.save();
             return 'Success';
@@ -81,12 +89,21 @@ class IseGakuen extends _Base_1._Base {
     }
     registerStudentImage(user, image) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.sheets)
-                throw new Error('Database not found');
-            const rows = yield this.sheets['Student Data'].getRows();
+            if (!this.sheets) {
+                this.amateras.error('ISE: Database not found');
+                return 'Database not found';
+            }
+            const sheet = this.sheets['Student Data'];
+            if (!sheet) {
+                this.amateras.error('ISE: Student sheet not found');
+                return 'Student Sheet Not Found';
+            }
+            const rows = yield this.sheets[''].getRows();
             const row = rows.find((row) => row.id === user.id);
-            if (!row)
-                throw new Error('No Record');
+            if (!row) {
+                this.amateras.error('ISE: No record in sheet');
+                return 'No Record';
+            }
             row.characterCard = image;
             yield row.save();
             return 'Success';
@@ -94,13 +111,18 @@ class IseGakuen extends _Base_1._Base {
     }
     registerTeacher(npc) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.sheets)
+            if (!this.sheets) {
+                this.amateras.error('ISE: Database not found');
                 return 'Database not found';
-            const sheet = this.sheets['Teacher Data'];
+            }
+            const sheet = this.sheets['NPC Data'];
+            if (!sheet) {
+                this.amateras.error('ISE: NPC sheet not found');
+                return 'NPC Sheet Not Found';
+            }
             const rows = yield sheet.getRows();
             if (rows.find(row => row.id === npc.id))
                 return;
-            console.debug(npc);
             yield sheet.addRow({ id: npc.id, name: npc.name });
             return 'Success';
         });

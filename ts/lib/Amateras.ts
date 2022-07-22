@@ -11,6 +11,7 @@ import test from '../etc/test'
 import { EventManager } from "./_EventManager";
 import { _Server } from "./_Server.js";
 import { _DownloadManager } from "./_DownloadManager.js";
+import { _Log } from "./_Log";
 
 export class Amateras {
     client: Client<true>;
@@ -26,6 +27,8 @@ export class Amateras {
     events: EventManager;
     server: _Server;
     download: _DownloadManager;
+    log: (content: string) => Promise<void>;
+    error: (content: string) => Promise<void>;
     constructor(conf: AmaterasConfig) {
         this.ready = false
         this.client = conf.client
@@ -41,6 +44,9 @@ export class Amateras {
         this.events = new EventManager(this)
         this.server = new _Server(this)
         this.init()
+
+        this.log = this.system.logs.log.bind(this.system.logs)
+        this.error = this.system.logs.error.bind(this.system.logs)
     }
 
     async init() {
@@ -60,7 +66,7 @@ export class Amateras {
         this.ready = true
         await this.onready()
         console.log(cmd.Yellow, 'Amateras Ready.')
-        this.system.log('Amateras start.')
+        this.log('Amateras start.')
         test(this)
     }
 

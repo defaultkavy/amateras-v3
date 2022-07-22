@@ -41,8 +41,16 @@ export class IseGakuen extends _Base {
     }
 
     async getNpc(id: string) {
-        if (!this.sheets) return
+        if (!this.sheets) {
+            return this.amateras.error('ISE: Database not found')
+        }
+        
         const sheet = this.sheets['NPC Data']
+
+        if (!sheet) {
+            return this.amateras.error('ISE: NPC sheet not found')
+        }
+
         const rows = await sheet.getRows()
         const headers = sheet.headerValues
         const arr: ISE_TEACHER_DATA[] = []
@@ -58,31 +66,65 @@ export class IseGakuen extends _Base {
     }
 
     async registerStudent(user: User) {
-        if (!this.sheets) return 'Database not found'
+        if (!this.sheets) {
+            this.amateras.error('ISE: Database not found')
+            return 'Database not found'
+        }
+
         const rows = await this.sheets['Student Data'].getRows()
         const row = rows.find((row) => row.tag === user.tag)
-        if (!row) return 'No Record'
+
+        if (!row) {
+            this.amateras.error('ISE: No record in sheet')
+            return 'No Record'
+        }
+
         row.id = user.id
         await row.save()
         return 'Success'
     }
 
     async registerStudentImage(user: User, image: string) {
-        if (!this.sheets) throw new Error('Database not found')
-        const rows = await this.sheets['Student Data'].getRows()
+        if (!this.sheets) {
+            this.amateras.error('ISE: Database not found')
+            return 'Database not found'
+        }
+
+        const sheet = this.sheets['Student Data']
+
+        if (!sheet) {
+            this.amateras.error('ISE: Student sheet not found')
+            return 'Student Sheet Not Found'
+        }
+
+        const rows = await this.sheets[''].getRows()
         const row = rows.find((row) => row.id === user.id)
-        if (!row) throw new Error('No Record')
+
+        if (!row) {
+            this.amateras.error('ISE: No record in sheet')
+            return 'No Record'
+        }
+
         row.characterCard = image
         await row.save()
         return 'Success'
     }
     
     async registerTeacher(npc: IseNpc) {
-        if (!this.sheets) return 'Database not found'
-        const sheet = this.sheets['Teacher Data']
+        if (!this.sheets) {
+            this.amateras.error('ISE: Database not found')
+            return 'Database not found'
+        }
+
+        const sheet = this.sheets['NPC Data']
+
+        if (!sheet) {
+            this.amateras.error('ISE: NPC sheet not found')
+            return 'NPC Sheet Not Found'
+        }
+
         const rows = await sheet.getRows()
         if (rows.find(row => row.id === npc.id)) return
-        console.debug(npc)
         await sheet.addRow({id: npc.id, name: npc.name})
         return 'Success'
     }

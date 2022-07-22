@@ -32,7 +32,7 @@ export class _TextBaseChannel extends _GuildChannel {
     }
 
     async send(messageOption: MessageOptions) {
-        const message = await this.origin.send(messageOption).catch(err => this.amateras.system.log(err))
+        const message = await this.origin.send(messageOption).catch(err => this.amateras.error(err))
         return message
     }
 }

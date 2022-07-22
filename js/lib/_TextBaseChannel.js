@@ -42,7 +42,7 @@ class _TextBaseChannel extends _GuildChannel_1._GuildChannel {
     }
     send(messageOption) {
         return __awaiter(this, void 0, void 0, function* () {
-            const message = yield this.origin.send(messageOption).catch(err => this.amateras.system.log(err));
+            const message = yield this.origin.send(messageOption).catch(err => this.amateras.error(err));
             return message;
         });
     }

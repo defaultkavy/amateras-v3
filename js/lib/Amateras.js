@@ -40,6 +40,8 @@ class Amateras {
         this.events = new _EventManager_1.EventManager(this);
         this.server = new _Server_js_1._Server(this);
         this.init();
+        this.log = this.system.logs.log.bind(this.system.logs);
+        this.error = this.system.logs.error.bind(this.system.logs);
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -59,7 +61,7 @@ class Amateras {
             this.ready = true;
             yield this.onready();
             console.log(cmd_1.default.Yellow, 'Amateras Ready.');
-            this.system.log('Amateras start.');
+            this.log('Amateras start.');
             (0, test_1.default)(this);
         });
     }
