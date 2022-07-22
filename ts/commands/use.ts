@@ -16,15 +16,6 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
 
     const user_A = interact._user
 
-    // if (obj.to) {
-    //     const user_B = await amateras.users.fetch(obj.to)
-    //     if (user_B) {
-    //         params.A = `对 ${user_B.origin} `
-    //     } else {
-    //         return interact.origin.followUp({content: 'Error.', ephemeral: true})
-    //     }
-    // }
-
     let result = false
     if (Math.random() > 0.3) result = true
 
@@ -33,7 +24,5 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
         color: result ? Colors.Green : Colors.Grey,
         description: `${user_A.origin}${obj.use}`
     }
-
     interact.origin.followUp({embeds: [embed]})
-    // `${user_A.origin} ${result ? '成功' : '没能'}${params.A ? params.A : ''}${obj.use}`
 }
