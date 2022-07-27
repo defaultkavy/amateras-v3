@@ -1,4 +1,5 @@
 import { ApplicationCommandOptionType, Attachment, AttachmentBuilder } from "discord.js";
+import requestPromise from "request-promise";
 import { Amateras } from "../lib/Amateras";
 import { _ValidAutoCompleteInteraction } from "../lib/_AutoCompleteInteraction.js";
 import { _ValidCommandInteraction } from "../lib/_CommandInteraction";
@@ -14,8 +15,10 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
                     if (subcmd1.type !== ApplicationCommandOptionType.Attachment) return
                     if (!subcmd1.attachment) return
                     if (subcmd1.attachment.contentType !== 'image/png' && subcmd1.attachment.contentType !== 'image/jpeg') return interact.origin.reply({content: '上传内容必须是 JPG / PNG 格式', ephemeral: true})
+
                     const reg = await amateras.events.ise.registerStudent(interact._user.origin)
                     if (reg !== 'Success') return interact.origin.reply({content: reg, ephemeral: true})
+
                     await interact.origin.deferReply()
                     const buffer = await amateras.download.buffer(subcmd1.attachment.url)
                     await interact.origin.followUp({
@@ -70,13 +73,17 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
                         }
                         else if (subcmd2.name === 'avatar') {
                             if (!subcmd2.attachment) return
-                            if (subcmd2.attachment.contentType !== 'image/png' && subcmd2.attachment.contentType !== 'image/jpeg') return interact.origin.reply({content: '上传内容必须是 JPG / PNG 格式', ephemeral: true})
-                            data.avatar = subcmd2.attachment.url
+                            if (subcmd2.attachment.contentType !== 'image/png' && subcmd2.attachment.contentType !== 'image/jpeg') 
+                                return interact.origin.reply({content: '上传内容必须是 JPG / PNG 格式', ephemeral: true})
+                            
+                            await interact.origin.deferReply()
+                            
+                            data.avatar = await amateras.server.saveFile(subcmd2.attachment.url, 'public/image/npc-avatar')
                         }
                     }
 
                     await amateras.events.ise.npc.add({active: true, name: data.name, avatar: data.avatar})
-                    interact.origin.reply({content: 'NPC 已创建', ephemeral: true})
+                    interact.origin.followUp({content: 'NPC 已创建', ephemeral: true})
 
                 }
 

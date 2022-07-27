@@ -15,9 +15,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports._DownloadManager = void 0;
 const https_1 = __importDefault(require("https"));
 const _Base_js_1 = require("./_Base.js");
+const fs_1 = __importDefault(require("fs"));
+const stream_1 = require("stream");
+const path_1 = __importDefault(require("path"));
 class _DownloadManager extends _Base_js_1._Base {
     constructor(amateras) {
         super(amateras);
+    }
+    file(url, path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                const data = new stream_1.Stream.Transform;
+                https_1.default.get(url, res => {
+                    const ext = path_1.default.extname(path);
+                    res
+                        .on('data', (chunk) => {
+                        data.push(chunk);
+                    })
+                        .on('error', err => {
+                        reject(err);
+                    })
+                        .on('end', () => __awaiter(this, void 0, void 0, function* () {
+                        const filepath = `${global.path}/${path}/${this.amateras.system.snowflake.getUniqueID()}.${ext}`;
+                        fs_1.default.writeFileSync(filepath, data.read());
+                        resolve({
+                            dir_path: filepath,
+                            path: `${path}/${this.amateras.system.snowflake.getUniqueID()}.${ext}`
+                        });
+                    }));
+                });
+            }));
+        });
     }
     buffer(url) {
         return __awaiter(this, void 0, void 0, function* () {

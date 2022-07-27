@@ -19,7 +19,7 @@ export class Amateras {
     me: User;
     users: _UserManager;
     guilds: _GuildManager;
-    config: {};
+    config: Config;
     system: System;
     notifiers: _NotifierManager;
     messages: _MessageManager;
@@ -93,7 +93,13 @@ export class Amateras {
 export interface AmaterasConfig {
     client: Client<true>,
     db: Db,
-    config: {}
+    config: Config
+}
+
+export interface Config {
+    server: {
+        host: string
+    }
 }
 
 export interface Session {

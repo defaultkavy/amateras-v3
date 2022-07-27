@@ -3,6 +3,7 @@ import { _Base } from "./_Base.js";
 import express, { Express } from 'express'
 import { ConsoleDB } from "./Console.js";
 import cmd from "../plugins/cmd.js";
+import requestPromise from "request-promise";
 
 export class _Server extends _Base {
     express: Express;
@@ -22,12 +23,27 @@ export class _Server extends _Base {
         console.timeEnd('| Server Handler Set')
     }
 
+    async saveFile(url: string, path: string) {
+        return `https://isekai.live/v3/file/` + await requestPromise.post(`${this.amateras.config.server.host}/v3/download`, {
+            body: {
+                url: url,
+                path: path
+            },
+            json: true
+        })
+    }
+
     private serverHandler() {
         return new Promise<void>(resolve => {
             this.express.get('/file/*', (req, res) => {
                 if (process.platform === 'win32') {
                     res.send(global.path + req.originalUrl.slice(6).replace('/', '\\'))
                 } else res.send(global.path + req.originalUrl.slice(6))
+            })
+
+            this.express.post('/download', async(req, res) => {
+                const data = req.body as RequestDownloadData
+                res.send((await this.amateras.download.file(data.url, data.path)).path)
             })
     
             this.express.post('/session', async (req, res) => {
@@ -49,4 +65,9 @@ export class _Server extends _Base {
             })
         })
     }
+}
+
+export interface RequestDownloadData {
+    url: string,
+    path: string,
 }

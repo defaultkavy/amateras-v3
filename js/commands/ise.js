@@ -86,11 +86,12 @@ function default_1(interact, amateras) {
                                     return;
                                 if (subcmd2.attachment.contentType !== 'image/png' && subcmd2.attachment.contentType !== 'image/jpeg')
                                     return interact.origin.reply({ content: '上传内容必须是 JPG / PNG 格式', ephemeral: true });
-                                data.avatar = subcmd2.attachment.url;
+                                yield interact.origin.deferReply();
+                                data.avatar = yield amateras.server.saveFile(subcmd2.attachment.url, 'public/image/npc-avatar');
                             }
                         }
                         yield amateras.events.ise.npc.add({ active: true, name: data.name, avatar: data.avatar });
-                        interact.origin.reply({ content: 'NPC 已创建', ephemeral: true });
+                        interact.origin.followUp({ content: 'NPC 已创建', ephemeral: true });
                     }
                     else if (subcmd1.name === 'leave') {
                         const data = { id: '' };

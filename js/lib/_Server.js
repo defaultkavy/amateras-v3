@@ -16,6 +16,7 @@ exports._Server = void 0;
 const _Base_js_1 = require("./_Base.js");
 const express_1 = __importDefault(require("express"));
 const cmd_js_1 = __importDefault(require("../plugins/cmd.js"));
+const request_promise_1 = __importDefault(require("request-promise"));
 class _Server extends _Base_js_1._Base {
     constructor(amateras) {
         super(amateras);
@@ -32,6 +33,17 @@ class _Server extends _Base_js_1._Base {
             console.timeEnd('| Server Handler Set');
         });
     }
+    saveFile(url, path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return `https://isekai.live/v3/file/` + (yield request_promise_1.default.post(`${this.amateras.config.server.host}/v3/download`, {
+                body: {
+                    url: url,
+                    path: path
+                },
+                json: true
+            }));
+        });
+    }
     serverHandler() {
         return new Promise(resolve => {
             this.express.get('/file/*', (req, res) => {
@@ -41,6 +53,10 @@ class _Server extends _Base_js_1._Base {
                 else
                     res.send(global.path + req.originalUrl.slice(6));
             });
+            this.express.post('/download', (req, res) => __awaiter(this, void 0, void 0, function* () {
+                const data = req.body;
+                res.send((yield this.amateras.download.file(data.url, data.path)).path);
+            }));
             this.express.post('/session', (req, res) => __awaiter(this, void 0, void 0, function* () {
                 const data = req.body;
                 const get = this.sessions.get(data.sessionID);
