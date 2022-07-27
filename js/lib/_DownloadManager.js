@@ -37,14 +37,15 @@ class _DownloadManager extends _Base_js_1._Base {
                     })
                         .on('end', () => __awaiter(this, void 0, void 0, function* () {
                         const dir = `${global.path}${path}`;
-                        const filepath = `${dir}/${this.amateras.system.snowflake.getUniqueID()}${ext}`;
+                        const filename = `${this.amateras.system.snowflake.getUniqueID()}${ext}`;
+                        const filepath = `${dir}/${filename}`;
                         if (!fs_1.default.existsSync(dir)) {
                             fs_1.default.mkdirSync(dir, { recursive: true });
                         }
                         fs_1.default.writeFileSync(filepath, data.read());
                         resolve({
                             dir_path: filepath,
-                            path: `${path}/${this.amateras.system.snowflake.getUniqueID()}.${ext}`
+                            path: `${path}/${filename}`
                         });
                     }));
                 });

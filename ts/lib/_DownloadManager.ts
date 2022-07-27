@@ -25,14 +25,15 @@ export class _DownloadManager extends _Base {
                     })
                     .on('end', async () => {
                         const dir = `${global.path}${path}`
-                        const filepath = `${dir}/${this.amateras.system.snowflake.getUniqueID()}${ext}`
+                        const filename = `${this.amateras.system.snowflake.getUniqueID()}${ext}`
+                        const filepath = `${dir}/${filename}`
                         if (!fs.existsSync(dir)) {
                             fs.mkdirSync(dir, {recursive: true})
                         }
                         fs.writeFileSync(filepath, data.read())
                         resolve({
                             dir_path: filepath,
-                            path: `${path}/${this.amateras.system.snowflake.getUniqueID()}.${ext}`
+                            path: `${path}/${filename}`
                         })
                     })
             })
