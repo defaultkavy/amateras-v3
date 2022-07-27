@@ -24,7 +24,11 @@ export class _DownloadManager extends _Base {
                         reject(err)
                     })
                     .on('end', async () => {
-                        const filepath = `${global.path}${path}/${this.amateras.system.snowflake.getUniqueID()}.${ext}`
+                        const dir = `${global.path}${path}`
+                        const filepath = `${dir}/${this.amateras.system.snowflake.getUniqueID()}${ext}`
+                        if (!fs.existsSync(dir)) {
+                            fs.mkdirSync(dir, {recursive: true})
+                        }
                         fs.writeFileSync(filepath, data.read())
                         resolve({
                             dir_path: filepath,
