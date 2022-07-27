@@ -76,7 +76,7 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
                             if (subcmd2.attachment.contentType !== 'image/png' && subcmd2.attachment.contentType !== 'image/jpeg') 
                                 return interact.origin.reply({content: '上传内容必须是 JPG / PNG 格式', ephemeral: true})
                             
-                            await interact.origin.deferReply()
+                            await interact.origin.deferReply({ephemeral: true})
                             
                             data.avatar = await amateras.server.saveFile(subcmd2.attachment.url, 'public/image/npc-avatar')
                         }
@@ -110,9 +110,10 @@ export default async function (interact: _ValidCommandInteraction, amateras: Ama
                             data.id = subcmd2.value as string
                         }
                     }
+                    await interact.origin.deferReply()
                     const npc = amateras.events.ise.npc.cache.get(data.id)
-                    if (!npc) return interact.origin.reply({content: 'NPC 不存在', ephemeral: true})
-                    interact.origin.reply({embeds: [await npc.embed()]})
+                    if (!npc) return interact.origin.followUp({content: 'NPC 不存在', ephemeral: true})
+                    interact.origin.followUp({embeds: [await npc.embed()]})
                 }
             }
         }

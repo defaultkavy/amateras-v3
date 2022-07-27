@@ -86,7 +86,7 @@ function default_1(interact, amateras) {
                                     return;
                                 if (subcmd2.attachment.contentType !== 'image/png' && subcmd2.attachment.contentType !== 'image/jpeg')
                                     return interact.origin.reply({ content: '上传内容必须是 JPG / PNG 格式', ephemeral: true });
-                                yield interact.origin.deferReply();
+                                yield interact.origin.deferReply({ ephemeral: true });
                                 data.avatar = yield amateras.server.saveFile(subcmd2.attachment.url, 'public/image/npc-avatar');
                             }
                         }
@@ -117,10 +117,11 @@ function default_1(interact, amateras) {
                                 data.id = subcmd2.value;
                             }
                         }
+                        yield interact.origin.deferReply();
                         const npc = amateras.events.ise.npc.cache.get(data.id);
                         if (!npc)
-                            return interact.origin.reply({ content: 'NPC 不存在', ephemeral: true });
-                        interact.origin.reply({ embeds: [yield npc.embed()] });
+                            return interact.origin.followUp({ content: 'NPC 不存在', ephemeral: true });
+                        interact.origin.followUp({ embeds: [yield npc.embed()] });
                     }
                 }
             }
