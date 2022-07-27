@@ -27,7 +27,7 @@ class _DownloadManager extends _Base_js_1._Base {
             return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
                 const data = new stream_1.Stream.Transform;
                 https_1.default.get(url, res => {
-                    const ext = path_1.default.extname(path);
+                    const ext = path_1.default.extname(url);
                     res
                         .on('data', (chunk) => {
                         data.push(chunk);
@@ -36,7 +36,7 @@ class _DownloadManager extends _Base_js_1._Base {
                         reject(err);
                     })
                         .on('end', () => __awaiter(this, void 0, void 0, function* () {
-                        const filepath = `${global.path}/${path}/${this.amateras.system.snowflake.getUniqueID()}.${ext}`;
+                        const filepath = `${global.path}${path}/${this.amateras.system.snowflake.getUniqueID()}.${ext}`;
                         fs_1.default.writeFileSync(filepath, data.read());
                         resolve({
                             dir_path: filepath,
