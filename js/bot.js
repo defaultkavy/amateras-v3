@@ -42,7 +42,9 @@ const client = new discord_js_1.Client({
         discord_js_1.GatewayIntentBits.GuildIntegrations,
         discord_js_1.GatewayIntentBits.GuildMessageReactions,
         discord_js_1.GatewayIntentBits.GuildMembers,
-        discord_js_1.GatewayIntentBits.GuildVoiceStates
+        discord_js_1.GatewayIntentBits.GuildVoiceStates,
+        discord_js_1.GatewayIntentBits.GuildMessageReactions,
+        discord_js_1.GatewayIntentBits.MessageContent
     ],
     partials: [
         discord_js_1.Partials.Message,

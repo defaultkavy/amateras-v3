@@ -144,7 +144,7 @@ function autocomplete(interact, amateras) {
                                 const choices = Array.from(amateras.events.ise.npc.cache.values());
                                 // filter characters
                                 const filtered = choices.filter(choice => choice.name.startsWith(subcmd2.value) || choice.id.startsWith(subcmd2.value));
-                                interact.origin.respond(filtered.map(choice => ({ name: choice.name, value: choice.id })));
+                                interact.origin.respond(filtered.map(choice => ({ name: `${choice.name} (${choice.id})`, value: choice.id })));
                             }
                         }
                     }

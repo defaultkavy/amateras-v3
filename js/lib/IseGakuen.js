@@ -57,17 +57,8 @@ class IseGakuen extends _Base_1._Base {
                 return this.amateras.error('ISE: NPC sheet not found');
             }
             const rows = yield sheet.getRows();
-            const headers = sheet.headerValues;
-            const arr = [];
-            for (let i = 0; i < rows.length; i++) {
-                const obj = {};
-                for (const header of headers) {
-                    obj[header] = rows[i][header];
-                }
-                arr.push(obj);
-            }
-            const data = arr.find((value) => value.id === id);
-            return data;
+            const row = rows.find(row => row.id === id);
+            return row;
         });
     }
     registerStudent(user) {

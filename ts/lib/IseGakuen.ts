@@ -1,6 +1,6 @@
 import { Amateras } from "./Amateras";
 import { _Base } from "./_Base";
-import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from 'google-spreadsheet'
+import { GoogleSpreadsheet, GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from 'google-spreadsheet'
 import { APIEmbed, User } from "discord.js";
 import { IseNpc } from "./IseNpc.js";
 import { IseNpcManager } from "./IseNpcManager.js";
@@ -40,7 +40,7 @@ export class IseGakuen extends _Base {
         return playerData
     }
 
-    async getNpc(id: string) {
+    async getNpc(id: string): Promise<GoogleSpreadsheetRow & ISE_NPC_DATA | undefined | void> {
         if (!this.sheets) {
             return this.amateras.error('ISE: Database not found')
         }
@@ -52,17 +52,8 @@ export class IseGakuen extends _Base {
         }
 
         const rows = await sheet.getRows()
-        const headers = sheet.headerValues
-        const arr: ISE_TEACHER_DATA[] = []
-        for (let i = 0; i < rows.length; i++) {
-            const obj: {[key: string]: any} = {}
-            for (const header of headers) {
-                obj[header] = rows[i][header]
-            }
-            arr.push(obj as ISE_TEACHER_DATA)
-        }
-        const data = arr.find((value) => value.id === id)
-        return data
+        const row = rows.find(row => row.id === id)
+        return row as GoogleSpreadsheetRow & ISE_NPC_DATA
     }
 
     async registerStudent(user: User) {
@@ -176,8 +167,7 @@ export interface ISE_STUDENT_DATA {
     class: string
 }
 
-export interface ISE_TEACHER_DATA {
-    [keys: string]: any,
+export interface ISE_NPC_DATA {
     id: string,
     name: string,
     age: string,
@@ -185,5 +175,6 @@ export interface ISE_TEACHER_DATA {
     gender: string,
     country: string,
     description: string,
-    characteristic: string
+    characteristic: string,
+    active: 'false' | 'true'
 }

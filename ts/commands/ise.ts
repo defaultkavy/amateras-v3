@@ -132,7 +132,7 @@ export async function autocomplete(interact: _ValidAutoCompleteInteraction, amat
                             const choices = Array.from(amateras.events.ise.npc.cache.values())
                             // filter characters
                             const filtered = choices.filter(choice => choice.name.startsWith(subcmd2.value as string) || choice.id.startsWith(subcmd2.value as string))
-                            interact.origin.respond(filtered.map(choice => ({name: choice.name, value: choice.id})))
+                            interact.origin.respond(filtered.map(choice => ({name: `${choice.name} (${choice.id})`, value: choice.id})))
                         }
                     }
                 }

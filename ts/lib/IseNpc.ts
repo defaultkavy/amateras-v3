@@ -1,7 +1,8 @@
 import { APIEmbed, APIEmbedField, MessageOptions, TextChannel, Webhook } from "discord.js";
+import { GoogleSpreadsheetRow } from "google-spreadsheet";
 import requestPromise from "request-promise";
 import { Amateras } from "./Amateras.js";
-import { ISE_TEACHER_DATA } from "./IseGakuen.js";
+import { ISE_NPC_DATA } from "./IseGakuen.js";
 import { _Base } from "./_Base.js";
 import { _BaseObj } from "./_BaseObj.js";
 import { _Guild } from "./_Guild.js";
@@ -86,7 +87,13 @@ export class IseNpc extends _BaseObj {
         }
         this.active = false
         this.save()
+        const row = await this.amateras.events.ise.getNpc(this.id)
+        if (row) {
+            row.active = 'false'
+            await row.save()
+        }
         this.amateras.events.ise.npc.cache.delete(this.id)
+        
         return 'NPC Leave'
     }
 
@@ -127,12 +134,11 @@ export class IseNpc extends _BaseObj {
         return await this.amateras.events.ise.getNpc(this.id)
     }
 
-    private fields(data: ISE_TEACHER_DATA) {
-        const skip = ['id', 'name', 'description']
+    private fields(data: GoogleSpreadsheetRow & ISE_NPC_DATA) {
         const fields: APIEmbedField[] = []
         for (const header in data) {
+            if (!headerFields[header as fieldProperty]) continue
             if (!data[header]) continue
-            if (skip.includes(header)) continue
             fields.push({
                 name: headerFields[header as fieldProperty],
                 value: data[header],

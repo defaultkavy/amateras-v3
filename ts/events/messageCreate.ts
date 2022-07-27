@@ -13,7 +13,6 @@ module.exports = {
             if (_message._channel.hint._message && _message.id === _message._channel.hint._message.id) return
             _message._channel.hint.send()
         }
-
         request('http://localhost:5500/console-update').catch(() => {})
     }
 

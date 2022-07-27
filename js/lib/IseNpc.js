@@ -115,6 +115,11 @@ class IseNpc extends _BaseObj_js_1._BaseObj {
             }
             this.active = false;
             this.save();
+            const row = yield this.amateras.events.ise.getNpc(this.id);
+            if (row) {
+                row.active = 'false';
+                yield row.save();
+            }
             this.amateras.events.ise.npc.cache.delete(this.id);
             return 'NPC Leave';
         });
@@ -159,12 +164,11 @@ class IseNpc extends _BaseObj_js_1._BaseObj {
         });
     }
     fields(data) {
-        const skip = ['id', 'name', 'description'];
         const fields = [];
         for (const header in data) {
-            if (!data[header])
+            if (!headerFields[header])
                 continue;
-            if (skip.includes(header))
+            if (!data[header])
                 continue;
             fields.push({
                 name: headerFields[header],
