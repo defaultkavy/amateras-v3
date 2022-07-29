@@ -15,10 +15,11 @@ const _Base_1 = require("./_Base");
 const _Youtube_1 = require("./_Youtube");
 const nodejs_snowflake_1 = require("nodejs-snowflake");
 const _LogManager_js_1 = require("./_LogManager.js");
+const google_spreadsheet_1 = require("google-spreadsheet");
+const Sheets_js_1 = require("./Sheets.js");
 class System extends _Base_1._Base {
     constructor(amateras) {
         super(amateras);
-        // @ts-ignore
         this.token = amateras.config.bot.token;
         this.logs = new _LogManager_js_1._LogManager(this.amateras);
         this.youtube = new _Youtube_1._Youtube(this.amateras);
@@ -28,8 +29,23 @@ class System extends _Base_1._Base {
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.console.init();
+            yield this.fetchSheets();
         });
+    }
+    fetchSheets() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const spreadsheets = new google_spreadsheet_1.GoogleSpreadsheet(this.amateras.config.sheets.system);
+            yield spreadsheets.useServiceAccountAuth(this.amateras.system.cert);
+            yield spreadsheets.loadInfo();
+            if (spreadsheets) {
+                this.sheets = new Sheets_js_1.Sheets(this, spreadsheets);
+            }
+        });
+    }
+    isReady() {
+        if (!this.sheets)
+            return false;
+        return true;
     }
 }
 exports.System = System;

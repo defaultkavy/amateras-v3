@@ -23,16 +23,32 @@ const rest_1 = require("@discordjs/rest");
 const v9_1 = require("discord-api-types/v9");
 const _BaseGuildManagerDB_1 = require("./_BaseGuildManagerDB");
 class _GuildCommandManager extends _BaseGuildManagerDB_1._BaseGuildManagerDB {
-    constructor(amateras, _guild, info) {
-        super(amateras, _guild, amateras.db.collection('guild_commands'));
+    constructor(_guild, info) {
+        super(_guild.amateras, _guild, _guild.amateras.db.collection('guild_commands'));
         __GuildCommandManager_commands.set(this, void 0);
         __classPrivateFieldSet(this, __GuildCommandManager_commands, info.commands, "f");
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             if (deploy) {
+                const commandList = [];
+                for (const command of commands) {
+                    if (command.default_deploy) {
+                        commandList.push(command);
+                    }
+                    else {
+                        if (!this.amateras.system.isReady())
+                            throw new Error('System is not ready');
+                        const rows = yield this.amateras.system.sheets.command_access.getRows();
+                        const row = rows.find(row => row.guildId = this._guild.id);
+                        if (!row)
+                            continue;
+                        if (row[command] === 'TRUE')
+                            commandList.push(command);
+                    }
+                }
                 console.time('| Commands Deployed');
-                yield this.deployCommand();
+                yield this.deployCommand(commandList);
                 console.timeEnd('| Commands Deployed');
             }
             else
@@ -50,7 +66,7 @@ class _GuildCommandManager extends _BaseGuildManagerDB_1._BaseGuildManagerDB {
             }
         });
     }
-    deployCommand() {
+    deployCommand(commands) {
         return __awaiter(this, void 0, void 0, function* () {
             const rest = new rest_1.REST({ version: '9' }).setToken(this.amateras.client.token);
             try {

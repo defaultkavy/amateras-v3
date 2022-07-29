@@ -1,4 +1,3 @@
-import { Amateras } from "./Amateras";
 import { _BaseGuildManager } from "./_BaseGuildManager";
 import { _Guild } from "./_Guild";
 import { _GuildCommand, _GuildCommandDB, _GuildCommandInfo } from "./_GuildCommand";
@@ -9,16 +8,28 @@ import { _BaseGuildManagerDB } from "./_BaseGuildManagerDB";
 
 export class _GuildCommandManager extends _BaseGuildManagerDB<_GuildCommand, _GuildCommandDB> {
     #commands: string[];
-    constructor(amateras: Amateras, _guild: _Guild, info: _GuildCommandManagerInfo) {
-        super(amateras, _guild, amateras.db.collection('guild_commands'))
+    constructor(_guild: _Guild, info: _GuildCommandManagerInfo) {
+        super(_guild.amateras, _guild, _guild.amateras.db.collection('guild_commands'))
         this.#commands = info.commands
     }
 
     async init() {
 
         if (deploy) {
+            const commandList = []
+            for (const command of commands) {
+                if (command.default_deploy) {
+                    commandList.push(command)
+                } else {
+                    if (!this.amateras.system.isReady()) throw new Error('System is not ready')
+                    const rows = await this.amateras.system.sheets.command_access.getRows()
+                    const row = rows.find(row => row.guildId = this._guild.id)
+                    if (!row) continue
+                    if (row[command] === 'TRUE') commandList.push(command)
+                }
+            }
             console.time('| Commands Deployed')
-            await this.deployCommand()
+            await this.deployCommand(commandList)
             console.timeEnd('| Commands Deployed')
         } else console.log('| Commands Deploy Disabled')
 
@@ -36,7 +47,7 @@ export class _GuildCommandManager extends _BaseGuildManagerDB<_GuildCommand, _Gu
         }
     }
 
-    async deployCommand() {
+    async deployCommand(commands: any[]) {
         const rest = new REST({ version: '9' }).setToken(this.amateras.client.token!);
 
         try {

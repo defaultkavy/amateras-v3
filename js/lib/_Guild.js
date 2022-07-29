@@ -25,7 +25,7 @@ class _Guild extends _BaseObj_1._BaseObj {
         this.name = guild.name;
         this.channels = new _GuildChannelManager_1._GuildChannelManager(amateras, this, { hints: info.hints });
         this.notifiers = new _GuildNotifierManager_1._GuildNotifierManager(amateras, this, { list: info.notifiers });
-        this.commands = new _GuildCommandManager_1._GuildCommandManager(amateras, this, { commands: info.commands });
+        this.commands = new _GuildCommandManager_1._GuildCommandManager(this, { commands: info.commands });
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {

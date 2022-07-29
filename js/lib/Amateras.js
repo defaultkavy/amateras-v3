@@ -48,12 +48,12 @@ class Amateras {
             console.log(cmd_1.default.Yellow, 'Amateras System Initialization...');
             // bot _user object create
             yield this.users.fetch(this.me);
+            // init system
+            yield this.system.init();
             // fetch all guild
             yield this.guilds.init();
             // init all events
             yield this.events.init();
-            // init system
-            yield this.system.init();
             // init server
             yield this.server.init();
             // start handle commands

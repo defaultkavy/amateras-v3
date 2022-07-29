@@ -1,26 +1,18 @@
 import { APIEmbed } from "discord-api-types/v9.js";
-import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from "google-spreadsheet";
 import { Amateras, Session } from "./Amateras.js";
 import { _Base } from "./_Base.js";
 import { Express } from 'express'
 import { ImageFormat } from "discord.js";
+import { Sheets } from "./Sheets.js";
 
 export class Console extends _Base {
-    sheets: GoogleSpreadsheet["sheetsByTitle"] | undefined;
     constructor(amateras: Amateras) {
         super(amateras)
     }
-    
-    async init() {
-        const spreadsheets = new GoogleSpreadsheet('18tQ8_l5tAwCoCFz1O0GvYeuqmTYq4V_DB7r3l01XHeI')
-        await spreadsheets.useServiceAccountAuth(this.amateras.system.cert)
-        await spreadsheets.loadInfo()
-        this.sheets = spreadsheets.sheetsByTitle
-    }
 
     async getUser(id: string) {
-        if (!this.sheets) return
-        const sheet = this.sheets['Console']
+        if (!this.amateras.system.isReady()) throw new Error('System is not ready')
+        const sheet = this.amateras.system.sheets.console
         const rows = await sheet.getRows()
         const headers = sheet.headerValues
         const arr: ConsoleDB[] = []
@@ -35,9 +27,9 @@ export class Console extends _Base {
         return user
     }
 
-    async getLimitAccess(sheetName: string) {
-        if (!this.sheets) return
-        const sheet = this.sheets[sheetName]
+    async getLimitAccess(role: ConsoleRole) {
+        if (!this.amateras.system.isReady()) throw new Error('System is not ready')
+        const sheet = role === 'user' ? this.amateras.system.sheets.console_user : this.amateras.system.sheets.console_ise
         const rows = (await sheet.getRows()) as []
         const headers = sheet.headerValues as ['channels', 'guilds']
         const data = {
@@ -136,7 +128,7 @@ export class Console extends _Base {
                 
                 else if (get.role === 'user') {
                     data.role = 'user'
-                    const limitAccess = await this.getLimitAccess('ConsoleUserAccessLimit')
+                    const limitAccess = await this.getLimitAccess('user')
                     if (!limitAccess) return res.send({ success: false, message: 'get limit access error' })
                     for (const _guild of this.amateras.guilds.cache.values()) {
                         if (!limitAccess.guilds.includes(_guild.id)) continue
@@ -167,7 +159,7 @@ export class Console extends _Base {
 
                 else if(get.role === 'ise') {
                     data.role = 'ise'
-                    const limitAccess = await this.getLimitAccess('ConsoleIseAccessLimit')
+                    const limitAccess = await this.getLimitAccess('ise')
                     if (!limitAccess) return res.send({ success: false, message: 'get limit access error' })
                     
                     for (const guildId of limitAccess.guilds) {

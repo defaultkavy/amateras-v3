@@ -10,26 +10,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Console = void 0;
-const google_spreadsheet_1 = require("google-spreadsheet");
 const _Base_js_1 = require("./_Base.js");
 const discord_js_1 = require("discord.js");
 class Console extends _Base_js_1._Base {
     constructor(amateras) {
         super(amateras);
     }
-    init() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const spreadsheets = new google_spreadsheet_1.GoogleSpreadsheet('18tQ8_l5tAwCoCFz1O0GvYeuqmTYq4V_DB7r3l01XHeI');
-            yield spreadsheets.useServiceAccountAuth(this.amateras.system.cert);
-            yield spreadsheets.loadInfo();
-            this.sheets = spreadsheets.sheetsByTitle;
-        });
-    }
     getUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.sheets)
-                return;
-            const sheet = this.sheets['Console'];
+            if (!this.amateras.system.isReady())
+                throw new Error('System is not ready');
+            const sheet = this.amateras.system.sheets.console;
             const rows = yield sheet.getRows();
             const headers = sheet.headerValues;
             const arr = [];
@@ -44,11 +35,11 @@ class Console extends _Base_js_1._Base {
             return user;
         });
     }
-    getLimitAccess(sheetName) {
+    getLimitAccess(role) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.sheets)
-                return;
-            const sheet = this.sheets[sheetName];
+            if (!this.amateras.system.isReady())
+                throw new Error('System is not ready');
+            const sheet = role === 'user' ? this.amateras.system.sheets.console_user : this.amateras.system.sheets.console_ise;
             const rows = (yield sheet.getRows());
             const headers = sheet.headerValues;
             const data = {
@@ -159,7 +150,7 @@ class Console extends _Base_js_1._Base {
                 }
                 else if (get.role === 'user') {
                     data.role = 'user';
-                    const limitAccess = yield this.getLimitAccess('ConsoleUserAccessLimit');
+                    const limitAccess = yield this.getLimitAccess('user');
                     if (!limitAccess)
                         return res.send({ success: false, message: 'get limit access error' });
                     for (const _guild of this.amateras.guilds.cache.values()) {
@@ -191,7 +182,7 @@ class Console extends _Base_js_1._Base {
                 }
                 else if (get.role === 'ise') {
                     data.role = 'ise';
-                    const limitAccess = yield this.getLimitAccess('ConsoleIseAccessLimit');
+                    const limitAccess = yield this.getLimitAccess('ise');
                     if (!limitAccess)
                         return res.send({ success: false, message: 'get limit access error' });
                     for (const guildId of limitAccess.guilds) {

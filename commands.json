@@ -1,10 +1,11 @@
 {
-    "deploy": false,
+    "deploy": true,
     "commands": [
         {
             "name": "mod",
             "description": "伺服器管理 - Server manage",
             "default_permission": false,
+            "default_deploy": true,
             "options": [
                 {
                     "name": "notify",
@@ -131,6 +132,7 @@
         {
             "name": "use",
             "description": "判断行为的成功率",
+            "default_deploy": false,
             "options": [
                 {
                     "name": "action",
@@ -143,6 +145,7 @@
         {
             "name": "ise",
             "description": "ISE 学园相关指令",
+            "default_deploy": false,
             "options": [
                 {
                     "name": "register",

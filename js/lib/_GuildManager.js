@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._GuildManager = void 0;
+const cmd_js_1 = __importDefault(require("../plugins/cmd.js"));
 const _BaseManagerDB_1 = require("./_BaseManagerDB");
 const _Guild_1 = require("./_Guild");
 class _GuildManager extends _BaseManagerDB_1._BaseManagerDB {
@@ -20,12 +24,23 @@ class _GuildManager extends _BaseManagerDB_1._BaseManagerDB {
         return __awaiter(this, void 0, void 0, function* () {
             const guilds = this.amateras.client.guilds.cache.values();
             for (const guild of guilds) {
-                const dbObj = yield this.collection.findOne({ id: guild.id });
-                const obj = new _Guild_1._Guild(this.amateras, guild, yield this.buildData(dbObj, guild));
-                yield obj.init();
-                this.cache.set(obj.id, obj);
-                obj.save();
+                yield this.add(guild);
             }
+        });
+    }
+    add(guild) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const dbObj = yield this.collection.findOne({ id: guild.id });
+            const obj = new _Guild_1._Guild(this.amateras, guild, yield this.buildData(dbObj, guild));
+            yield obj.init();
+            this.cache.set(obj.id, obj);
+            obj.save();
+        });
+    }
+    remove(guild) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.cache.delete(guild.id);
+            console.log(cmd_js_1.default.Green, `Leave Guild: ${guild.name}`);
         });
     }
     buildData(dbObj, guild) {

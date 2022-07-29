@@ -19,7 +19,7 @@ export class _Guild extends _BaseObj {
         this.name = guild.name
         this.channels = new _GuildChannelManager(amateras, this, {hints: info.hints})
         this.notifiers = new _GuildNotifierManager(amateras, this, {list: info.notifiers})
-        this.commands = new _GuildCommandManager(amateras, this, {commands: info.commands})
+        this.commands = new _GuildCommandManager(this, {commands: info.commands})
     }
 
     async init() {

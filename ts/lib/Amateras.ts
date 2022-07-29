@@ -53,12 +53,12 @@ export class Amateras {
         console.log(cmd.Yellow, 'Amateras System Initialization...')
         // bot _user object create
         await this.users.fetch(this.me)
+        // init system
+        await this.system.init()
         // fetch all guild
         await this.guilds.init()
         // init all events
         await this.events.init()
-        // init system
-        await this.system.init()
         // init server
         await this.server.init()
         // start handle commands
@@ -97,8 +97,14 @@ export interface AmaterasConfig {
 }
 
 export interface Config {
+    bot: {
+        token: string
+    }
     server: {
         host: string
+    }
+    sheets: {
+        system: string
     }
 }
 
