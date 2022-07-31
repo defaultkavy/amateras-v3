@@ -35,7 +35,7 @@ class _GuildCommandManager extends _BaseGuildManagerDB_1._BaseGuildManagerDB {
                 if (!this.amateras.system.isReady())
                     throw new Error('System is not ready');
                 const rows = yield this.amateras.system.sheets.command_access.getRows();
-                const row = rows.find(row => row.guildId = this._guild.id);
+                const row = rows.find(row => row.guildId === this._guild.id);
                 for (const command of commands) {
                     if (command.default_deploy) {
                         commandList.push(command);
