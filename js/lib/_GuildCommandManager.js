@@ -32,18 +32,18 @@ class _GuildCommandManager extends _BaseGuildManagerDB_1._BaseGuildManagerDB {
         return __awaiter(this, void 0, void 0, function* () {
             if (deploy) {
                 const commandList = [];
+                if (!this.amateras.system.isReady())
+                    throw new Error('System is not ready');
+                const rows = yield this.amateras.system.sheets.command_access.getRows();
+                const row = rows.find(row => row.guildId = this._guild.id);
                 for (const command of commands) {
                     if (command.default_deploy) {
                         commandList.push(command);
                     }
                     else {
-                        if (!this.amateras.system.isReady())
-                            throw new Error('System is not ready');
-                        const rows = yield this.amateras.system.sheets.command_access.getRows();
-                        const row = rows.find(row => row.guildId = this._guild.id);
                         if (!row)
                             continue;
-                        if (row[command] === 'TRUE')
+                        if (row[command.name] === 'TRUE')
                             commandList.push(command);
                     }
                 }
